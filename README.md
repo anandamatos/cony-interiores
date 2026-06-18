@@ -1,8 +1,8 @@
 # 🛠 Projeto Cony Interiores: Sistema de Controle de Produção
 
 Este repositório contém a documentação e o código para o sistema de controle de produção de costureiras da **Cony Interiores**. O projeto utiliza um framework híbrido que combina **Triplo Diamante** (estratégia), **Dual Track Agile** (ritmo) e **Scrum** (gestão) para entregar uma solução web escalável.
-![roadmap visual do projeto](./docs/img/metodologia-projeto.jpeg)
 
+![roadmap visual do projeto](./docs/img/metodologia-projeto.jpeg)
 ## 💎 Metodologia Triplo Diamante
 
 O processo é estruturado em três ciclos:
@@ -39,7 +39,6 @@ Para evitar o desperdício de construir funcionalidades que não resolvem as dor
 -   **Sincronização:** O "Backlog Validado" é o ponto de encontro. A Discovery alimenta a Delivery com itens prontos para construir, enquanto a Delivery alimenta a Discovery com aprendizados técnicos e feedbacks reais do software em uso.
 
 ![roadmap visual do projeto](./docs/img/dua-track.png)
-
 ## 📅 Planejamento em 5 Sprints (Roadmap de 45 dias)
 
 O projeto é entregue em incrementos (MVPs) focados nas dores do briefing:
@@ -80,8 +79,8 @@ Para os 10 desenvolvedores, adotamos o modelo de 3 Squads com responsabilidades 
 
 
 * **2x Frontend Developers:** Focados em componentes, Dashboards de produtividade e visualização da carga de trabalho.
-![roadmap visual do projeto](./docs/img/squads.png)
 
+![roadmap visual do projeto](./docs/img/squads.png)
 ## 📂 Estrutura de Pastas
 
 ```text
