@@ -66,9 +66,9 @@ O time é composto por 9 profissionais distribuídos em 3 Squads especializados,
 
 | Nome | Papel/Função |
 |------|--------------|
-| [Nome do Membro 1 ] | **Tech Lead (BE):** Arquiteto de software, responsável por CI/CD, revisão de código e definição da arquitetura cloud. |
-| [Nome do Membro 2] | **Backend Developer:** Focado em autenticação, segurança e configuração do ambiente Django. |
-| [Nome do Membro 3] | **Frontend Developer:** Focado na performance da aplicação e otimização de assets. |
+| Ruan Felipe | **Tech Lead (BE):** Arquiteto de software, responsável por CI/CD, revisão de código e definição da arquitetura cloud. |
+| [Marcus VInicius] | **Backend Developer:** Focado em autenticação, segurança e configuração do ambiente Django. |
+| Maria Gabrielle | **Frontend Developer:** Focado na performance da aplicação e otimização de assets. |
 
 ---
 
@@ -77,9 +77,9 @@ O time é composto por 9 profissionais distribuídos em 3 Squads especializados,
 
 | Nome | Papel/Função |
 |------|--------------|
-| [Nome do Membro 4] | **Product Owner (BE):** Responsável pela lógica de negócio, definição das métricas de capacidade (índice de complexidade) e requisitos do sistema. |
-| [Nome do Membro 5] | **Backend Developer:** Focado nos endpoints de CRUD, cálculo de carga e integração financeira. |
-| [Nome do Membro 6] | **Fullstack Developer:** Ponte entre API e interface, focado em formulários complexos e integração de dados. |
+| Karine Eduarda | **Product Owner (BE):** Responsável pela lógica de negócio, definição das métricas de capacidade (índice de complexidade) e requisitos do sistema. |
+| Matheus Gonçalves | **Backend Developer:** Focado nos endpoints de CRUD, cálculo de carga e integração financeira. |
+| Bianca | **Front End Developer:** Ponte entre API e interface, focado em formulários complexos e integração de dados. |
 
 ---
 
@@ -88,9 +88,9 @@ O time é composto por 9 profissionais distribuídos em 3 Squads especializados,
 
 | Nome | Papel/Função |
 |------|--------------|
-| [Nome do Membro 7] | **UX/UI Lead (FE):** Focado na jornada do usuário, garantindo que o sistema seja "prático, visual e fácil de usar". |
-| [Nome do Membro 8] | **Frontend Developer:** Focado em componentes reutilizáveis e implementação do Design System com Tailwind CSS. |
-| [Nome do Membro 9] | **Frontend Developer:** Focado em Dashboards de produtividade, gráficos e visualização da carga de trabalho. |
+| Ananda Matos | **UX/UI Lead (FE):** Focado na jornada do usuário, garantindo que o sistema seja "prático, visual e fácil de usar". |
+| Gabriel AUgusto | **Frontend Developer:** Focado em componentes reutilizáveis e implementação do Design System com Tailwind CSS. |
+| Isabella Barros | **Backend Developer:** Focado em Dashboards de produtividade, gráficos e visualização da carga de trabalho. |
 
 
 ![roadmap visual do projeto](./docs/img/squads.png)
