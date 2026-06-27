@@ -30,15 +30,8 @@ API do projeto Cony Interiores desenvolvida com Django e Django REST Framework.
 pip install -r requirements.txt
 ```
 
-4. Configure as variaveis de ambiente do banco:
-
-```powershell
-$env:POSTGRES_DB="projeto1"
-$env:POSTGRES_USER="postgres"
-$env:POSTGRES_PASSWORD="postgres"
-$env:POSTGRES_HOST="127.0.0.1"
-$env:POSTGRES_PORT="5432"
-```
+4. O projeto usa SQLite por padrao no desenvolvimento local.
+5. Para usar PostgreSQL, copie `.env.example` para `.env`, mantenha `DJANGO_DATABASE=postgres` e ajuste as credenciais do seu banco.
 
 ## Executar em desenvolvimento
 
@@ -56,6 +49,8 @@ python manage.py runserver
 
 Servidor local: http://127.0.0.1:8000
 
+Para executar com PostgreSQL, crie um arquivo `.env` com base em `.env.example`.
+
 ## Endpoints atuais
 
 - GET /api/
@@ -68,34 +63,12 @@ Servidor local: http://127.0.0.1:8000
 Execute os testes com:
 
 ```bash
-python manage.py test
+python manage.py test --settings=config.settings_sqlite
 ```
 
 ## Variaveis de ambiente
 
-As seguintes variaveis sao lidas em config/settings.py:
-
-- DJANGO_SECRET_KEY
-- DJANGO_DEBUG
-- DJANGO_ALLOWED_HOSTS
-- POSTGRES_DB
-- POSTGRES_USER
-- POSTGRES_PASSWORD
-- POSTGRES_HOST
-- POSTGRES_PORT
-- POSTGRES_CONN_MAX_AGE
-
-Exemplo no PowerShell:
-
-```powershell
-$env:DJANGO_DEBUG="True"
-$env:DJANGO_ALLOWED_HOSTS="localhost,127.0.0.1"
-$env:POSTGRES_DB="projeto1"
-$env:POSTGRES_USER="postgres"
-$env:POSTGRES_PASSWORD="postgres"
-$env:POSTGRES_HOST="127.0.0.1"
-$env:POSTGRES_PORT="5432"
-```
+As variaveis sao lidas automaticamente do arquivo `.env` na raiz do backend.
 
 ## Integracao com frontend
 
