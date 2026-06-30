@@ -3,10 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cony Interiores · MVP 1</title>
+    <title>Cony Interiores · Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body data-page="dashboard">
     <div class="app-shell">
       <aside class="sidebar">
         <div class="sidebar__brand">
@@ -17,13 +20,22 @@
           </div>
         </div>
 
-        <nav class="sidebar__nav" aria-label="Navegação principal">
-          <button class="nav-item active" data-target="dashboard">Dashboard</button>
-          <button class="nav-item" data-target="services">Serviços</button>
-          <button class="nav-item" data-target="tailors">Costureiras</button>
-          <button class="nav-item" data-target="finance">Financeiro</button>
-          <button class="nav-item" data-target="reports">Relatórios</button>
-        </nav>
+        <div class="sidebar__section">
+          <p class="sidebar__section-title">Operação</p>
+          <nav class="sidebar__nav" aria-label="Navegação principal">
+            <a class="nav-item active" href="index.html" data-page="dashboard"><span class="nav-item__icon">⌂</span><span>Dashboard</span></a>
+            <a class="nav-item" href="services.html" data-page="services"><span class="nav-item__icon">🧵</span><span>Serviços</span></a>
+            <a class="nav-item" href="tailors.html" data-page="tailors"><span class="nav-item__icon">👩‍🔧</span><span>Costureiras</span></a>
+          </nav>
+        </div>
+
+        <div class="sidebar__section">
+          <p class="sidebar__section-title">Depois</p>
+          <nav class="sidebar__nav">
+            <a class="nav-item disabled" href="#" data-page="finance" aria-disabled="true"><span class="nav-item__icon">💰</span><span>Financeiro</span></a>
+            <a class="nav-item disabled" href="#" data-page="reports" aria-disabled="true"><span class="nav-item__icon">📊</span><span>Relatórios</span></a>
+          </nav>
+        </div>
 
         <div class="sidebar__footer">
           <p class="eyebrow">Usuário</p>
@@ -38,7 +50,10 @@
             <h1>Cony Interiores</h1>
             <p class="subtitle">Painel de produção, carga de trabalho e gestão de serviços.</p>
           </div>
-          <div class="topbar__badge">Fluxo gestora</div>
+          <div class="topbar__actions">
+            <a class="secondary-button" href="services.html">+ Novo serviço</a>
+            <div class="topbar__badge">Fluxo gestora</div>
+          </div>
         </header>
 
         <main class="content">
@@ -46,10 +61,7 @@
             <div>
               <p class="eyebrow">Visão geral</p>
               <h2>Centralize pedidos, acompanhe prazos e distribua a carga com mais clareza.</h2>
-              <p>
-                Este protótipo representa o fluxo principal do MVP 1: cadastro de serviços,
-                acompanhamento da produção e visualização da capacidade das costureiras.
-              </p>
+              <p>Este protótipo representa o fluxo principal do MVP 1: cadastro de serviços, acompanhamento da produção e visualização da capacidade das costureiras.</p>
             </div>
             <div class="hero-stats">
               <article class="stat-card">
@@ -82,56 +94,24 @@
             <div class="panel">
               <div class="panel__header">
                 <div>
-                  <p class="eyebrow">Cadastro</p>
-                  <h3>Novo serviço</h3>
+                  <p class="eyebrow">Resumo</p>
+                  <h3>Próximos passos do MVP</h3>
                 </div>
               </div>
-              <form id="serviceForm" class="form">
-                <label>
-                  Cliente
-                  <input type="text" name="client" placeholder="Nome do cliente" required />
-                </label>
-                <label>
-                  Produto
-                  <select name="product" required>
-                    <option value="Cortina">Cortina</option>
-                    <option value="Puff">Puff</option>
-                    <option value="Jogo de Cama">Jogo de Cama</option>
-                    <option value="Toalha">Toalha</option>
-                  </select>
-                </label>
-                <label>
-                  Quantidade
-                  <input type="number" name="quantity" min="1" value="1" required />
-                </label>
-                <label>
-                  Complexidade
-                  <select name="complexity" required>
-                    <option value="P">Pequena</option>
-                    <option value="M">Média</option>
-                    <option value="G">Grande</option>
-                    <option value="Esp">Especial</option>
-                  </select>
-                </label>
-                <label>
-                  Prazo
-                  <input type="date" name="deadline" required />
-                </label>
-                <label>
-                  Costureira
-                  <select name="tailor" required>
-                    <option value="Sirlene">Sirlene</option>
-                    <option value="Maria">Maria</option>
-                    <option value="Joana">Joana</option>
-                    <option value="Lúcia">Lúcia</option>
-                  </select>
-                </label>
-                <label>
-                  Valor (R$)
-                  <input type="number" name="value" min="0" step="0.01" value="150" required />
-                </label>
-                <button type="submit" class="primary-button">Cadastrar serviço</button>
-              </form>
+              <div class="stack-list">
+                <div class="stack-card">
+                  <strong>Cadastro digital</strong>
+                  <p>Centralizar pedidos e evitar perda de informação.</p>
+                </div>
+                <div class="stack-card">
+                  <strong>Distribuição de carga</strong>
+                  <p>Visualizar capacidade das costureiras e balancear demanda.</p>
+                </div>
+                <div class="stack-card">
+                  <strong>Status de produção</strong>
+                  <p>Rastrear andamento do serviço até a entrega.</p>
+                </div>
+              </div>
             </div>
 
             <div class="panel">

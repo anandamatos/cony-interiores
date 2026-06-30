@@ -6,39 +6,9 @@ const workers = [
 ];
 
 const initialServices = [
-  {
-    id: 1,
-    client: 'Ana Paula',
-    product: 'Cortina',
-    quantity: 2,
-    complexity: 'M',
-    deadline: '2026-07-05',
-    tailor: 'Sirlene',
-    value: 320,
-    status: 'Em produção'
-  },
-  {
-    id: 2,
-    client: 'Marina',
-    product: 'Puff',
-    quantity: 1,
-    complexity: 'P',
-    deadline: '2026-07-02',
-    tailor: 'Maria',
-    value: 180,
-    status: 'Pendente'
-  },
-  {
-    id: 3,
-    client: 'Beatriz',
-    product: 'Jogo de Cama',
-    quantity: 1,
-    complexity: 'G',
-    deadline: '2026-07-08',
-    tailor: 'Joana',
-    value: 410,
-    status: 'Pronto'
-  }
+  { id: 1, client: 'Ana Paula', product: 'Cortina', quantity: 2, complexity: 'M', deadline: '2026-07-05', tailor: 'Sirlene', value: 320, status: 'Em produção' },
+  { id: 2, client: 'Marina', product: 'Puff', quantity: 1, complexity: 'P', deadline: '2026-07-02', tailor: 'Maria', value: 180, status: 'Pendente' },
+  { id: 3, client: 'Beatriz', product: 'Jogo de Cama', quantity: 1, complexity: 'G', deadline: '2026-07-08', tailor: 'Joana', value: 410, status: 'Pronto' }
 ];
 
 let services = [...initialServices];
@@ -51,8 +21,10 @@ const serviceForm = document.getElementById('serviceForm');
 const activeServicesEl = document.getElementById('activeServices');
 const pendingPaymentsEl = document.getElementById('pendingPayments');
 const navItems = document.querySelectorAll('.nav-item');
+const currentPage = document.body.dataset.page;
 
 function renderWorkers() {
+  if (!workersGrid) return;
   workersGrid.innerHTML = '';
 
   const cards = [
@@ -71,7 +43,7 @@ function renderWorkers() {
     `;
     card.addEventListener('click', () => {
       activeFilter = worker.name;
-      filterToggle.textContent = worker.name;
+      if (filterToggle) filterToggle.textContent = worker.name;
       renderWorkers();
       renderServices();
     });
@@ -85,95 +57,106 @@ function getVisibleServices() {
 }
 
 function renderServices() {
+  if (!serviceList) return;
   const visibleServices = getVisibleServices();
   if (!visibleServices.length) {
     serviceList.innerHTML = '<li class="service-item"><p>Nenhum serviço encontrado para este filtro.</p></li>';
     return;
   }
 
-  serviceList.innerHTML = visibleServices
-    .map((service) => {
-      const statusClass = service.status === 'Pendente'
-        ? 'pending'
-        : service.status === 'Em produção'
-          ? 'progress'
-          : 'done';
-      return `
-        <li class="service-item">
-          <div class="service-item__top">
-            <div>
-              <h4>${service.client}</h4>
-              <div class="service-item__meta">${service.product} · ${service.quantity} unidade(s)</div>
-            </div>
-            <span class="status-pill ${statusClass}">${service.status}</span>
+  serviceList.innerHTML = visibleServices.map((service) => {
+    const statusClass = service.status === 'Pendente' ? 'pending' : service.status === 'Em produção' ? 'progress' : 'done';
+    return `
+      <li class="service-item">
+        <div class="service-item__top">
+          <div>
+            <h4>${service.client}</h4>
+            <div class="service-item__meta">${service.product} · ${service.quantity} unidade(s)</div>
           </div>
-          <p class="service-item__meta">Costureira: ${service.tailor} · Prazo: ${service.deadline}</p>
-          <p class="service-item__meta">Complexidade: ${service.complexity} · Valor: R$ ${service.value.toFixed(2)}</p>
-          <div class="status-actions">
-            <button class="${service.status === 'Pendente' ? 'active' : ''}" data-id="${service.id}" data-status="Pendente">Pendente</button>
-            <button class="${service.status === 'Em produção' ? 'active' : ''}" data-id="${service.id}" data-status="Em produção">Em produção</button>
-            <button class="${service.status === 'Pronto' ? 'active' : ''}" data-id="${service.id}" data-status="Pronto">Pronto</button>
-          </div>
-        </li>
-      `;
-    })
-    .join('');
+          <span class="status-pill ${statusClass}">${service.status}</span>
+        </div>
+        <p class="service-item__meta">Costureira: ${service.tailor} · Prazo: ${service.deadline}</p>
+        <p class="service-item__meta">Complexidade: ${service.complexity} · Valor: R$ ${service.value.toFixed(2)}</p>
+        <div class="status-actions">
+          <button class="${service.status === 'Pendente' ? 'active' : ''}" data-id="${service.id}" data-status="Pendente">Pendente</button>
+          <button class="${service.status === 'Em produção' ? 'active' : ''}" data-id="${service.id}" data-status="Em produção">Em produção</button>
+          <button class="${service.status === 'Pronto' ? 'active' : ''}" data-id="${service.id}" data-status="Pronto">Pronto</button>
+        </div>
+      </li>
+    `;
+  }).join('');
 }
 
 function updateMetrics() {
+  if (!activeServicesEl || !pendingPaymentsEl) return;
   const activeCount = services.filter((service) => service.status !== 'Pronto').length;
   const pendingPaymentsCount = services.filter((service) => service.status === 'Pronto').length;
   activeServicesEl.textContent = activeCount;
   pendingPaymentsEl.textContent = pendingPaymentsCount;
 }
 
-serviceForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const formData = new FormData(serviceForm);
-  const newService = {
-    id: Date.now(),
-    client: formData.get('client'),
-    product: formData.get('product'),
-    quantity: Number(formData.get('quantity')),
-    complexity: formData.get('complexity'),
-    deadline: formData.get('deadline'),
-    tailor: formData.get('tailor'),
-    value: Number(formData.get('value')),
-    status: 'Pendente'
-  };
+if (serviceForm) {
+  serviceForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = new FormData(serviceForm);
+    const newService = {
+      id: Date.now(),
+      client: formData.get('client'),
+      product: formData.get('product'),
+      quantity: Number(formData.get('quantity')),
+      complexity: formData.get('complexity'),
+      deadline: formData.get('deadline'),
+      tailor: formData.get('tailor'),
+      value: Number(formData.get('value')),
+      status: 'Pendente'
+    };
 
-  services = [newService, ...services];
-  serviceForm.reset();
-  renderServices();
-  updateMetrics();
-  filterToggle.textContent = activeFilter;
-  renderWorkers();
-});
+    services = [newService, ...services];
+    serviceForm.reset();
+    renderServices();
+    updateMetrics();
+    if (filterToggle) filterToggle.textContent = activeFilter;
+    renderWorkers();
+  });
+}
 
-serviceList.addEventListener('click', (event) => {
-  const button = event.target.closest('button[data-status]');
-  if (!button) return;
+if (serviceList) {
+  serviceList.addEventListener('click', (event) => {
+    const button = event.target.closest('button[data-status]');
+    if (!button) return;
 
-  const id = Number(button.dataset.id);
-  const status = button.dataset.status;
-  services = services.map((service) =>
-    service.id === id ? { ...service, status } : service
-  );
-  renderServices();
-  updateMetrics();
-});
+    const id = Number(button.dataset.id);
+    const status = button.dataset.status;
+    services = services.map((service) => service.id === id ? { ...service, status } : service);
+    renderServices();
+    updateMetrics();
+  });
+}
 
-filterToggle.addEventListener('click', () => {
-  activeFilter = activeFilter === 'Todas' ? 'Sirlene' : 'Todas';
-  filterToggle.textContent = activeFilter;
-  renderWorkers();
-  renderServices();
-});
+if (filterToggle) {
+  filterToggle.addEventListener('click', () => {
+    activeFilter = activeFilter === 'Todas' ? 'Sirlene' : 'Todas';
+    filterToggle.textContent = activeFilter;
+    renderWorkers();
+    renderServices();
+  });
+}
 
 navItems.forEach((item) => {
-  item.addEventListener('click', () => {
-    navItems.forEach((nav) => nav.classList.remove('active'));
+  if (currentPage && item.dataset.page === currentPage) {
     item.classList.add('active');
+  }
+
+  item.addEventListener('click', (event) => {
+    if (item.classList.contains('disabled')) {
+      event.preventDefault();
+      return;
+    }
+
+    const href = item.getAttribute('href');
+    if (href && href !== '#') {
+      window.location.href = href;
+    }
   });
 });
 
