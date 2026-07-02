@@ -10,11 +10,13 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
+    "husky": "^9.1.7",
     "vite": "^6.3.5"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky"
   }
 }

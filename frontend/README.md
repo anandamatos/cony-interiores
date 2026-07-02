@@ -1,30 +1,137 @@
-# Frontend - Cony Interiores
+## Tecnologias
 
-Frontend em React com Vite.
+Frontend
 
-## Requisitos
+- React
+- JavaScript
+- React Router
+- Axios
 
-- Node.js 18+
-- npm 9+
+Backend
 
-## Instalar dependencias
+- Django
+- Django REST Framework
+- PostgreSQL
 
-npm install
+Infraestrutura
 
-## Rodar em desenvolvimento
+- Docker
+- Docker Compose
 
-npm run dev
+---
 
-Aplicacao disponivel em http://127.0.0.1:5173
+## Pré-requisitos
 
-## Gerar build de producao
+- Git
+- Docker Desktop
 
-npm run build
+Não é necessário instalar Python, Node.js ou PostgreSQL localmente.
 
-## Testar build local
+---
 
-npm run preview
+## Clonando o projeto 
+```bash
+git clone https://github.com/ORGANIZACAO/cony-interiores.git
 
-## Integracao com backend
+cd cony-interiores
+```
 
-No ambiente de desenvolvimento, chamadas para /api sao encaminhadas para http://127.0.0.1:8000 por meio do proxy configurado em vite.config.js.
+---
+
+## Criando o arquivo .env
+
+Entre na pasta backend.
+
+Copie:
+
+```bash
+cp .env.example .env
+```
+
+Edite as variáveis.
+
+Exemplo:
+
+```env
+SECRET_KEY=sua_secret_key
+
+DEBUG=True
+
+DB_NAME=cony
+
+DB_USER=cony
+
+DB_PASSWORD=cony123
+
+DB_HOST=db
+
+DB_PORT=5432
+```
+
+---
+
+## Executando
+
+Abra o docker desktop, espere até aparecer “Engine running” no canto inferior esquerdo
+
+Na raiz do projeto:
+
+```bash
+docker compose up --build
+```
+
+---
+
+## Executando as migrações
+
+```bash
+docker compose exec backend python manage.py migrate
+```
+
+---
+
+## Criando um superusuário
+
+```bash
+docker compose exec backend python manage.py createsuperuser
+```
+
+---
+
+## Acessando
+
+Frontend
+
+http://localhost:5173
+
+Backend
+
+http://localhost:8000
+
+Admin Django
+
+http://localhost:8000/admin
+
+---
+
+## Encerrando
+
+```bash
+docker compose down
+```
+
+---
+
+## Estrutura
+
+```
+cony-interiores/
+
+backend/
+
+frontend/
+
+docs/
+
+docker-compose.yml
+
