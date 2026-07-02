@@ -11,35 +11,38 @@ const Seamstresses = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <Typography variant="h2">Costureiras</Typography>
-        <Button variant="primary">+ Nova Costureira</Button>
+        <Button variant="primary" className="w-full sm:w-auto">+ Nova Costureira</Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Grid: 1 coluna mobile, 2 tablet, 3 desktop */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {seamstresses.map((seamstress) => (
-          <Card key={seamstress.id} hover>
+          <Card key={seamstress.id} hover className="p-4 sm:p-6">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-base sm:text-lg flex-shrink-0">
                 {seamstress.nome.charAt(0)}
               </div>
-              <div className="flex-1">
-                <Typography variant="h4">{seamstress.nome}</Typography>
-                <Typography variant="caption" className="block mt-0.5">
+              <div className="flex-1 min-w-0">
+                <Typography variant="h4" className="text-base sm:text-lg truncate">
+                  {seamstress.nome}
+                </Typography>
+                <Typography variant="caption" className="block mt-0.5 text-xs sm:text-sm truncate">
                   {seamstress.contato}
                 </Typography>
-                <Typography variant="caption" className="block mt-1">
+                <Typography variant="caption" className="block mt-1 text-xs sm:text-sm">
                   Especialidade: {seamstress.especialidade}
                 </Typography>
                 <div className="mt-3 flex items-center gap-3">
-                  <span className="text-sm text-text-secondary">Carga:</span>
+                  <span className="text-xs sm:text-sm text-text-secondary">Carga:</span>
                   <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-primary rounded-full" 
                       style={{ width: `${(seamstress.carga / 10) * 100}%` }}
-                    ></div>
+                    />
                   </div>
-                  <span className="text-sm font-medium">{seamstress.carga}/10</span>
+                  <span className="text-xs sm:text-sm font-medium">{seamstress.carga}/10</span>
                 </div>
               </div>
             </div>
