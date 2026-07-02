@@ -52,9 +52,7 @@ const NewService = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    
     console.log('Dados do serviço:', formData);
-    
     setTimeout(() => {
       alert('Serviço cadastrado com sucesso! (simulação)');
       setLoading(false);
@@ -70,7 +68,8 @@ const NewService = () => {
 
       <Card>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Grid: 1 coluna em mobile, 2 em desktop */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <Input
               label="Cliente"
               name="cliente"
@@ -155,15 +154,17 @@ const NewService = () => {
             onChange={handleChange}
           />
 
-          <div className="flex items-center justify-end gap-4 pt-4 border-t border-border">
+          {/* Botões: empilhados em mobile, lado a lado em desktop */}
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-4 border-t border-border">
             <Button
               type="button"
               variant="secondary"
               onClick={() => navigate('/services')}
+              className="w-full sm:w-auto"
             >
               Cancelar
             </Button>
-            <Button type="submit" variant="primary" loading={loading}>
+            <Button type="submit" variant="primary" loading={loading} className="w-full sm:w-auto">
               Cadastrar Serviço
             </Button>
           </div>

@@ -20,17 +20,16 @@ const Services = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <Typography variant="h2">Serviços</Typography>
-        <Link to="/services/new">
-          <Button variant="primary">
-            + Novo Serviço
-          </Button>
+        <Link to="/services/new" className="w-full sm:w-auto">
+          <Button variant="primary" className="w-full sm:w-auto">+ Novo Serviço</Button>
         </Link>
       </div>
 
-      <Card>
-        <div className="overflow-x-auto">
+      <Card className="p-0 sm:p-6 overflow-hidden">
+        {/* Versão Desktop: Tabela */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
@@ -57,11 +56,9 @@ const Services = () => {
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-2">
                       <button className="p-1 text-primary hover:bg-primary/10 rounded transition-colors duration-200">
-                        <span className="sr-only">Editar</span>
                         ✏️
                       </button>
                       <button className="p-1 text-error hover:bg-error/10 rounded transition-colors duration-200">
-                        <span className="sr-only">Excluir</span>
                         🗑️
                       </button>
                     </div>
@@ -70,6 +67,31 @@ const Services = () => {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Versão Mobile: Cards */}
+        <div className="md:hidden p-4 space-y-4">
+          {services.map((service) => (
+            <div key={service.id} className="border border-border rounded-lg p-4 space-y-2">
+              <div className="flex justify-between items-start">
+                <span className="font-medium">{service.cliente}</span>
+                <Badge variant={statusColors[service.status] || 'neutral'}>
+                  {service.status}
+                </Badge>
+              </div>
+              <p className="text-sm text-text-secondary">Produto: {service.produto}</p>
+              <p className="text-sm text-text-secondary">Costureira: {service.costureira}</p>
+              <p className="text-sm text-text-secondary">Prazo: {service.prazo}</p>
+              <div className="flex gap-2 pt-2 border-t border-border/50">
+                <button className="p-1.5 text-primary hover:bg-primary/10 rounded transition-colors duration-200 text-sm">
+                  ✏️ Editar
+                </button>
+                <button className="p-1.5 text-error hover:bg-error/10 rounded transition-colors duration-200 text-sm">
+                  🗑️ Excluir
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </Card>
     </div>
