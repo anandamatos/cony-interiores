@@ -1,7 +1,12 @@
 import AppRoutes from "./routes/AppRoutes";
+import { CostureiraProvider } from "./context/CostureiraContext";
 
 function App() {
-  return <AppRoutes />;
+  return (
+    <CostureiraProvider>
+      <AppRoutes />
+    </CostureiraProvider>
+  );
 }
 
 export default App;

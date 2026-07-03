@@ -9,7 +9,14 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/costureiras" element={<Costureiras />} />
-        <Route path="/costureiras/nova" element={<CadastroCostureira />} />
+        <Route
+          path="/costureiras/nova"
+          element={<CadastroCostureira />}
+        />
+        <Route
+          path="/costureiras/:id/editar"
+          element={<CadastroCostureira />}
+        />
       </Routes>
     </BrowserRouter>
   );
