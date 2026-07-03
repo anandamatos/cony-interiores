@@ -2,6 +2,11 @@
 
 API do projeto Cony Interiores desenvolvida com Django e Django REST Framework.
 
+## Discovery
+
+- DISCOVERY-M1-FND-002: arquitetura de containers definida em `docs/DISCOVERY-M1-FND-002-container-architecture.md`
+- DISCOVERY-M1-FND-003: mapeamento de seguranca e variaveis de ambiente em `docs/DISCOVERY-M1-FND-003-security-env.md`
+
 ## Tecnologias
 
 - Python 3.11+
@@ -51,6 +56,26 @@ Servidor local: http://127.0.0.1:8000
 
 Para executar com PostgreSQL, crie um arquivo `.env` com base em `.env.example`.
 
+## Executar com containers (backend + PostgreSQL)
+
+1. Copie `.env.docker.example` para `.env` na pasta `backend`.
+2. Na raiz do projeto, execute:
+
+```bash
+docker compose -f infra/docker-compose.yml up --build
+```
+
+3. A API ficara disponivel em `http://127.0.0.1:8000`.
+
+Comandos uteis:
+
+```bash
+docker compose -f infra/docker-compose.yml down
+docker compose -f infra/docker-compose.yml down -v
+```
+
+Observacao: o comando com `-v` remove o volume do PostgreSQL e apaga os dados locais.
+
 ## Endpoints atuais
 
 - GET /api/
@@ -69,6 +94,20 @@ python manage.py test --settings=config.settings_sqlite
 ## Variaveis de ambiente
 
 As variaveis sao lidas automaticamente do arquivo `.env` na raiz do backend.
+
+Arquivos de exemplo disponiveis:
+
+- `.env.example` (local)
+- `.env.docker.example` (containers)
+- `.env.production.example` (producao)
+
+Regras de seguranca implementadas:
+
+- Em producao (`DJANGO_ENV=production`), a aplicacao valida configuracoes inseguras no startup.
+- `DJANGO_DEBUG` deve ser `False` em producao.
+- `DJANGO_SECRET_KEY` nao pode usar fallback/local key em producao.
+- Com PostgreSQL em producao, todas as variaveis `POSTGRES_*` devem estar definidas.
+- `POSTGRES_SSLMODE` passa a ser obrigatorio em producao.
 
 ## Integracao com frontend
 

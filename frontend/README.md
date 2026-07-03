@@ -9,22 +9,59 @@ Frontend em React com Vite.
 
 ## Instalar dependencias
 
+```bash
 npm install
+```
 
-## Rodar em desenvolvimento
+## Rodar local (sem Docker)
 
+```bash
 npm run dev
+```
 
-Aplicacao disponivel em http://127.0.0.1:5173
+Aplicacao disponivel em http://127.0.0.1:5173.
 
-## Gerar build de producao
+## Rodar com Docker (stack completa)
 
+Na raiz do projeto:
+
+```bash
+docker compose -f infra/docker-compose.yml up --build
+```
+
+## Scripts uteis
+
+```bash
 npm run build
-
-## Testar build local
-
 npm run preview
+npm test
+```
 
 ## Integracao com backend
 
-No ambiente de desenvolvimento, chamadas para /api sao encaminhadas para http://127.0.0.1:8000 por meio do proxy configurado em vite.config.js.
+O proxy de /api pode ser configurado com a variavel `VITE_API_PROXY`.
+
+Tambem e possivel configurar timeout de requisicao via `VITE_API_TIMEOUT_MS`.
+
+- Padrao (sem variavel): `http://127.0.0.1:8000`
+- Exemplo para Docker: `http://api:8000`
+- Timeout padrao: `10000` ms
+
+Exemplo no Windows PowerShell:
+
+```powershell
+$env:VITE_API_PROXY="http://api:8000"
+npm run dev
+```
+
+Exemplo em bash:
+
+```bash
+VITE_API_PROXY=http://api:8000 npm run dev
+```
+
+## Seguranca no frontend
+
+- O cliente de API valida o path para evitar chamadas fora do prefixo `/api`.
+- As requisicoes usam timeout configuravel para reduzir conexoes penduradas.
+- O `index.html` inclui politicas basicas de CSP, referrer e permissions policy.
