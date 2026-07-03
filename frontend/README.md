@@ -29,7 +29,8 @@ Não é necessário instalar Python, Node.js ou PostgreSQL localmente.
 
 ---
 
-## Clonando o projeto 
+## Clonando o projeto
+
 ```bash
 git clone https://github.com/ORGANIZACAO/cony-interiores.git
 
@@ -135,3 +136,4 @@ docs/
 
 docker-compose.yml
 
+```
