@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,21 +22,59 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
 
+def env_bool(name, default=False):
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.lower() in ('1', 'true', 'yes', 'on')
+
+
+def env_int(name, default=0):
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return int(value)
+
+
+def env_list(name, default=''):
+    return [item.strip() for item in os.getenv(name, default).split(',') if item.strip()]
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
-    'DJANGO_SECRET_KEY',
-    'django-insecure-@d+p5#6r(**lr=fgui6ah_^tt!*3u)$jo!=9y)2w+^1wl)vyjm',
-)
+ENVIRONMENT = os.getenv('DJANGO_ENV', 'development').lower()
+IS_PRODUCTION = ENVIRONMENT == 'production'
+
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    # Safe fallback only for local development.
+    SECRET_KEY = 'django-insecure-local-dev-key-change-me'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes', 'on')
+DEBUG = env_bool('DJANGO_DEBUG', True)
 
-ALLOWED_HOSTS = [
-    host.strip() for host in os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,backend').split(',') if host.strip()
-]
+ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,backend')
+
+CSRF_TRUSTED_ORIGINS = env_list('DJANGO_CSRF_TRUSTED_ORIGINS', '')
+
+SESSION_COOKIE_SECURE = env_bool('DJANGO_SESSION_COOKIE_SECURE', IS_PRODUCTION)
+CSRF_COOKIE_SECURE = env_bool('DJANGO_CSRF_COOKIE_SECURE', IS_PRODUCTION)
+SECURE_SSL_REDIRECT = env_bool('DJANGO_SECURE_SSL_REDIRECT', IS_PRODUCTION)
+
+SECURE_HSTS_SECONDS = env_int('DJANGO_SECURE_HSTS_SECONDS', 31536000 if IS_PRODUCTION else 0)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env_bool('DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS', IS_PRODUCTION)
+SECURE_HSTS_PRELOAD = env_bool('DJANGO_SECURE_HSTS_PRELOAD', IS_PRODUCTION)
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_REFERRER_POLICY = os.getenv('DJANGO_SECURE_REFERRER_POLICY', 'same-origin')
+
+secure_proxy_ssl_header = os.getenv('DJANGO_SECURE_PROXY_SSL_HEADER', '')
+if secure_proxy_ssl_header:
+    header_name, header_value = [part.strip() for part in secure_proxy_ssl_header.split(',', 1)]
+    SECURE_PROXY_SSL_HEADER = (header_name, header_value)
 
 
 # Application definition
@@ -92,8 +131,13 @@ postgres_user = os.getenv('POSTGRES_USER')
 postgres_password = os.getenv('POSTGRES_PASSWORD')
 postgres_host = os.getenv('POSTGRES_HOST')
 postgres_port = os.getenv('POSTGRES_PORT')
+postgres_sslmode = os.getenv('POSTGRES_SSLMODE')
 
 if database_backend == 'postgres':
+    db_options = {}
+    if postgres_sslmode:
+        db_options['sslmode'] = postgres_sslmode
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -102,7 +146,8 @@ if database_backend == 'postgres':
             'PASSWORD': postgres_password or 'postgres',
             'HOST': postgres_host or '127.0.0.1',
             'PORT': postgres_port or '5432',
-            'CONN_MAX_AGE': int(os.getenv('POSTGRES_CONN_MAX_AGE', '60')),
+            'CONN_MAX_AGE': env_int('POSTGRES_CONN_MAX_AGE', 60),
+            'OPTIONS': db_options,
         }
     }
 else:
@@ -112,6 +157,34 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
+if IS_PRODUCTION:
+    if DEBUG:
+        raise ImproperlyConfigured('DJANGO_DEBUG deve ser False em producao.')
+
+    if not SECRET_KEY or SECRET_KEY.startswith('django-insecure-') or SECRET_KEY == 'django-insecure-local-dev-key-change-me':
+        raise ImproperlyConfigured('DJANGO_SECRET_KEY invalida para producao.')
+
+    if not ALLOWED_HOSTS:
+        raise ImproperlyConfigured('DJANGO_ALLOWED_HOSTS deve ser definido em producao.')
+
+    if database_backend == 'postgres':
+        required_postgres = {
+            'POSTGRES_DB': postgres_db,
+            'POSTGRES_USER': postgres_user,
+            'POSTGRES_PASSWORD': postgres_password,
+            'POSTGRES_HOST': postgres_host,
+            'POSTGRES_PORT': postgres_port,
+        }
+        missing = [name for name, value in required_postgres.items() if not value]
+        if missing:
+            raise ImproperlyConfigured(f'Variaveis ausentes para PostgreSQL em producao: {", ".join(missing)}')
+
+        if postgres_password and postgres_password.lower() in ('postgres', 'password', '123456', 'admin'):
+            raise ImproperlyConfigured('POSTGRES_PASSWORD fraca para producao.')
+
+        if not postgres_sslmode:
+            raise ImproperlyConfigured('POSTGRES_SSLMODE deve ser definido em producao.')
 
 
 # Password validation
