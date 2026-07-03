@@ -2,7 +2,7 @@
 
 Este repositório contém a documentação e o código para o sistema de controle de produção de costureiras da **Cony Interiores**. O projeto utiliza um framework híbrido que combina **Triplo Diamante** (estratégia), **Dual Track Agile** (ritmo) e **Scrum** (gestão) para entregar uma solução web escalável e centrada no usuário.
 
-![roadmap visual do projeto](./docs/img/metodologia-projeto.jpeg)
+![roadmap visual do projeto](./docs/assets/img/metodologia-projeto.jpeg)
 
 ---
 
@@ -14,7 +14,7 @@ O processo é estruturado em três ciclos que garantem que o produto resolva pro
 2. **Execução:** Prototipagem e desenvolvimento do CRUD de serviços, cálculo de carga e índice de complexidade.
 3. **Valor:** Mensuração da produtividade, otimização do planejamento financeiro e geração de relatórios gerenciais.
 
-![roadmap visual do projeto](./docs/img/diamante-triplo.png)
+![roadmap visual do projeto](./docs/assets/img/diamante-triplo.png)
 
 ---
 
@@ -38,7 +38,7 @@ Para evitar o desperdício de construir funcionalidades que não resolvem as dor
 - **Track de Entrega (Delivery):** Focada no **"Como"**. É a esteira de engenharia que recebe as descobertas validadas, codifica, testa (QA) e realiza o deploy. Aqui, o foco é em qualidade de código, estabilidade e performance.
 - **Sincronização:** O "Backlog Validado" é o ponto de encontro. A Discovery alimenta a Delivery com itens prontos para construir, enquanto a Delivery alimenta a Discovery com aprendizados técnicos e feedbacks reais do software em uso.
 
-![roadmap visual do projeto](./docs/img/dua-track.png)
+![roadmap visual do projeto](./docs/assets/img/dua-track.png)
 
 ---
 
@@ -54,7 +54,7 @@ O projeto é entregue em incrementos (MVPs) focados nas dores do briefing, em um
 | **Sprint 4: Previsão Financeira** | Controle financeiro | Soma automática de valores pendentes, planejamento de pagamentos semanais/mensais. |
 | **Sprint 5: Gestão Visual** | Dashboards e relatórios | Relatórios de produtividade, serviços em atraso, ROI e comparação entre costureiras. |
 
-![roadmap visual do projeto](./docs/img/mvps.png)
+![roadmap visual do projeto](./docs/assets/img/mvps.png)
 
 ---
 ## 👥 Squad e Membros do Time
@@ -67,8 +67,29 @@ O time é composto por 9 profissionais distribuídos em 3 Squads especializados,
 | Nome | Papel/Função |
 |------|--------------|
 | Ruan Felipe | **Tech Lead (BE):** Arquiteto de software, responsável por CI/CD, revisão de código e definição da arquitetura cloud. |
-| [Marcus VInicius] | **Backend Developer:** Focado em autenticação, segurança e configuração do ambiente Django. |
+| Marcus Vinicius | **Backend Developer:** Focado em autenticação, segurança e configuração do ambiente Django. |
 | Maria Gabrielle | **Frontend Developer:** Focado na performance da aplicação e otimização de assets. |
+
+**Carga de Trabalho:** 66% da capacidade total, com disponibilidade para auxiliar os Squads Core Business e UX & Experience em momentos de pico.
+
+**MVP 2 - Previsão Financeira (Sprint 4):**
+- Otimização de queries financeiras
+- Implementação de cache para dashboards
+- Configuração de monitoramento de performance
+- Reforço de segurança para dados sensíveis
+- Documentação de endpoints financeiros
+
+**MVP 3 - Gestão Visual (Sprint 5):**
+- Otimização de assets e minificação
+- Configuração de CDN para assets estáticos
+- Implementação de logging estruturado
+- Rate limiting para APIs de dashboard
+
+**MVP 4 - Relatórios Avançados (Sprint 6):**
+- Otimização de exportação em lote
+- Implementação de jobs assíncronos
+- Compressão de dados para exportação
+- Backup de relatórios gerados
 
 ---
 
@@ -81,6 +102,8 @@ O time é composto por 9 profissionais distribuídos em 3 Squads especializados,
 | Matheus Gonçalves | **Backend Developer:** Focado nos endpoints de CRUD, cálculo de carga e integração financeira. |
 | Bianca | **Front End Developer:** Ponte entre API e interface, focado em formulários complexos e integração de dados. |
 
+**Carga de Trabalho:** 100% da capacidade, com foco em regras de negócio e integrações.
+
 ---
 
 ### Squad 3: UX & Experience (Interface e Visualização)
@@ -89,11 +112,13 @@ O time é composto por 9 profissionais distribuídos em 3 Squads especializados,
 | Nome | Papel/Função |
 |------|--------------|
 | Ananda Matos | **UX/UI Lead (FE):** Focado na jornada do usuário, garantindo que o sistema seja "prático, visual e fácil de usar". |
-| Gabriel AUgusto | **Frontend Developer:** Focado em componentes reutilizáveis e implementação do Design System com Tailwind CSS. |
+| Gabriel Augusto | **Frontend Developer:** Focado em componentes reutilizáveis e implementação do Design System com Tailwind CSS. |
 | Isabella Barros | **Backend Developer:** Focado em Dashboards de produtividade, gráficos e visualização da carga de trabalho. |
 
+**Carga de Trabalho:** 100% da capacidade, com foco em interface e experiência do usuário.
 
-![roadmap visual do projeto](./docs/img/squads.png)
+
+![roadmap visual do projeto](./docs/assets/img/squads.png)
 
 ---
 
@@ -145,9 +170,16 @@ cony-interiores/
 │   ├── docker-compose.yml      # Orquestração local (Front, Back, DB)
 │   └── .env.example            # Variáveis de ambiente (template)
 │
-├── docs/                       # Documentação detalhada do projeto
-│   ├── processos/              # Fluxos de trabalho e decisões técnicas
-│   └── img/                    # Imagens utilizadas no README
+├── docs/
+│   ├── 1-discovery/          # Personas, Journey Maps, Benchmarks, Problem Statements
+│   ├── 2-planning/           # Planejamento de MVPs, Épicos, Sprints
+│   ├── 3-measurement/        # KPIs, Baselines, Relatórios de Resultados
+│   ├── 4-delivery/           # Materiais de apoio (guias, tutoriais, checklists)
+│   ├── 5-decisions/          # ADRs e decisões arquiteturais
+└── assets/               # Imagens, diagramas, protótipos
+│       ├── img/
+│       ├── diagrams/
+│       └── prototypes/               # Imagens utilizadas no README
 │
 └── README.md                   # Documentação principal do projeto
 
