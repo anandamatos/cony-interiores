@@ -1,1 +1,27 @@
-Resumo: hardening de seguranca em backend/frontend. Backend com validacoes de producao (DJANGO_ENV, DEBUG=False, SECRET_KEY forte, POSTGRES_* obrigatorias e SSL mode), cookies/headers de seguranca, e container nao-root. Frontend com CSP/policies no HTML, validacao de path e timeout no cliente de API, e validacao de VITE_API_PROXY no Vite. Validado com backend check e frontend build (exit code 0).
+Objetivo do commit:
+Implementar um pacote de hardening de seguranca para backend e frontend, com foco em configuracao segura por ambiente, reducao de superficie de ataque e melhoria de confiabilidade operacional.
+
+O que foi feito no backend:
+- Reforco de seguranca em configuracoes Django com separacao clara entre desenvolvimento e producao.
+- Inclusao de validacoes de startup para impedir execucao em producao com parametros inseguros (ex.: debug ativo, chave fraca/ausente, variaveis criticas faltando).
+- Inclusao de opcoes de seguranca HTTP e cookies, alem de suporte a trusted origins e proxy SSL header.
+- Ajustes de configuracao de banco para cenarios de producao com maior rigor.
+- Endurecimento de container: execucao com usuario nao-root.
+- Criacao/atualizacao de arquivos de exemplo de ambiente para local, docker e producao.
+- Atualizacao da documentacao tecnica de seguranca/discovery.
+
+O que foi feito no frontend:
+- Adicao de politicas de seguranca no HTML principal (CSP e politicas complementares).
+- Fortalecimento da camada de consumo da API com validacao de path e timeout de requisicoes.
+- Endurecimento da configuracao do proxy no Vite com validacao do alvo e headers de seguranca no servidor de desenvolvimento.
+- Atualizacao da documentacao e exemplo de variaveis de ambiente do frontend.
+
+Validacao realizada:
+- Backend check executado com sucesso (exit code 0).
+- Frontend build executado com sucesso (exit code 0).
+
+Impacto esperado:
+- Menor risco de misconfiguracao em producao.
+- Melhor baseline de seguranca para evolucao da API.
+- Comportamento mais previsivel em falhas de rede no frontend.
+- Melhor rastreabilidade e onboarding via documentacao atualizada.
