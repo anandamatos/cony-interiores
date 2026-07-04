@@ -1,0 +1,24 @@
+:root {
+  --color-primary: #803300;
+  --color-primary-hover: #612701;
+
+  --color-secondary: #6b7280;
+  --color-secondary-hover: #4b5563;
+
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+
+  --color-text: #111827;
+  --color-text-light: #6b7280;
+
+  --color-border: #d1d5db;
+
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-danger: #dc2626;
+
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+  --radius: 8px;
+  --transition: 0.2s ease;
+}
