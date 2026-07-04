@@ -11,7 +11,7 @@ export default function Home() {
       try {
         const data = await getApiMessage("/hello/");
         setMessage(data.message);
-      } catch (err) {
+      } catch {
         setError("Nao foi possivel conectar ao backend.");
       } finally {
         setLoading(false);
