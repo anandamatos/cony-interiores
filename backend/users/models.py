@@ -41,7 +41,7 @@ class Cliente(models.Model):
     def __str__(self):
         return self.nome
     
-    
+
 class Servico(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name="servicos_cliente")
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name="servicos_produto")
@@ -50,7 +50,7 @@ class Servico(models.Model):
     quantidade = models.IntegerField(default=0)
     complexidade = models.IntegerField(default=0)
     data_envio = models.DateField()
-    prazo_entrega = models.CharField(max_length=100)
+    prazo_entrega = models.DateField() #MUDANÇA AQ Q PODE DAR CONFLITO
     valor = models.DecimalField(max_digits=10, decimal_places=2)
     observacoes = models.TextField(blank=True)
 
