@@ -1,8 +1,17 @@
+import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { IMaskInput } from "react-imask";
+import { useNavigate } from "react-router-dom";
+import { useCostureiras } from "../context/CostureiraContext";
 import "../styles/CostureiraForm.css";
 
-export default function CostureiraForm() {
+export default function CostureiraForm({
+  editando,
+  initialData,
+}) {
+  const navigate = useNavigate();
+  const { adicionarCostureira, editarCostureira } = useCostureiras();
+
   const {
     register,
     handleSubmit,
@@ -18,15 +27,25 @@ export default function CostureiraForm() {
     },
   });
 
+  useEffect(() => {
+    if (initialData) {
+      reset(initialData);
+    }
+  }, [initialData, reset]);
+
   const onSubmit = (data) => {
-    console.log(data);
-    reset();
-  };
+  if (editando) {
+    editarCostureira(initialData.id, data);
+  } else {
+    adicionarCostureira(data);
+  }
+
+  navigate("/costureiras");
+};
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="cadastro-form">
 
-      {/* NOME */}
       <input
         placeholder="Nome"
         {...register("nome", {
@@ -35,14 +54,14 @@ export default function CostureiraForm() {
       />
       {errors.nome && <p className="error">{errors.nome.message}</p>}
 
-      {/* TELEFONE COM MÁSCARA */}
       <Controller
         name="telefone"
         control={control}
         rules={{
           required: "Telefone é obrigatório",
           validate: (value) =>
-            value.replace(/\D/g, "").length === 11 || "Telefone inválido",
+            value.replace(/\D/g, "").length === 11 ||
+            "Telefone inválido",
         }}
         render={({ field }) => (
           <IMaskInput
@@ -58,7 +77,6 @@ export default function CostureiraForm() {
         <p className="error">{errors.telefone.message}</p>
       )}
 
-      {/* ESPECIALIDADE */}
       <input
         placeholder="Especialidade"
         {...register("especialidade", {
@@ -66,13 +84,24 @@ export default function CostureiraForm() {
         })}
       />
 
-      {/* STATUS */}
       <select {...register("status")}>
         <option value="Ativa">Ativa</option>
         <option value="Inativa">Inativa</option>
       </select>
 
-      <button type="submit">Salvar</button>
+      <div className="form-actions">
+        <button
+          type="button"
+          className="cancel-button"
+          onClick={() => navigate("/costureiras")}
+        >
+          Cancelar
+        </button>
+
+        <button type="submit" className="save-button">
+          {editando ? "Salvar Alterações" : "Cadastrar"}
+        </button>
+      </div>
     </form>
   );
 }

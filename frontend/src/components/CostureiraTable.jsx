@@ -1,6 +1,10 @@
 import "../styles/CostureiraTable.css";
 
-export default function CostureiraTable({ costureiras, onDelete, }) {
+export default function CostureiraTable({
+  costureiras = [],
+  onDelete = () => {},
+  onEdit = () => {},
+}) {
   return (
     <div className="costureira-table-container">
       <table className="costureira-table">
@@ -22,34 +26,47 @@ export default function CostureiraTable({ costureiras, onDelete, }) {
               </td>
             </tr>
           ) : (
-            costureiras.map((costureira) => (
-              <tr key={costureira.id}>
-                <td>{costureira.nome}</td>
-                <td>{costureira.telefone}</td>
-                <td>{costureira.especialidade}</td>
-                <td>
-                  <span
-                    className={`status-badge ${
-                      costureira.status === "Ativa"
-                      ? "status-active"
-                      : "status-inactive"
-                    }`}
-                  >
-                    <span className="status-dot"></span>
-                    {costureira.status}
-                  </span>
-                </td>
-                <td>
-                  <div className="actions">
-                    <button className="table-button">Editar</button>
-                    <button className="delete-button" onClick={() => onDelete(costureira.id)}>
-                      Excluir
-                    </button>
-                  </div>
-                  
-                </td>
-              </tr>
-            ))
+            costureiras.map((costureira) => {
+              const statusClass =
+                costureira.status === "Ativa"
+                  ? "status-active"
+                  : "status-inactive";
+
+              return (
+                <tr key={costureira.id}>
+                  <td>{costureira.nome}</td>
+                  <td>{costureira.telefone}</td>
+                  <td>{costureira.especialidade}</td>
+
+                  <td>
+                    <span className={`status-badge ${statusClass}`}>
+                      <span className="status-dot"></span>
+                      {costureira.status}
+                    </span>
+                  </td>
+
+                  <td>
+                    <div className="actions">
+                      <button
+                        className="icon-button edit"
+                        onClick={() => onEdit(costureira.id)}
+                        title="Editar"
+                        aria-label="Editar costureira"
+                      >
+                        ✏️
+                      </button>
+
+                      <button
+                        className="delete-button"
+                        onClick={() => onDelete(costureira.id)}
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })
           )}
         </tbody>
       </table>
