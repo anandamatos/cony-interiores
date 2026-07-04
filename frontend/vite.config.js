@@ -12,4 +12,3 @@ export default defineConfig({
     },
   },
 });
->>>>>>> review/STORY-M1-FND-002
