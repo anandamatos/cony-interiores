@@ -11,7 +11,35 @@
 from .models import Servico
 from .serializers import ServicoSerializer
 from rest_framework.viewsets import ModelViewSet
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 class ServicoViewSet(ModelViewSet):
     queryset = Servico.objects.all()
     serializer_class = ServicoSerializer
+
+    filter_backends = [
+        DjangoFilterBackend,
+        SearchFilter,
+        OrderingFilter
+        ]
+
+    filterset_fields = [
+        'cliente',
+        'produto',
+        'costureira',
+        'complexidade',
+        'data_envio',
+        'prazo_entrega',
+    ]
+
+    search_fields = [
+        'descricao'
+    ]
+
+    ordering_fiels = [
+        'data_abertura',
+        'prazo_entrega',
+        'valor',
+        'complexidade'
+    ]
