@@ -41,7 +41,21 @@ cd cony-interiores
 
 ## Criando o arquivo .env
 
-Entre na pasta backend.
+Na raiz do projeto.
+
+Copie:
+
+```bash
+cp .env.example .env
+```
+
+```env
+POSTGRES_DB=cony
+POSTGRES_USER=cony
+POSTGRES_PASSWORD=cony123
+```
+
+Depois entre na pasta backend.
 
 Copie:
 
