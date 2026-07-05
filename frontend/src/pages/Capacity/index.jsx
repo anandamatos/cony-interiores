@@ -40,7 +40,21 @@ const periodOptions = [
 const Capacity = () => {
   const [data, setData] = useState(mockData);
   const [period, setPeriod] = useState('semana');
-  const [loading, setLoading] = useState(false);
+
+  // Cores personalizadas por costureira
+  const colors = [
+    'rgba(46, 125, 50, 0.8)',
+    'rgba(245, 124, 0, 0.8)',
+    'rgba(33, 150, 243, 0.8)',
+    'rgba(156, 39, 176, 0.8)',
+  ];
+
+  const borderColors = [
+    'rgba(46, 125, 50, 1)',
+    'rgba(245, 124, 0, 1)',
+    'rgba(33, 150, 243, 1)',
+    'rgba(156, 39, 176, 1)',
+  ];
 
   // Configuração do gráfico
   const chartData = {
@@ -49,16 +63,19 @@ const Capacity = () => {
       {
         label: 'Carga Atual',
         data: data.map(item => item.carga),
-        backgroundColor: 'rgba(46, 125, 50, 0.7)',
-        borderColor: 'rgba(46, 125, 50, 1)',
-        borderWidth: 1,
+        backgroundColor: data.map((_, index) => colors[index % colors.length]),
+        borderColor: data.map((_, index) => borderColors[index % borderColors.length]),
+        borderWidth: 2,
+        borderRadius: 4,
       },
       {
         label: 'Capacidade Máxima',
         data: data.map(item => item.capacidade),
-        backgroundColor: 'rgba(200, 200, 200, 0.3)',
-        borderColor: 'rgba(200, 200, 200, 1)',
-        borderWidth: 1,
+        backgroundColor: 'rgba(200, 200, 200, 0.2)',
+        borderColor: 'rgba(200, 200, 200, 0.8)',
+        borderWidth: 2,
+        borderRadius: 4,
+        borderDash: [5, 5],
       },
     ],
   };
@@ -70,17 +87,34 @@ const Capacity = () => {
       legend: {
         position: 'top',
         labels: {
-          font: {
-            size: 12,
-          },
+          font: { size: 12 },
+          usePointStyle: true,
+          pointStyle: 'circle',
         },
       },
       title: {
         display: true,
         text: 'Carga de Trabalho por Costureira',
-        font: {
-          size: 16,
-          weight: 'bold',
+        font: { size: 16, weight: 'bold' },
+      },
+      tooltip: {
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        titleColor: '#212121',
+        bodyColor: '#757575',
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1,
+        cornerRadius: 8,
+        padding: 12,
+        callbacks: {
+          label: function (context) {
+            const label = context.dataset.label || '';
+            const value = context.raw || 0;
+            if (label === 'Capacidade Máxima') {
+              return `${label}: ${value}`;
+            }
+            const percentage = ((value / 10) * 100).toFixed(0);
+            return `${label}: ${value}/10 (${percentage}%)`;
+          },
         },
       },
     },
@@ -90,7 +124,16 @@ const Capacity = () => {
         max: 10,
         ticks: {
           stepSize: 2,
+          callback: function (value) {
+            return value + '/10';
+          },
         },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.05)',
+        },
+      },
+      x: {
+        grid: { display: false },
       },
     },
   };
@@ -100,6 +143,17 @@ const Capacity = () => {
   const averageLoad = (data.reduce((acc, curr) => acc + curr.carga, 0) / totalSeamstresses).toFixed(1);
   const maxLoad = data.reduce((a, b) => a.carga > b.carga ? a : b);
   const minLoad = data.reduce((a, b) => a.carga < b.carga ? a : b);
+
+  // Função para determinar status baseado na carga
+  const getStatus = (carga) => {
+    if (carga > 8) {
+      return { bg: 'bg-error/10', text: 'text-error', bar: 'bg-error', label: '🔴 Sobrecarregada' };
+    }
+    if (carga > 5) {
+      return { bg: 'bg-warning/10', text: 'text-warning-dark', bar: 'bg-warning', label: '🟡 Carga Média' };
+    }
+    return { bg: 'bg-success/10', text: 'text-success', bar: 'bg-success', label: '🟢 Disponível' };
+  };
 
   return (
     <div>
@@ -150,84 +204,60 @@ const Capacity = () => {
         </div>
       </Card>
 
-{/* Detalhamento por Costureira */}
-<Typography variant="h3" className="mb-4">Detalhamento por Costureira</Typography>
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  {data.map((item) => {
-    // Calcular porcentagem de carga
-    const percent = (item.carga / item.capacidade) * 100;
-    
-    // Determinar cor baseada na carga
-    const getStatusColor = (carga) => {
-      if (carga > 8) return {
-        bg: 'bg-error/10',
-        text: 'text-error',
-        bar: 'bg-error',
-        label: '🔴 Sobrecarregada'
-      };
-      if (carga > 5) return {
-        bg: 'bg-warning/10',
-        text: 'text-warning-dark',
-        bar: 'bg-warning',
-        label: '🟡 Carga Média'
-      };
-      return {
-        bg: 'bg-success/10',
-        text: 'text-success',
-        bar: 'bg-success',
-        label: '🟢 Disponível'
-      };
-    };
-    
-    const status = getStatusColor(item.carga);
-    
-    return (
-      <Card key={item.id} hover className="p-4 transition-all duration-200 hover:shadow-md">
-        <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold flex-shrink-0">
-            {item.nome.charAt(0)}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between">
-              <Typography variant="h4" className="text-base sm:text-lg truncate">
-                {item.nome}
-              </Typography>
-              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${status.bg} ${status.text}`}>
-                {status.label}
-              </span>
-            </div>
-            
-            {/* Barra de progresso com animação */}
-            <div className="mt-3">
-              <div className="flex items-center justify-between text-sm mb-1">
-                <span className="text-text-secondary">Carga</span>
-                <span className="font-medium">{item.carga}/{item.capacidade}</span>
+      {/* Detalhamento por Costureira */}
+      <Typography variant="h3" className="mb-4">Detalhamento por Costureira</Typography>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {data.map((item) => {
+          const percent = (item.carga / item.capacidade) * 100;
+          const status = getStatus(item.carga);
+
+          return (
+            <Card key={item.id} hover className="p-4 transition-all duration-200 hover:shadow-md">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold flex-shrink-0">
+                  {item.nome.charAt(0)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <Typography variant="h4" className="text-base sm:text-lg truncate">
+                      {item.nome}
+                    </Typography>
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${status.bg} ${status.text}`}>
+                      {status.label}
+                    </span>
+                  </div>
+
+                  {/* Barra de progresso com animação */}
+                  <div className="mt-3">
+                    <div className="flex items-center justify-between text-sm mb-1">
+                      <span className="text-text-secondary">Carga</span>
+                      <span className="font-medium">{item.carga}/{item.capacidade}</span>
+                    </div>
+                    <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full ${status.bar} rounded-full transition-all duration-1000 ease-out`}
+                        style={{ width: `${percent}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Informações adicionais */}
+                  <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
+                    <div className="flex items-center gap-1 text-text-secondary">
+                      <span className="font-medium">Complexidade:</span>
+                      <span>{item.complexidade}/5</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-text-secondary">
+                      <span className="font-medium">Especialidade:</span>
+                      <span className="truncate">{item.especialidade}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                <div 
-                  className={`h-full ${status.bar} rounded-full transition-all duration-1000 ease-out`}
-                  style={{ width: `${percent}%` }}
-                />
-              </div>
-            </div>
-            
-            {/* Informações adicionais */}
-            <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
-              <div className="flex items-center gap-1 text-text-secondary">
-                <span className="font-medium">Complexidade:</span>
-                <span>{item.complexidade}/5</span>
-              </div>
-              <div className="flex items-center gap-1 text-text-secondary">
-                <span className="font-medium">Especialidade:</span>
-                <span className="truncate">{item.especialidade}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Card>
-    );
-  })}
-</div>
+            </Card>
+          );
+        })}
+      </div>
     </div>
   );
 };
