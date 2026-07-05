@@ -9,13 +9,15 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  Gauge
 } from 'lucide-react';
 
 const menuItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/services', label: 'Serviços', icon: ClipboardList },
   { path: '/seamstresses', label: 'Costureiras', icon: Users },
+  { path: '/capacity', label: 'Capacidade', icon: Gauge },
   { path: '/financial', label: 'Financeiro', icon: DollarSign },
   { path: '/reports', label: 'Relatórios', icon: BarChart3 },
 ];
