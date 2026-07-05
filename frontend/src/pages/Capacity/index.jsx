@@ -150,48 +150,84 @@ const Capacity = () => {
         </div>
       </Card>
 
-      {/* Detalhamento por Costureira */}
-      <Typography variant="h3" className="mb-4">Detalhamento por Costureira</Typography>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {data.map((item) => (
-          <Card key={item.id} hover className="p-4">
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold flex-shrink-0">
-                {item.nome.charAt(0)}
+{/* Detalhamento por Costureira */}
+<Typography variant="h3" className="mb-4">Detalhamento por Costureira</Typography>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  {data.map((item) => {
+    // Calcular porcentagem de carga
+    const percent = (item.carga / item.capacidade) * 100;
+    
+    // Determinar cor baseada na carga
+    const getStatusColor = (carga) => {
+      if (carga > 8) return {
+        bg: 'bg-error/10',
+        text: 'text-error',
+        bar: 'bg-error',
+        label: '🔴 Sobrecarregada'
+      };
+      if (carga > 5) return {
+        bg: 'bg-warning/10',
+        text: 'text-warning-dark',
+        bar: 'bg-warning',
+        label: '🟡 Carga Média'
+      };
+      return {
+        bg: 'bg-success/10',
+        text: 'text-success',
+        bar: 'bg-success',
+        label: '🟢 Disponível'
+      };
+    };
+    
+    const status = getStatusColor(item.carga);
+    
+    return (
+      <Card key={item.id} hover className="p-4 transition-all duration-200 hover:shadow-md">
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold flex-shrink-0">
+            {item.nome.charAt(0)}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between">
+              <Typography variant="h4" className="text-base sm:text-lg truncate">
+                {item.nome}
+              </Typography>
+              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${status.bg} ${status.text}`}>
+                {status.label}
+              </span>
+            </div>
+            
+            {/* Barra de progresso com animação */}
+            <div className="mt-3">
+              <div className="flex items-center justify-between text-sm mb-1">
+                <span className="text-text-secondary">Carga</span>
+                <span className="font-medium">{item.carga}/{item.capacidade}</span>
               </div>
-              <div className="flex-1 min-w-0">
-                <Typography variant="h4" className="text-base sm:text-lg truncate">
-                  {item.nome}
-                </Typography>
-                <div className="mt-2 flex items-center gap-3">
-                  <span className="text-sm text-text-secondary flex-shrink-0">Carga:</span>
-                  <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-primary rounded-full transition-all duration-300" 
-                      style={{ width: `${(item.carga / item.capacidade) * 100}%` }}
-                    />
-                  </div>
-                  <span className="text-sm font-medium flex-shrink-0">{item.carga}/{item.capacidade}</span>
-                </div>
-                <div className="mt-1 text-sm text-text-secondary">
-                  Complexidade: {item.complexidade} | Especialidade: {item.especialidade}
-                </div>
-                <div className="mt-2">
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                    item.carga > 8 ? 'bg-error/10 text-error' :
-                    item.carga > 5 ? 'bg-warning/10 text-warning-dark' :
-                    'bg-success/10 text-success'
-                  }`}>
-                    {item.carga > 8 ? '🔴 Sobrecarregada' :
-                     item.carga > 5 ? '🟡 Carga Média' :
-                     '🟢 Disponível'}
-                  </span>
-                </div>
+              <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                <div 
+                  className={`h-full ${status.bar} rounded-full transition-all duration-1000 ease-out`}
+                  style={{ width: `${percent}%` }}
+                />
               </div>
             </div>
-          </Card>
-        ))}
-      </div>
+            
+            {/* Informações adicionais */}
+            <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
+              <div className="flex items-center gap-1 text-text-secondary">
+                <span className="font-medium">Complexidade:</span>
+                <span>{item.complexidade}/5</span>
+              </div>
+              <div className="flex items-center gap-1 text-text-secondary">
+                <span className="font-medium">Especialidade:</span>
+                <span className="truncate">{item.especialidade}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+  })}
+</div>
     </div>
   );
 };
