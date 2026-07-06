@@ -34,12 +34,12 @@ class ServicoViewSet(ModelViewSet):
     ]
 
     search_fields = [
-        'descricao'
+        "observacoes",
     ]
 
-    ordering_fiels = [
-        'data_abertura',
+    ordering_fields = [
+        'data_envio',
         'prazo_entrega',
         'valor',
-        'complexidade'
+        'complexidade',
     ]
