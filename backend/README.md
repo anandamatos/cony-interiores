@@ -1,97 +1,153 @@
-# Backend - Cony Interiores
-
-API do projeto Cony Interiores desenvolvida com Django e Django REST Framework.
-
 ## Tecnologias
 
-- Python 3.11+
-- Django 6
+Frontend
+
+- React
+- JavaScript
+- React Router
+- Axios
+
+Backend
+
+- Django
 - Django REST Framework
 - PostgreSQL
 
+Infraestrutura
+
+- Docker
+- Docker Compose
+
+---
+
+## Pré-requisitos
+
+- Git
+- Docker Desktop
+
+Não é necessário instalar Python, Node.js ou PostgreSQL localmente.
+
+---
+
+## Clonando o projeto
+
+```bash
+git clone https://github.com/ORGANIZACAO/cony-interiores.git
+
+cd cony-interiores
+```
+
+---
+
+## Criando o arquivo .env
+
+Na raiz do projeto.
+
+Copie:
+
+```bash
+cp .env.example .env
+```
+
+```env
+POSTGRES_DB=cony
+POSTGRES_USER=cony
+POSTGRES_PASSWORD=cony123
+```
+
+Depois entre na pasta backend.
+
+Copie:
+
+```bash
+cp .env.example .env
+```
+
+Edite as variáveis.
+
+Exemplo:
+
+```env
+SECRET_KEY=sua_secret_key
+
+DEBUG=True
+
+DB_NAME=cony
+
+DB_USER=cony
+
+DB_PASSWORD=cony123
+
+DB_HOST=db
+
+DB_PORT=5432
+```
+
+---
+
+## Executando
+
+Abra o docker desktop, espere até aparecer “Engine running” no canto inferior esquerdo
+
+Na raiz do projeto:
+
+```bash
+docker compose up --build
+```
+
+---
+
+## Executando as migrações
+
+```bash
+docker compose exec backend python manage.py migrate
+```
+
+---
+
+## Criando um superusuário
+
+```bash
+docker compose exec backend python manage.py createsuperuser
+```
+
+---
+
+## Acessando
+
+Frontend
+
+http://localhost:5173
+
+Backend
+
+http://localhost:8000
+
+Admin Django
+
+http://localhost:8000/admin
+
+---
+
+## Encerrando
+
+```bash
+docker compose down
+```
+
+---
+
 ## Estrutura
 
-- config: configuracoes principais do projeto Django
-- users: app com endpoints iniciais da API
-- manage.py: comandos de administracao Django
-
-## Pre-requisitos
-
-- Python instalado
-- Ambiente virtual recomendado
-
-## Instalacao
-
-1. Entre na pasta backend.
-2. Crie e ative um ambiente virtual.
-3. Instale as dependencias:
-
-```bash
-pip install -r requirements.txt
 ```
+cony-interiores/
 
-4. O projeto usa SQLite por padrao no desenvolvimento local.
-5. Para usar PostgreSQL, copie `.env.example` para `.env`, mantenha `DJANGO_DATABASE=postgres` e ajuste as credenciais do seu banco.
+backend/
 
-## Executar em desenvolvimento
+frontend/
 
-1. Aplique migracoes:
+docs/
 
-```bash
-python manage.py migrate
-```
+docker-compose.yml
 
-2. Suba o servidor:
-
-```bash
-python manage.py runserver
-```
-
-Servidor local: http://127.0.0.1:8000
-
-Para executar com PostgreSQL, crie um arquivo `.env` com base em `.env.example`.
-
-## Endpoints atuais
-
-- GET /api/
-  - Resposta: {"message": "Bem-vindo ao backend Cony Interiores!"}
-- GET /api/hello/
-  - Resposta: {"message": "Hello Cony Interiores!"}
-
-## Testes
-
-Execute os testes com:
-
-```bash
-python manage.py test --settings=config.settings_sqlite
-```
-
-## Variaveis de ambiente
-
-As variaveis sao lidas automaticamente do arquivo `.env` na raiz do backend.
-
-## Integracao com frontend
-
-No desenvolvimento, o frontend (Vite) encaminha chamadas para /api ao backend em http://127.0.0.1:8000.
-
-## Migracao de dados (SQLite -> PostgreSQL)
-
-Se voce precisa migrar dados existentes do SQLite para o PostgreSQL:
-
-1. Exporte dados do SQLite para fixture JSON:
-
-```bash
-python manage.py dumpdata --settings=config.settings_sqlite --natural-foreign --natural-primary -e contenttypes -e auth.permission --indent 2 --output sqlite_data.json
-```
-
-2. Aplique migracoes no PostgreSQL:
-
-```bash
-python manage.py migrate
-```
-
-3. Carregue os dados no PostgreSQL:
-
-```bash
-python manage.py loaddata sqlite_data.json
 ```
