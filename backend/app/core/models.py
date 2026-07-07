@@ -1,7 +1,8 @@
 from django.db import models
+from django.core.validators import RegexValidator
 
 class Costureira(models.Model):
-    nome = models.CharField(max_length=100)
+    nome = models.CharField(max_length=100, unique=True) # Para unicidade de cada nome.
     contato = models.CharField(max_length=100, blank=True)
     observacoes = models.TextField(blank=True,)
     ativo = models.BooleanField(default=True)
@@ -22,7 +23,7 @@ class Relatorio(models.Model):
         return f"Relatório {self.costureira.nome} - {self.periodo}"
 
 class Produto(models.Model):
-    nome = models.CharField(max_length=100)
+    nome = models.CharField(max_length=100, unique=True) #Impedir duplicatas
     descricao = models.TextField(blank=True)
     ativo = models.BooleanField(default=False)
 
@@ -31,9 +32,10 @@ class Produto(models.Model):
 
 
 class Cliente(models.Model):
-    nome = models.CharField(max_length=100)
-    telefone = models.IntegerField()
-    email = models.EmailField()
+    nome = models.CharField(max_length=100, unique=True) # Mesmo motivo
+    telefone = models.CharField(max_length=15, unique=True, validators=[RegexValidator(regex=r'^\d{10,11}$', 
+    message="O telefone deve conter apenas números, incluindo o DDD (ex: 3197778888).")]) # Atualizado.
+    email = models.EmailField(unique=True) #Atualizado pra unicidade
     endereco = models.TextField()
     observacoes = models.TextField(blank=True)
 
@@ -42,9 +44,9 @@ class Cliente(models.Model):
 
 
 class Servico(models.Model):
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name="servicos_cliente")
-    produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name="servicos_produto")
-    costureira = models.ForeignKey(Costureira, on_delete=models.CASCADE, related_name="servicos_costureira")
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name="servicos") #Alterado
+    produto = models.ManyToManyField(Produto, related_name="servicos") #Alterado
+    costureira = models.ForeignKey(Costureira, on_delete=models.CASCADE, related_name="servicos") #Alterado
     quantidade = models.IntegerField(default=0)
     complexidade = models.IntegerField(default=0)
     data_envio = models.DateField()
