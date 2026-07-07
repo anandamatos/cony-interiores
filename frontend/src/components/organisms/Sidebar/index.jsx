@@ -18,8 +18,8 @@ const menuItems = [
   { path: '/services', label: 'Serviços', icon: ClipboardList },
   { path: '/seamstresses', label: 'Costureiras', icon: Users },
   { path: '/capacity', label: 'Capacidade', icon: Gauge },
-  { path: '/financial', label: 'Financeiro', icon: DollarSign },
-  { path: '/reports', label: 'Relatórios', icon: BarChart3 },
+  // { path: '/financial', label: 'Financeiro', icon: DollarSign },
+  // { path: '/reports', label: 'Relatórios', icon: BarChart3 },
 ];
 
 const Sidebar = () => {

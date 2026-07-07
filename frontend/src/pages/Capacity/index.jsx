@@ -39,6 +39,7 @@ const specialtyOptions = [
 ];
 
 const Capacity = () => {
+  // 1. DECLARE o estado primeiro
   const [data, setData] = useState([]);
   const [period, setPeriod] = useState('semana');
   const [specialty, setSpecialty] = useState('todas');
@@ -87,6 +88,11 @@ const Capacity = () => {
     setSpecialty('todas');
     loadData({ period: 'semana', specialty: 'todas' });
   };
+
+  // 2. AGORA use a variável data para calcular maxCapacity
+  const maxCapacity = data.length > 0 
+    ? Math.max(...data.map(item => item.capacidade || 10), 10)
+    : 10;
 
   // Cores personalizadas por costureira
   const colors = [
@@ -172,9 +178,9 @@ const Capacity = () => {
     scales: {
       y: {
         beginAtZero: true,
-        max: 10,
+        max: maxCapacity,
         ticks: {
-          stepSize: 2,
+          stepSize: Math.ceil(maxCapacity / 5),
           callback: function (value) {
             return value + '/10';
           },

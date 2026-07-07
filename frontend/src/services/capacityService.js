@@ -9,7 +9,8 @@ const mockCapacityData = [
   { id: 5, nome: 'Carla Souza', carga: 3, capacidade: 10, complexidade: 1, especialidade: 'Almofadas' },
   { id: 6, nome: 'Beatriz Lima', carga: 7, capacidade: 10, complexidade: 3, especialidade: 'Cortinas' },
 ];
-
+// Usar mocks apenas se explicitamente ativado
+const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true' || false;
 /**
  * Busca dados de capacidade da API
  * Se a API não estiver disponível, retorna dados mockados
@@ -65,19 +66,23 @@ export const fetchCapacityWithFilters = async (filters = {}) => {
     const response = await api.get('/capacidade/', { params: filters });
     return response.data;
   } catch (error) {
-    console.warn('API de capacidade não disponível, usando dados mockados com filtros:', filters);
+    // Em produção, não usar mock silencioso
+    if (!USE_MOCKS && import.meta.env.PROD) {
+      console.error('Erro ao buscar dados de capacidade:', error);
+      throw new Error('Falha ao carregar dados de capacidade. Tente novamente.');
+    }
     
+    console.warn('API de capacidade não disponível, usando dados mockados:', error.message);
+    
+    // Fallback para mock
     let filteredData = [...mockCapacityData];
     
     if (specialty && specialty !== 'todas') {
       filteredData = filteredData.filter(item => item.especialidade === specialty);
     }
     
-    // Simula filtro por período (na API real, isso viria do backend)
-    if (period === 'semana') {
-      // Mantém os dados
-    } else if (period === 'mes') {
-      // Mantém os dados
+    if (period === 'mes') {
+      // Simula dados de um mês (mantém os mesmos)
     }
     
     return filteredData;
