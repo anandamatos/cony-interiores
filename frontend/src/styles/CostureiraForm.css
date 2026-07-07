@@ -1,78 +1,104 @@
 .cadastro-form {
-  max-width: 420px;
+  max-width: 520px;
   margin: 20px auto;
   padding: 24px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 14px;
+  transition: var(--transition);
 }
 
+/* GROUP */
 .form-group {
   display: flex;
   flex-direction: column;
 }
 
-label {
+/* LABEL */
+.cadastro-form label {
   font-size: 14px;
   margin-bottom: 6px;
-  color: #333;
+  color: var(--color-text);
+  font-weight: 500;
 }
 
-input,
-select {
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+/* INPUT + SELECT */
+.cadastro-form input,
+.cadastro-form select {
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
   font-size: 14px;
+  background: var(--color-surface);
+  color: var(--color-text);
   outline: none;
-  transition: 0.2s;
+  transition: var(--transition);
 }
 
-input:focus,
-select:focus {
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.15);
+.cadastro-form input:hover,
+.cadastro-form select:hover {
+  border-color: var(--color-primary);
 }
+
+.cadastro-form input:focus,
+.cadastro-form select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(128, 51, 0, 0.15);
+}
+
 
 .error {
-  color: #e74c3c;
+  color: var(--color-danger);
   font-size: 12px;
-  margin-top: 4px;
+  margin-top: -8px;
 }
 
+/* ACTIONS */
 .form-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 12px;
   margin-top: 10px;
-  gap: 10px;
 }
 
+/* BUTTON BASE */
 .form-actions button {
-  flex: 1;
-  padding: 10px;
+  padding: 10px 18px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius);
   cursor: pointer;
   font-weight: 600;
   transition: var(--transition);
 }
 
+/* SAVE */
 .save-button {
-  background-color: #4a90e2;
-  color: white;
+  background: var(--color-primary);
+  color: #fff;
 }
 
 .save-button:hover {
-  background-color: #357bd8;
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
 }
 
 .cancel-button {
-  background-color: #e0e0e0;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
 }
 
 .cancel-button:hover {
-  background-color: #cfcfcf;
+  background: var(--color-border);
+  transform: translateY(-1px);
+}
+
+/* DISABLED (boa prática importante) */
+.form-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }

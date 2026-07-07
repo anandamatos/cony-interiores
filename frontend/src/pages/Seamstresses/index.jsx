@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import Typography from '../../components/atoms/Typography';
 import Card from '../../components/atoms/Card';
 import Button from '../../components/atoms/Button';
@@ -13,10 +14,13 @@ const Seamstresses = () => {
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <Typography variant="h2">Costureiras</Typography>
-        <Button variant="primary" className="w-full sm:w-auto">+ Nova Costureira</Button>
+        <Link to="/seamstresses/new">
+          <Button variant="primary" className="w-full sm:w-auto">
+            + Nova Costureira
+          </Button>
+        </Link>
       </div>
 
-      {/* Grid: 1 coluna mobile, 2 tablet, 3 desktop */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {seamstresses.map((seamstress) => (
           <Card key={seamstress.id} hover className="p-4 sm:p-6">
