@@ -7,6 +7,8 @@ const api = axios.create({
   },
 });
 
+let refreshRequest = null;
+
 // Interceptor para adicionar token (se necessário)
 api.interceptors.request.use(
   (config) => {
@@ -28,11 +30,22 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest?._retry) {
       originalRequest._retry = true;
       try {
-        const refreshToken = localStorage.getItem("refreshToken");
-        const res = await axios.post("/api/auth/token/refresh/", { refresh: refreshToken });
-        localStorage.setItem("token", res.data.access);
+        if (!refreshRequest) {
+          const refreshToken = localStorage.getItem("refreshToken");
+          refreshRequest = axios
+            .post("/api/auth/token/refresh/", { refresh: refreshToken })
+            .then((response) => {
+              localStorage.setItem("token", response.data.access);
+              return response.data.access;
+            })
+            .finally(() => {
+              refreshRequest = null;
+            });
+        }
+
+        const accessToken = await refreshRequest;
         originalRequest.headers = originalRequest.headers || {};
-        originalRequest.headers.Authorization = "Bearer " + res.data.access;
+        originalRequest.headers.Authorization = "Bearer " + accessToken;
         return api(originalRequest);
       } catch (refreshError) {
         localStorage.removeItem("token");
