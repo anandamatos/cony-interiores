@@ -123,9 +123,25 @@ Backend
 
 http://localhost:8000
 
+Autenticação (JWT)
+
+http://localhost:8000/api/auth/token/
+
+http://localhost:8000/api/auth/token/refresh/
+
+http://localhost:8000/api/auth/me/
+
 Admin Django
 
 http://localhost:8000/admin
+
+---
+
+## Endpoints de autenticação
+
+- `POST /api/auth/token/` retorna `access` e `refresh`
+- `POST /api/auth/token/refresh/` retorna novo `access`
+- `GET /api/auth/me/` requer header `Authorization: Bearer <token>`
 
 ---
 
