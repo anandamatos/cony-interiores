@@ -1,13 +1,14 @@
-from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+#from django.shortcuts import render
+from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
+from .models import Costureira
+from .serializers import CostureiraSerializer
+from django.urls import reverse_lazy
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def hello(request):
-    return Response({"message": "Hello Cony Interiores!"})
+# ----------------------------Adicoes-------------------------------
+class CostureiraViewSet(viewsets.ModelViewSet):
+    queryset = Costureira.objects.all()  # O SQL que ele vai rodar por trás (SELECT * FROM livro)
+    serializer_class = CostureiraSerializer
+    permission_classes = [AllowAny] # new
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def home(request):
-    return Response({"message": "Bem-vindo ao backend Cony Interiores!"})
+
