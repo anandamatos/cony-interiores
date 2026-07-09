@@ -89,11 +89,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'users',
+    'finance',
+    'monitoring',
     "corsheaders",
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'monitoring.middleware.FinancialApiObservabilityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -245,4 +248,38 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': False,
     'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+FINANCIAL_API_ALERT_THRESHOLD_MS = env_int('FINANCIAL_API_ALERT_THRESHOLD_MS', 800)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'json': {
+            '()': 'monitoring.logging.JsonLogFormatter',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'json',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+    },
+    'loggers': {
+        'financial_api': {
+            'handlers': ['console'],
+            'level': os.getenv('FINANCIAL_API_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        'monitoring': {
+            'handlers': ['console'],
+            'level': os.getenv('MONITORING_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+    },
 }
