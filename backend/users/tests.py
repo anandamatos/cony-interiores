@@ -1,21 +1,27 @@
 from django.test import TestCase
+# ----------------------------Adicoes-------------------------------
+from django.db.utils import IntegrityError
+from .models import Costureira
 
-
-class UsersApiTests(TestCase):
-	def test_home_endpoint_returns_expected_message(self):
-		response = self.client.get('/api/')
-
-		self.assertEqual(response.status_code, 200)
-		self.assertEqual(
-			response.json(),
-			{'message': 'Bem-vindo ao backend Cony Interiores!'},
-		)
-
-	def test_hello_endpoint_returns_expected_message(self):
-		response = self.client.get('/api/hello/')
-
-		self.assertEqual(response.status_code, 200)
-		self.assertEqual(
-			response.json(),
-			{'message': 'Hello Cony Interiores!'},
-		)
+class TestCostureira(TestCase):
+    def test_BlankCostureira(self):
+        Costureira.objects.create(nome = "Alixw", contato = "Numero 3198888888", observacoes = "", 
+            ativo = False, tipo_servico_preferido = "")
+        M = Costureira.objects.get(nome ="Alixw")
+        self.assertEqual(M.observacoes, "")
+        
+    def test_DuplicaCostureira(self):
+        Costureira.objects.create(
+           nome = "Alice", 
+           contato = "Numero 3198888888", 
+           observacoes = "ALI", 
+           ativo = False, 
+           tipo_servico_preferido = "Voltar")
+        with self.assertRaises(IntegrityError):
+         Costureira.objects.create(
+            nome = "Alice", 
+            contato = "Numero 318888", 
+            observacoes = "AI", 
+            ativo = True, 
+            tipo_servico_preferido = "tar")
+# Create your tests here.
