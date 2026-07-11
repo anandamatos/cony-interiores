@@ -25,3 +25,12 @@ class TestCostureira(TestCase):
             ativo = True, 
             tipo_servico_preferido = "tar")
 # Create your tests here.
+def test_criar_costureira_com_dados_validos(self):
+    costureira = Costureira.objects.create(
+        nome="Alice", 
+        contato="Numero 3198888888", 
+        observacoes="ALI", 
+        ativo=False, 
+        tipo_servico_preferido="Voltar"
+    )
+    self.assertEqual(costureira.nome, "Alice")
