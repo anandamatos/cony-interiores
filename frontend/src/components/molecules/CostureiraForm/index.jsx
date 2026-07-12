@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Input from './atoms/Input';
-import Button from './atoms/Button';
-import Card from './atoms/Card';
-import Typography from './atoms/Typography';
+import Input from '../../atoms/Input';
+import Button from '../../atoms/Button';
+import Card from '../../atoms/Card';
+import Typography from '../../atoms/Typography';
 
 const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = false }) => {
   const navigate = useNavigate();
@@ -87,9 +87,9 @@ const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = fals
             onChange={handleChange}
             className="w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500"
           />
-          <label htmlFor="ativa" className="text-sm text-gray-700">
+          <Typography component="label" size="small" className="text-gray-700">
             Ativa
-          </label>
+          </Typography>
         </div>
 
         <div className="flex gap-4 pt-4">
