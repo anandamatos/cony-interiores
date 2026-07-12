@@ -37,6 +37,7 @@
     "@storybook/test": "^8.6.18",
     "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.19",
+    "eslint": "^10.7.0",
     "postcss": "^8.4.38",
     "prop-types": "^15.8.1",
     "storybook": "^8.6.14",

@@ -1,75 +1,47 @@
-import "../../../styles/CostureiraTable.css";
+const CostureiraTable = ({ data = [] }) => {
+  if (data.length === 0) {
+    return (
+      <div className="text-center py-8 text-gray-500">
+        Nenhum dado disponível
+      </div>
+    );
+  }
 
-export default function CostureiraTable({
-  costureiras = [],
-  onDelete = () => {},
-  onEdit = () => {},
-}) {
   return (
-    <div className="costureira-table-container">
-      <table className="costureira-table">
-        <thead>
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead className="bg-gray-50">
           <tr>
-            <th>Nome</th>
-            <th>Telefone</th>
-            <th>Especialidade</th>
-            <th>Status</th>
-            <th>Ações</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Especialidade</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pedidos</th>
           </tr>
         </thead>
-
-        <tbody>
-          {costureiras.length === 0 ? (
-            <tr>
-              <td colSpan="5" className="empty-table">
-                Nenhuma costureira cadastrada.
+        <tbody className="divide-y divide-gray-200">
+          {data.map((item) => (
+            <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+              <td className="px-4 py-3 text-sm text-gray-900">{item.name}</td>
+              <td className="px-4 py-3 text-sm text-gray-600">{item.specialty}</td>
+              <td className="px-4 py-3">
+                <span className={`
+                  px-2 py-1 text-xs rounded-full
+                  ${item.status === 'active' ? 'bg-green-100 text-green-700' : ''}
+                  ${item.status === 'inactive' ? 'bg-gray-100 text-gray-700' : ''}
+                  ${item.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : ''}
+                `}>
+                  {item.status === 'active' ? 'Ativo' : 
+                   item.status === 'inactive' ? 'Inativo' : 
+                   item.status === 'pending' ? 'Pendente' : item.status}
+                </span>
               </td>
+              <td className="px-4 py-3 text-sm text-gray-600">{item.orders}</td>
             </tr>
-          ) : (
-            costureiras.map((costureira) => {
-              const statusClass =
-                costureira.status === "Ativa"
-                  ? "status-active"
-                  : "status-inactive";
-
-              return (
-                <tr key={costureira.id}>
-                  <td>{costureira.nome}</td>
-                  <td>{costureira.telefone}</td>
-                  <td>{costureira.especialidade}</td>
-
-                  <td>
-                    <span className={`status-badge ${statusClass}`}>
-                      <span className="status-dot"></span>
-                      {costureira.status}
-                    </span>
-                  </td>
-
-                  <td>
-                    <div className="actions">
-                      <button
-                        className="icon-button edit"
-                        onClick={() => onEdit(costureira.id)}
-                        title="Editar"
-                        aria-label="Editar costureira"
-                      >
-                        ✏️
-                      </button>
-
-                      <button
-                        className="delete-button"
-                        onClick={() => onDelete(costureira.id)}
-                      >
-                        Excluir
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })
-          )}
+          ))}
         </tbody>
       </table>
     </div>
   );
-}
+};
+
+export default CostureiraTable;
