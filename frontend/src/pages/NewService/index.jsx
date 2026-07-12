@@ -49,14 +49,12 @@ const NewService = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // VALIDAÇÃO ROBUSTA
       const clienteId = parseInt(formData.cliente);
       const costureiraId = parseInt(formData.costureira);
       const produtoId = parseInt(formData.produto);
       const quantidade = parseInt(formData.quantidade);
       const valor = parseFloat(formData.valor);
 
-      // Verificar se todos os campos são válidos
       if (isNaN(clienteId) || clienteId <= 0) {
         alert('Selecione um cliente válido');
         setLoading(false);
