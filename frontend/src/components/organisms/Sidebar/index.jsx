@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   ClipboardList, 
@@ -27,6 +26,24 @@ const Sidebar = () => {
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
+
+  // Versão simplificada do NavLink para funcionar sem Router
+  const NavItem = ({ item, onClick }) => {
+    const Icon = item.icon;
+    return (
+      <a
+        href={item.path}
+        onClick={(e) => {
+          e.preventDefault();
+          if (onClick) onClick();
+        }}
+        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 text-text-secondary hover:bg-gray-50 hover:text-text-primary"
+      >
+        <Icon className="w-5 h-5 flex-shrink-0" />
+        <span>{item.label}</span>
+      </a>
+    );
+  };
 
   return (
     <>
@@ -67,21 +84,7 @@ const Sidebar = () => {
         {/* Navigation */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {menuItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              onClick={closeSidebar}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                  isActive
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-text-secondary hover:bg-gray-50 hover:text-text-primary'
-                }`
-              }
-            >
-              <item.icon className="w-5 h-5 flex-shrink-0" />
-              <span>{item.label}</span>
-            </NavLink>
+            <NavItem key={item.path} item={item} onClick={closeSidebar} />
           ))}
         </nav>
 

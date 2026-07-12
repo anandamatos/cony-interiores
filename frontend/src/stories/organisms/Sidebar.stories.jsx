@@ -1,4 +1,4 @@
-import Sidebar from '../../src/components/organisms/Sidebar';
+import Sidebar from "../../components/organisms/Sidebar";
 
 export default {
   title: 'Organisms/Sidebar',

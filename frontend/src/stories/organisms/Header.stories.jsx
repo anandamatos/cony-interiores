@@ -1,4 +1,4 @@
-import Header from '../../src/components/organisms/Header';
+import Header from "../../components/organisms/Header";
 
 export default {
   title: 'Organisms/Header',

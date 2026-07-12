@@ -6,27 +6,6 @@
 
 @layer base {
   * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-text-primary font-sans antialiased;
-  }
-  h1 {
-    @apply text-3xl font-bold;
-  }
-  h2 {
-    @apply text-2xl font-semibold;
-  }
-  h3 {
-    @apply text-xl font-semibold;
-  }
-  h4 {
-    @apply text-lg font-medium;
-  }
-}
-
-@layer components {
-  .container-custom {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply border-gray-200;
   }
 }

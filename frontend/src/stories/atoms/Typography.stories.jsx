@@ -1,4 +1,4 @@
-import Typography from '../../src/components/atoms/Typography';
+import Typography from "../../components/atoms/Typography";
 
 export default {
   title: 'Atoms/Typography',

@@ -1,4 +1,4 @@
-import Select from '../../src/components/atoms/Select';
+import Select from "../../components/atoms/Select";
 
 export default {
   title: 'Atoms/Select',
