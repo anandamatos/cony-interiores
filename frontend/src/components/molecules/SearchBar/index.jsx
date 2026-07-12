@@ -1,4 +1,4 @@
-import "../styles/SearchBar.css";
+import "../../../styles/SearchBar.css";
 
 export default function SearchBar({ value, onChange, placeholder }) {
   return (

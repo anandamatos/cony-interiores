@@ -1,4 +1,4 @@
-import "../styles/CostureiraTable.css";
+import "../../../styles/CostureiraTable.css";
 
 export default function CostureiraTable({
   costureiras = [],

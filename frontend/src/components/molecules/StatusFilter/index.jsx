@@ -1,4 +1,4 @@
-import "../styles/StatusFilter.css";
+import "../../../styles/StatusFilter.css";
 
 export default function StatusFilter({ value, onChange }) {
   return (
