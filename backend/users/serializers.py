@@ -20,6 +20,17 @@ class CostureiraSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# ==================== SERIALIZER DO SERVIÇO ====================
+
+class ServicoSerializer(serializers.ModelSerializer):
+    cliente_nome = serializers.CharField(source='cliente.nome', read_only=True)
+    costureira_nome = serializers.CharField(source='costureira.nome', read_only=True)
+
+    class Meta:
+        model = Servico
+        fields = '__all__'
+
+
 # ==================== SERIALIZER DO CLIENTE ====================
 
 class ClienteSerializer(serializers.ModelSerializer):
@@ -34,21 +45,4 @@ class ProdutoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produto
         fields = '__all__'
-
-
-# ==================== SERIALIZER DO SERVIÇO (PRINCIPAL) ====================
-
-class ServicoSerializer(serializers.ModelSerializer):
-    cliente_nome = serializers.CharField(source='cliente.nome', read_only=True)
-    costureira_nome = serializers.CharField(source='costureira.nome', read_only=True)
-    produto_ids = serializers.PrimaryKeyRelatedField(
-        many=True, 
-        queryset=Produto.objects.all(), 
-        source='produto', 
-        required=False,  # Tornar opcional
-        write_only=True
-    )
-
-    class Meta:
-        model = Servico
-        fields = '__all__'
+        

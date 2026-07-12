@@ -5,7 +5,7 @@ from django.core.validators import RegexValidator
 
 class Costureira(models.Model):
     nome = models.CharField(max_length=100, unique=True)
-    contato = models.CharField(max_length=100, blank=True)
+    contato = models.CharField(max_length=100, blank=True)  # ← contato, não telefone
     observacoes = models.TextField(blank=True)
     ativo = models.BooleanField(default=True)
     tipo_servico_preferido = models.CharField(max_length=100, blank=True)

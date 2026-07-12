@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { forwardRef } from 'react';
 
-const Input = forwardRef(({ label, error, className, ...props }, ref) => {
+const Input = forwardRef(({ label, error, className, multiline, rows = 3, ...props }, ref) => {
   const inputClasses = classNames(
     'w-full rounded-lg border border-border bg-white px-4 py-2.5 text-text-primary',
     'placeholder:text-text-secondary placeholder:text-sm',
@@ -20,7 +20,16 @@ const Input = forwardRef(({ label, error, className, ...props }, ref) => {
           {props.required && <span className="text-error ml-1">*</span>}
         </label>
       )}
-      <input ref={ref} className={inputClasses} {...props} />
+      {multiline ? (
+        <textarea
+          ref={ref}
+          className={inputClasses}
+          rows={rows}
+          {...props}
+        />
+      ) : (
+        <input ref={ref} className={inputClasses} {...props} />
+      )}
       {error && <p className="mt-1 text-sm text-error">{error}</p>}
     </div>
   );
