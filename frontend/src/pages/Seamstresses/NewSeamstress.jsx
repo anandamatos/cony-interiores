@@ -9,7 +9,8 @@ const NewSeamstress = () => {
   const handleSubmit = async (data) => {
     try {
       await createSeamstress(data);
-      navigate('/seamstresses');
+      // Navegar e recarregar a lista
+      navigate('/seamstresses', { state: { reload: true } });
     } catch (error) {
       console.error('Erro ao criar costureira:', error);
       alert('Erro ao criar costureira. Tente novamente.');

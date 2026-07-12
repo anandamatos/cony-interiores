@@ -43,7 +43,7 @@ class CostureiraViewSet(viewsets.ModelViewSet):
         return response
 
 
-# ==================== VIEWSET DO SERVIÇO (PRINCIPAL) ====================
+# ==================== VIEWSET DO SERVIÇO ====================
 
 class ServicoViewSet(viewsets.ModelViewSet):
     queryset = Servico.objects.all()
@@ -52,3 +52,19 @@ class ServicoViewSet(viewsets.ModelViewSet):
     filterset_fields = ['cliente', 'costureira', 'data_envio', 'prazo_entrega']
     search_fields = ['cliente__nome', 'observacoes']
     ordering_fields = ['data_envio', 'prazo_entrega', 'valor', 'complexidade']
+
+
+# ==================== VIEWSET DO CLIENTE ====================
+
+class ClienteViewSet(viewsets.ModelViewSet):
+    queryset = Cliente.objects.all()
+    serializer_class = ClienteSerializer
+    permission_classes = [AllowAny]
+
+
+# ==================== VIEWSET DO PRODUTO ====================
+
+class ProdutoViewSet(viewsets.ModelViewSet):
+    queryset = Produto.objects.all()
+    serializer_class = ProdutoSerializer
+    permission_classes = [AllowAny]

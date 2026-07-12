@@ -1,29 +1,35 @@
 import api from './api';
 
-// Dados mockados
-const mockSeamstresses = [
-  { id: 1, nome: 'Sirlene Santos', contato: '(11) 99999-9999', observacoes: 'Especialista em cortinas', especialidade: 'Cortinas' },
-  { id: 2, nome: 'Maria Oliveira', contato: '(11) 98888-8888', observacoes: 'Faz forros', especialidade: 'Forros' },
-];
+export const getSeamstresses = async () => {
+  const response = await api.get('/costureiras/');
+  return response.data;
+};
 
-export const fetchSeamstresses = async () => {
-  try {
-    const response = await api.get('/costureiras/');
-    return response.data;
-  } catch (error) {
-    console.warn('API de costureiras não disponível, usando dados mockados');
-    return mockSeamstresses;
-  }
+export const getSeamstress = async (id) => {
+  const response = await api.get(`/costureiras/${id}/`);
+  return response.data;
 };
 
 export const createSeamstress = async (data) => {
-  try {
-    const response = await api.post('/costureiras/', data);
-    return response.data;
-  } catch (error) {
-    console.warn('API de costureiras não disponível, simulando criação');
-    const newSeamstress = { id: Date.now(), ...data };
-    mockSeamstresses.push(newSeamstress);
-    return newSeamstress;
-  }
+  // Mapear campos do frontend para o backend
+  const payload = {
+    nome: data.nome,
+    contato: data.contato,
+    observacoes: data.especialidade || '',
+    ativo: data.ativa !== undefined ? data.ativa : true,
+    tipo_servico_preferido: data.especialidade || '',
+  };
+  console.log('Enviando costureira:', payload);
+  const response = await api.post('/costureiras/', payload);
+  return response.data;
+};
+
+export const updateSeamstress = async (id, data) => {
+  const response = await api.put(`/costureiras/${id}/`, data);
+  return response.data;
+};
+
+export const deleteSeamstress = async (id) => {
+  const response = await api.delete(`/costureiras/${id}/`);
+  return response.data;
 };

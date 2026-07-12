@@ -9,8 +9,7 @@ const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = fals
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nome: initialData.nome || '',
-    telefone: initialData.telefone || '',
-    email: initialData.email || '',
+    contato: initialData.contato || '',
     especialidade: initialData.especialidade || '',
     ativa: initialData.ativa !== undefined ? initialData.ativa : true,
   });
@@ -20,12 +19,7 @@ const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = fals
   const validate = () => {
     const newErrors = {};
     if (!formData.nome.trim()) newErrors.nome = 'Nome é obrigatório';
-    if (!formData.telefone.trim()) newErrors.telefone = 'Telefone é obrigatório';
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email é obrigatório';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email inválido';
-    }
+    if (!formData.contato.trim()) newErrors.contato = 'Contato é obrigatório';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -36,7 +30,6 @@ const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = fals
       ...formData,
       [name]: type === 'checkbox' ? checked : value,
     });
-    // Limpa o erro do campo ao digitar
     if (errors[name]) {
       setErrors({ ...errors, [name]: '' });
     }
@@ -46,7 +39,6 @@ const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = fals
     e.preventDefault();
     if (validate()) {
       onSubmit(formData);
-      navigate('/seamstresses');
     }
   };
 
@@ -69,23 +61,12 @@ const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = fals
           />
 
           <Input
-            label="Telefone"
-            name="telefone"
-            value={formData.telefone}
+            label="Contato"
+            name="contato"
+            value={formData.contato}
             onChange={handleChange}
-            error={errors.telefone}
+            error={errors.contato}
             placeholder="(00) 00000-0000"
-            required
-          />
-
-          <Input
-            label="Email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            error={errors.email}
-            placeholder="email@exemplo.com"
             required
           />
 
@@ -104,7 +85,7 @@ const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = fals
             name="ativa"
             checked={formData.ativa}
             onChange={handleChange}
-            className="w-4 h-4 text-blue-600 rounded"
+            className="w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500"
           />
           <label htmlFor="ativa" className="text-sm text-gray-700">
             Ativa
