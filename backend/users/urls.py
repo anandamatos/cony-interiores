@@ -1,28 +1,16 @@
-<<<<<<< HEAD
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter 
-from .views import CostureiraViewSet
-
-router = DefaultRouter()
-router.register(r'costureiras', CostureiraViewSet, basename='costureira') 
-
-urlpatterns = [
-    path('', include(router.urls)),
-]
-=======
-from django.urls import path
-from .views import hello, home
 from rest_framework.routers import DefaultRouter
-from .views import ServicoViewSet
+from .views import CostureiraViewSet, ServicoViewSet, hello, home
 
-router = DefaultRouter() #cria as rotas com suas funções: create...
-
-router.register('servico', ServicoViewSet)
+# Configurar o router
+router = DefaultRouter()
+router.register(r'costureiras', CostureiraViewSet, basename='costureira')
+router.register(r'servicos', ServicoViewSet, basename='servico')
 
 urlpatterns = [
     path('hello/', hello),
     path('', home),
 ]
 
+# Incluir as rotas do router
 urlpatterns += router.urls
->>>>>>> 1703937 (fix: resolve erros de configuração após integração com Docker)
