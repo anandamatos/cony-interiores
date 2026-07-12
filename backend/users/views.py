@@ -49,8 +49,6 @@ class ServicoViewSet(viewsets.ModelViewSet):
     queryset = Servico.objects.all()
     serializer_class = ServicoSerializer
     permission_classes = [AllowAny]
-
-    # Filtros para a TASK-M1-CORE-009
     filterset_fields = ['cliente', 'costureira', 'data_envio', 'prazo_entrega']
     search_fields = ['cliente__nome', 'observacoes']
     ordering_fields = ['data_envio', 'prazo_entrega', 'valor', 'complexidade']

@@ -16,7 +16,7 @@ class Costureira(models.Model):
 
 class Cliente(models.Model):
     nome = models.CharField(max_length=100)
-    contato = models.CharField(max_length=100, blank=True)
+    contato = models.CharField(max_length=100, blank=True)  # ← Adicionar este campo
     email = models.EmailField(blank=True, null=True)
     observacoes = models.TextField(blank=True)
 

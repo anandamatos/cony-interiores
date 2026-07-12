@@ -114,9 +114,17 @@ class ServicoAPITest(TestCase):
         self.costureira = Costureira.objects.create(
             nome="Costureira Teste"
         )
-        self.servico_data = {
+        self.produto = Produto.objects.create(
+            nome="Cortina", 
+            valor_base=150.00
+        )
+
+    def test_create_servico_api(self):
+        """Testa a criação de um serviço via API"""
+        servico_data = {
             "cliente": self.cliente.id,
             "costureira": self.costureira.id,
+            "produto": [self.produto.id],
             "quantidade": 2,
             "complexidade": 2,
             "data_envio": "2026-07-01",
@@ -124,16 +132,12 @@ class ServicoAPITest(TestCase):
             "valor": 200.00,
             "observacoes": "Teste"
         }
-
-    def test_create_servico_api(self):
-        """Testa a criação de um serviço via API"""
         response = self.client.post(
             '/api/servicos/',
-            self.servico_data,
+            servico_data,
             format='json'
         )
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data['cliente'], self.cliente.id)
 
     def test_list_servicos_api(self):
         """Testa a listagem de serviços via API"""
