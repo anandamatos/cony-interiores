@@ -70,3 +70,27 @@ class UsersApiTests(TestCase):
 
 		self.assertEqual(refresh_response.status_code, 200)
 		self.assertIn('access', refresh_response.json())
+
+	def test_rotated_refresh_token_is_blacklisted(self):
+		login_response = self.client.post(
+			'/api/auth/token/',
+			{'username': self.user.username, 'password': self.user_password},
+			content_type='application/json',
+		)
+
+		first_refresh = login_response.json()['refresh']
+		first_refresh_response = self.client.post(
+			'/api/auth/token/refresh/',
+			{'refresh': first_refresh},
+			content_type='application/json',
+		)
+
+		self.assertEqual(first_refresh_response.status_code, 200)
+
+		reuse_old_refresh = self.client.post(
+			'/api/auth/token/refresh/',
+			{'refresh': first_refresh},
+			content_type='application/json',
+		)
+
+		self.assertEqual(reuse_old_refresh.status_code, 401)
