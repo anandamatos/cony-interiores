@@ -4,8 +4,9 @@ import logging
 import time
 from decimal import Decimal, InvalidOperation
 
+from django.conf import settings
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -19,7 +20,7 @@ def financial_health(request):
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def simulate_payment(request):
     payload = request.data or {}
 
@@ -40,6 +41,19 @@ def simulate_payment(request):
         return Response({'detail': 'fee_rate nao pode ser negativo.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if simulate_delay_ms > 0:
+        if not getattr(settings, 'FINANCIAL_API_ENABLE_SIMULATED_DELAY', False):
+            return Response(
+                {'detail': 'simulate_delay_ms desabilitado neste ambiente.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        max_delay_ms = getattr(settings, 'FINANCIAL_API_MAX_SIMULATED_DELAY_MS', 1000)
+        if simulate_delay_ms > max_delay_ms:
+            return Response(
+                {'detail': f'simulate_delay_ms deve ser menor ou igual a {max_delay_ms}.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         # Allows reproducible load/performance tests in lower environments.
         time.sleep(simulate_delay_ms / 1000)
 

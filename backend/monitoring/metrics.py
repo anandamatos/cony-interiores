@@ -63,5 +63,14 @@ class MonitoringMetrics:
                 'recent_performance_alerts': list(self._last_alerts),
             }
 
+    def reset(self) -> None:
+        with self._lock:
+            self._started_at = time()
+            self._request_count = 0
+            self._financial_request_count = 0
+            self._performance_alert_count = 0
+            self._last_alerts.clear()
+            self._latency_samples_ms.clear()
+
 
 metrics_registry = MonitoringMetrics()

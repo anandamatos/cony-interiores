@@ -51,6 +51,7 @@ def build_openapi_schema() -> dict:
                 'post': {
                     'tags': ['Financial'],
                     'summary': 'Simula processamento de pagamento',
+                    'security': [{'BearerAuth': []}],
                     'description': (
                         'Aceita amount e fee_rate. Opcionalmente, use query param '
                         'simulate_delay_ms para testes de carga e latencia.'
@@ -77,6 +78,7 @@ def build_openapi_schema() -> dict:
                             'description': 'Simulacao concluida',
                         },
                         '400': {'description': 'Payload invalido'},
+                        '401': {'description': 'Nao autenticado'},
                     },
                 }
             },

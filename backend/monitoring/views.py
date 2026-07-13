@@ -3,7 +3,7 @@ from __future__ import annotations
 from django.conf import settings
 from django.http import HttpResponse
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 
 from finance.openapi import build_openapi_schema
@@ -12,7 +12,7 @@ from .metrics import metrics_registry
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAdminUser])
 def monitoring_dashboard(request):
     snapshot = metrics_registry.snapshot()
     snapshot['financial_alert_threshold_ms'] = settings.FINANCIAL_API_ALERT_THRESHOLD_MS
