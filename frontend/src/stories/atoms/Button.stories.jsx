@@ -1,4 +1,5 @@
 import Button from "../../components/atoms/Button";
+import { Plus } from "lucide-react";
 
 export default {
   title: "Atoms/Button",
@@ -7,7 +8,7 @@ export default {
   argTypes: {
     variant: {
       control: "select",
-      options: ["primary", "secondary", "danger", "success", "warning"],
+      options: ["primary", "secondary", "gold", "terracota", "danger", "ghost", "outline"],
     },
     children: { control: "text" },
     disabled: { control: "boolean" },
@@ -17,27 +18,48 @@ export default {
 export const Primary = {
   args: {
     variant: "primary",
-    children: "Button Primary",
+    children: "Novo Serviço",
+    icon: Plus,
   },
 };
 
 export const Secondary = {
   args: {
     variant: "secondary",
-    children: "Button Secondary",
+    children: "Relatórios",
   },
 };
 
-export const Danger = {
+export const Gold = {
   args: {
-    variant: "danger",
-    children: "Button Danger",
+    variant: "gold",
+    children: "Destaque",
+  },
+};
+
+export const Outline = {
+  args: {
+    variant: "outline",
+    children: "Cancelar",
   },
 };
 
 export const Disabled = {
   args: {
     disabled: true,
-    children: "Button Disabled",
+    children: "Desativado",
   },
+};
+
+export const AllVariants = {
+  render: () => (
+    <div className="flex flex-wrap gap-3">
+      <Button variant="primary" icon={Plus}>Novo Serviço</Button>
+      <Button variant="secondary">Relatórios</Button>
+      <Button variant="gold">Gold</Button>
+      <Button variant="terracota">Terracota</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="outline">Outline</Button>
+    </div>
+  ),
 };

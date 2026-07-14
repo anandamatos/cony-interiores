@@ -7,7 +7,7 @@ export default {
   argTypes: {
     variant: {
       control: "select",
-      options: ["primary", "secondary", "success", "warning", "danger", "neutral"],
+      options: ["primary", "secondary", "gold", "terracota", "success", "warning", "danger", "info", "neutral", "ghost"],
     },
     size: {
       control: "select",
@@ -35,6 +35,13 @@ export const Success = {
   args: {
     variant: "success",
     children: "Sucesso",
+  },
+};
+
+export const Gold = {
+  args: {
+    variant: "gold",
+    children: "Destaque",
   },
 };
 
@@ -80,9 +87,12 @@ export const AllVariants = {
     <div className="flex gap-2 flex-wrap">
       <Badge variant="primary">Primary</Badge>
       <Badge variant="secondary">Secondary</Badge>
+      <Badge variant="gold">Gold</Badge>
+      <Badge variant="terracota">Terracota</Badge>
       <Badge variant="success">Success</Badge>
       <Badge variant="warning">Warning</Badge>
       <Badge variant="danger">Danger</Badge>
+      <Badge variant="info">Info</Badge>
       <Badge variant="neutral">Neutral</Badge>
     </div>
   ),

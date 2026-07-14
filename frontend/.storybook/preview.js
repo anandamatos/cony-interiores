@@ -1,6 +1,8 @@
+import React from 'react';
 import '../src/index.css';
 
 export const parameters = {
+  layout: 'fullscreen',
   actions: { argTypesRegex: "^on[A-Z].*" },
   controls: {
     matchers: {
@@ -44,5 +46,13 @@ export const parameters = {
     },
   },
 };
+
+export const decorators = [
+  (Story) => React.createElement(
+    'div',
+    { className: 'min-h-screen bg-offWhite text-primary font-secondary' },
+    React.createElement(Story)
+  ),
+];
 
 export const tags = ['autodocs'];
