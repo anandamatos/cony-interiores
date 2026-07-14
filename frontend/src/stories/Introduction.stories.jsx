@@ -1,9 +1,20 @@
+import {
+  BookOpen,
+  Component,
+  Layers,
+  Palette,
+  PenSquare,
+  Ruler,
+  Sparkles,
+} from 'lucide-react';
+
 export default {
   title: "Introdução",
   parameters: {
     docs: {
       description: {
-        component: "Design System da Cony Interiores - Guia completo de componentes e tokens.",
+        component:
+          'Guia de entrada do Design System da Cony Interiores com princípios, navegação de tokens e biblioteca de componentes.',
       },
     },
   },
@@ -11,58 +22,80 @@ export default {
 
 export const BemVindo = () => (
   <div className="p-8 max-w-4xl mx-auto">
-    <h1 className="text-4xl font-bold text-primary mb-4">🏠 Design System Cony Interiores</h1>
+    <h1 className="text-4xl font-bold text-primary mb-4 inline-flex items-center gap-3">
+      <BookOpen className="w-8 h-8" />
+      Design System Cony Interiores
+    </h1>
     <p className="text-lg text-gray-600 mb-8">
-      Bem-vindo ao Design System da Cony Interiores! Este é o guia visual e técnico para todos os
-      componentes da plataforma.
+      Referência visual e técnica para construir interfaces consistentes, acessíveis e alinhadas com o produto.
     </p>
 
     <hr className="my-8 border-gray-200" />
 
-    <h2 className="text-2xl font-bold mb-4">🎯 Sobre o Projeto</h2>
+    <h2 className="text-2xl font-bold mb-4 inline-flex items-center gap-2">
+      <Sparkles className="w-6 h-6" />
+      Sobre o Projeto
+    </h2>
     <p className="text-gray-600 mb-4">
-      Este Design System foi criado para garantir consistência visual e eficiência no
-      desenvolvimento de interfaces para a Cony Interiores.
+      Este Design System organiza decisões de UI para reduzir retrabalho, acelerar entrega e manter previsibilidade entre páginas e componentes.
     </p>
 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
       <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <div className="text-3xl mb-2">⚛️</div>
+        <div className="mb-2 text-primary">
+          <Component className="w-7 h-7" />
+        </div>
         <h3 className="font-bold">React</h3>
-        <p className="text-sm text-gray-600">Biblioteca para construção de interfaces</p>
+        <p className="text-sm text-gray-600">Base de componentes da interface.</p>
       </div>
       <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <div className="text-3xl mb-2">🎨</div>
+        <div className="mb-2 text-primary">
+          <Palette className="w-7 h-7" />
+        </div>
         <h3 className="font-bold">Tailwind CSS</h3>
-        <p className="text-sm text-gray-600">Framework de estilos utilitários</p>
+        <p className="text-sm text-gray-600">Camada utilitária orientada a tokens.</p>
       </div>
       <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <div className="text-3xl mb-2">📚</div>
+        <div className="mb-2 text-primary">
+          <Layers className="w-7 h-7" />
+        </div>
         <h3 className="font-bold">Storybook</h3>
-        <p className="text-sm text-gray-600">Ferramenta de documentação de componentes</p>
+        <p className="text-sm text-gray-600">Ambiente de documentação e validação visual.</p>
       </div>
     </div>
 
     <hr className="my-8 border-gray-200" />
 
-    <h2 className="text-2xl font-bold mb-4">🎨 Tokens de Design</h2>
+    <h2 className="text-2xl font-bold mb-4 inline-flex items-center gap-2">
+      <Palette className="w-6 h-6" />
+      Tokens de Design
+    </h2>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-        <h3 className="font-bold text-green-700">🎨 Cores</h3>
+        <h3 className="font-bold text-green-700 inline-flex items-center gap-2">
+          <Palette className="w-4 h-4" />
+          Cores
+        </h3>
         <p className="text-sm text-gray-600">Paleta de cores da Cony Interiores</p>
         <a href="?path=/story/tokens-cores" className="text-sm text-primary hover:underline">
           Ver cores →
         </a>
       </div>
       <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-        <h3 className="font-bold text-blue-700">🔤 Tipografia</h3>
+        <h3 className="font-bold text-blue-700 inline-flex items-center gap-2">
+          <PenSquare className="w-4 h-4" />
+          Tipografia
+        </h3>
         <p className="text-sm text-gray-600">Sistema tipográfico com Inter e Playfair Display</p>
         <a href="?path=/story/tokens-tipografia" className="text-sm text-primary hover:underline">
           Ver tipografia →
         </a>
       </div>
       <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-        <h3 className="font-bold text-purple-700">📏 Espaçamento</h3>
+        <h3 className="font-bold text-purple-700 inline-flex items-center gap-2">
+          <Ruler className="w-4 h-4" />
+          Espaçamento
+        </h3>
         <p className="text-sm text-gray-600">Escala baseada em múltiplos de 4px</p>
         <a
           href="?path=/story/tokens-espa%C3%A7amento"
@@ -75,11 +108,14 @@ export const BemVindo = () => (
 
     <hr className="my-8 border-gray-200" />
 
-    <h2 className="text-2xl font-bold mb-4">🧩 Componentes</h2>
+    <h2 className="text-2xl font-bold mb-4 inline-flex items-center gap-2">
+      <Component className="w-6 h-6" />
+      Componentes
+    </h2>
 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div>
-        <h3 className="text-xl font-semibold mb-2">🔘 Átomos</h3>
+        <h3 className="text-xl font-semibold mb-2">Átomos</h3>
         <p className="text-sm text-gray-600 mb-2">Componentes básicos e reutilizáveis</p>
         <ul className="space-y-1 text-sm">
           <li>
@@ -115,7 +151,7 @@ export const BemVindo = () => (
         </ul>
       </div>
       <div>
-        <h3 className="text-xl font-semibold mb-2">🧬 Moléculas</h3>
+        <h3 className="text-xl font-semibold mb-2">Moléculas</h3>
         <p className="text-sm text-gray-600 mb-2">Combinações de átomos</p>
         <ul className="space-y-1 text-sm">
           <li>
@@ -139,7 +175,7 @@ export const BemVindo = () => (
         </ul>
       </div>
       <div>
-        <h3 className="text-xl font-semibold mb-2">🧠 Organismos</h3>
+        <h3 className="text-xl font-semibold mb-2">Organismos</h3>
         <p className="text-sm text-gray-600 mb-2">Componentes complexos</p>
         <ul className="space-y-1 text-sm">
           <li>
@@ -163,7 +199,10 @@ export const BemVindo = () => (
 
     <hr className="my-8 border-gray-200" />
 
-    <h2 className="text-2xl font-bold mb-4">📚 Como Usar</h2>
+    <h2 className="text-2xl font-bold mb-4 inline-flex items-center gap-2">
+      <BookOpen className="w-6 h-6" />
+      Como Usar
+    </h2>
     <div className="bg-gray-900 text-white p-4 rounded-lg mb-4 overflow-x-auto">
       <pre className="text-sm">
         {`import Button from '@/components/atoms/Button';
@@ -182,7 +221,7 @@ function MyComponent() {
 
     <div className="text-center text-gray-500">
       <p>
-        <strong>Feito com ❤️ para a Cony Interiores</strong>
+        <strong>Cony Interiores Design System</strong>
       </p>
       <p className="text-sm">Versão 1.0.0 - Julho 2026</p>
     </div>

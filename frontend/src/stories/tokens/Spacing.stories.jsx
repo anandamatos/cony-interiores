@@ -1,4 +1,5 @@
 import { spacing } from '../../styles/tokens/spacing';
+import { Info, Ruler } from 'lucide-react';
 
 export default {
   title: 'Tokens/Espaçamento',
@@ -14,9 +15,12 @@ export default {
 export const SpacingScale = {
   render: () => (
     <div className="p-8 max-w-2xl">
-      <h2 className="text-2xl font-bold text-primary mb-6">📏 Escala de Espaçamento</h2>
+      <h2 className="text-2xl font-bold text-primary mb-6 inline-flex items-center gap-2">
+        <Ruler className="w-6 h-6" />
+        Escala de Espaçamento
+      </h2>
       <p className="text-taupe mb-8">
-        A escala é baseada em múltiplos de 4px, garantindo consistência visual em toda a interface.
+        Escala baseada em múltiplos de 4px para manter ritmo visual consistente entre layout, componentes e conteúdo.
       </p>
 
       <div className="space-y-4">
@@ -33,8 +37,9 @@ export const SpacingScale = {
       </div>
 
       <div className="mt-8 p-4 bg-info/10 border border-info/20 rounded-lg">
-        <p className="text-sm text-info">
-          💡 <strong>Uso:</strong> Utilize os tokens de espaçamento para padding, margin e gap.
+        <p className="text-sm text-info inline-flex items-start gap-2">
+          <Info className="w-4 h-4 mt-0.5" />
+          <span><strong>Uso:</strong> aplique esta escala em padding, margin e gap antes de criar valores customizados.</span>
         </p>
       </div>
     </div>

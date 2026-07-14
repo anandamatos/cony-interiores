@@ -1,4 +1,5 @@
 import Header from "../../components/organisms/Header";
+import { MemoryRouter } from "react-router-dom";
 
 export default {
   title: "Organisms/Header",
@@ -11,8 +12,13 @@ export default {
 
 export const Default = {
   render: () => (
-    <div className="border-b border-border bg-white/70 backdrop-blur-md">
-      <Header />
-    </div>
+    <MemoryRouter>
+      <div className="min-h-[220px] bg-offWhite">
+        <Header />
+        <div className="pt-16 px-6 py-8 text-primary">
+          Conteudo para validar comportamento do header fixo e espacamento no mobile.
+        </div>
+      </div>
+    </MemoryRouter>
   ),
 };
