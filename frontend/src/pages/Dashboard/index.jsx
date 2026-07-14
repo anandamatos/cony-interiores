@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   ClipboardList,
   Users,
@@ -155,6 +156,7 @@ const statAccentMap = {
 };
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   // ============================================
   // ESTADOS
   // ============================================
@@ -249,7 +251,7 @@ const Dashboard = () => {
             <BarChart3 className="w-4 h-4" />
             Relatórios
           </Button>
-          <Button variant="primary" size="sm">
+          <Button variant="primary" size="sm" onClick={() => navigate('/services/new')}>
             <Plus className="w-4 h-4" />
             Novo Serviço
           </Button>

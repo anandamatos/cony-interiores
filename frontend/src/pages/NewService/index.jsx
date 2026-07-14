@@ -5,6 +5,7 @@ import Button from "../../components/atoms/Button";
 import Input from "../../components/atoms/Input";
 import Select from "../../components/atoms/Select";
 import Typography from "../../components/atoms/Typography";
+import api from "../../services/api";
 import { createService } from "../../services/serviceService";
 import { getSeamstresses } from "../../services/seamstressService";
 
@@ -22,19 +23,29 @@ const NewService = () => {
     observacoes: "",
   });
   const [seamstresses, setSeamstresses] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Carregar costureiras para o select
+  // Carregar dados para os selects
   useEffect(() => {
-    const loadSeamstresses = async () => {
+    const loadFormData = async () => {
       try {
-        const data = await getSeamstresses();
-        setSeamstresses(data);
+        const [seamstressData, clientsResponse, productsResponse] = await Promise.all([
+          getSeamstresses(),
+          api.get("/clientes/"),
+          api.get("/produtos/"),
+        ]);
+
+        setSeamstresses(seamstressData || []);
+        setClients(clientsResponse.data || []);
+        setProducts(productsResponse.data || []);
       } catch (error) {
-        console.error("Erro ao carregar costureiras:", error);
+        console.error("Erro ao carregar dados do formulário:", error);
       }
     };
-    loadSeamstresses();
+
+    loadFormData();
   }, []);
 
   const handleChange = (e) => {
@@ -112,7 +123,7 @@ const NewService = () => {
 
       console.log("Enviando serviço:", serviceData);
       await createService(serviceData);
-      navigate("/services");
+      navigate("/services", { state: { reload: Date.now() } });
     } catch (error) {
       console.error("Erro ao criar serviço:", error);
       console.log("Detalhes:", error.response?.data);
@@ -133,18 +144,20 @@ const NewService = () => {
     label: s.nome,
   }));
 
-  // Opções para cliente (hardcoded - ideal seria buscar da API)
   const clienteOptions = [
     { value: "", label: "Selecione um cliente" },
-    { value: "1", label: "João Silva" },
-    { value: "2", label: "Maria Souza" },
+    ...clients.map((client) => ({
+      value: String(client.id),
+      label: client.nome,
+    })),
   ];
 
-  // Opções para produto (hardcoded - ideal seria buscar da API)
   const produtoOptions = [
     { value: "", label: "Selecione um produto" },
-    { value: "1", label: "Cortina" },
-    { value: "2", label: "Forro" },
+    ...products.map((product) => ({
+      value: String(product.id),
+      label: product.nome,
+    })),
   ];
 
   return (

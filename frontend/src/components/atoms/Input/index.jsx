@@ -5,6 +5,8 @@ const Input = ({
   label,
   id,
   type = 'text',
+  multiline = false,
+  rows = 3,
   placeholder,
   value,
   onChange,
@@ -65,20 +67,37 @@ const Input = ({
         </label>
       )}
 
-      <input
-        id={inputId}
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        required={required}
-        disabled={disabled}
-        className={baseClasses.input}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        {...accessibilityProps}
-        {...props}
-      />
+      {multiline ? (
+        <textarea
+          id={inputId}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          required={required}
+          disabled={disabled}
+          rows={rows}
+          className={classNames(baseClasses.input, 'resize-y min-h-[100px]')}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          {...accessibilityProps}
+          {...props}
+        />
+      ) : (
+        <input
+          id={inputId}
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          required={required}
+          disabled={disabled}
+          className={baseClasses.input}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          {...accessibilityProps}
+          {...props}
+        />
+      )}
 
       {error && (
         <p id={`${inputId}-error`} className={baseClasses.error}>
