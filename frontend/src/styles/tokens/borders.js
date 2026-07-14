@@ -7,13 +7,16 @@ export const borders = {
   // Cantos arredondados
   radius: {
     none: '0px',
-    sm: '4px',
-    base: '6px',
-    md: '8px',
-    lg: '12px',
-    xl: '16px',
-    '2xl': '20px',
-    '3xl': '24px',
+    xs: '4px',
+    sm: '6px',
+    base: '8px',
+    md: '10px',
+    lg: '16px',
+    xl: '24px',
+    '2xl': '32px',
+    '3xl': '40px',
+    card: '10px',
+    pill: '999px',
     full: '9999px',
   },
 

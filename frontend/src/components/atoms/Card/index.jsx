@@ -39,9 +39,9 @@ const Card = ({
   };
 
   const baseClasses = classNames(
-    'rounded-[10px]',
+    'rounded-card',
     'overflow-hidden',
-    'transition-all duration-300 ease-spring',
+    'transition-all duration-normal ease-spring',
     variants[variant] || variants.default,
     shadowClasses[shadow] || shadowClasses.card,
     padding && 'p-6',

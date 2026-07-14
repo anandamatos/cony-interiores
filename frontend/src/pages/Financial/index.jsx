@@ -59,7 +59,7 @@ const Financial = () => {
                 {formatCurrency(financialData.totalRevenue)}
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-success/10 text-success flex items-center justify-center">
+            <div className="w-10 h-10 rounded-md bg-success/10 text-success flex items-center justify-center">
               <DollarSign className="w-5 h-5" />
             </div>
           </div>
@@ -79,7 +79,7 @@ const Financial = () => {
                 {formatCurrency(financialData.pendingPayments)}
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-warning/10 text-warning flex items-center justify-center">
+            <div className="w-10 h-10 rounded-md bg-warning/10 text-warning flex items-center justify-center">
               <CreditCard className="w-5 h-5" />
             </div>
           </div>
@@ -99,7 +99,7 @@ const Financial = () => {
                 {formatCurrency(financialData.completedPayments)}
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-info/10 text-info flex items-center justify-center">
+            <div className="w-10 h-10 rounded-md bg-info/10 text-info flex items-center justify-center">
               <Wallet className="w-5 h-5" />
             </div>
           </div>
@@ -119,13 +119,13 @@ const Financial = () => {
                 85%
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-offWhite flex items-center justify-center text-taupe">
+            <div className="w-10 h-10 rounded-md bg-offWhite flex items-center justify-center text-taupe">
               <TrendingUp className="w-5 h-5" />
             </div>
           </div>
-          <div className="w-full h-2 bg-gray-200 rounded-full mt-3 overflow-hidden">
+          <div className="w-full h-2 bg-gray-200 rounded-md mt-3 overflow-hidden">
             <div
-              className="h-full rounded-full bg-success"
+              className="h-full rounded-md bg-success"
               style={{ width: '85%' }}
             />
           </div>
@@ -147,7 +147,7 @@ const Financial = () => {
             return (
               <div
                 key={transaction.id}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-lg hover:bg-offWhite transition-colors border-b border-gray/50 last:border-b-0"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-md hover:bg-offWhite transition-colors border-b border-gray/50 last:border-b-0"
               >
                 <div>
                   <Typography variant="h4" className="text-sm">

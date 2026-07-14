@@ -1,32 +1,34 @@
-import { Search, Bell, HelpCircle } from 'lucide-react';
+import { Search, Bell } from 'lucide-react';
 import classNames from 'classnames';
 
 const Header = ({ onSearch, notificationCount = 3 }) => {
   const baseClasses = {
     container: classNames(
-      'h-16 bg-white/70 backdrop-blur-md',
-      'border-b border-gray/30',
-      'flex items-center justify-between px-4 sm:px-6',
+      'fixed top-0 left-0 right-0 lg:left-64 z-20 h-16',
+      'bg-[rgba(255,255,255,0.78)] backdrop-blur-2xl supports-[backdrop-filter]:bg-[rgba(255,255,255,0.68)]',
+      'border-b border-[rgba(75,58,46,0.10)]',
+      'shadow-header',
+      'flex items-center justify-between pl-20 pr-3 sm:pl-24 sm:pr-4 lg:px-6',
       'flex-shrink-0'
     ),
-    left: 'flex items-center gap-3 flex-1 min-w-0',
-    title: 'text-sm font-semibold text-primary hidden sm:block',
+    left: 'flex items-center gap-2 sm:gap-3 flex-1 min-w-0',
+    title: 'text-sm font-semibold text-primary hidden md:block whitespace-nowrap',
     titleSpan: 'text-taupe font-normal',
-    searchWrapper: 'relative flex-1 max-w-md ml-4',
+    searchWrapper: 'relative flex-1 min-w-[120px] sm:min-w-[160px] md:min-w-[220px] max-w-[520px] ml-2 sm:ml-3 md:ml-4',
     searchIcon: 'absolute left-3 top-1/2 -translate-y-1/2 text-taupe',
     searchInput: classNames(
-      'w-full pl-10 pr-4 py-2 rounded-full',
+      'w-full pl-10 pr-4 py-2 rounded-pill',
       'bg-offWhite border border-transparent',
       'text-primary placeholder-taupe',
-      'transition-all duration-200 ease-spring',
+      'transition-all duration-fast ease-spring',
       'focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20',
       'focus:bg-white'
     ),
-    right: 'flex items-center gap-2 sm:gap-4 ml-4',
+    right: 'flex items-center gap-2 sm:gap-3 md:gap-4 ml-2 sm:ml-3',
     iconBtn: classNames(
       'p-2 rounded-full',
       'text-taupe hover:text-primary hover:bg-offWhite',
-      'transition-all duration-200 ease-spring',
+      'transition-all duration-fast ease-spring',
       'relative focus:outline-none focus:ring-2 focus:ring-primary/20'
     ),
     dot: 'absolute top-2 right-2 w-2.5 h-2.5 bg-terracota rounded-full border-2 border-white',
@@ -36,7 +38,7 @@ const Header = ({ onSearch, notificationCount = 3 }) => {
       'w-9 h-9 rounded-full',
       'bg-gradient-primary text-white',
       'flex items-center justify-center font-semibold text-sm',
-      'transition-all duration-200 ease-spring',
+      'transition-all duration-fast ease-spring',
       'hover:scale-105 hover:shadow-md'
     ),
     userName: 'text-sm font-semibold text-primary hidden sm:block',
@@ -70,13 +72,6 @@ const Header = ({ onSearch, notificationCount = 3 }) => {
         >
           <Bell size={20} />
           {notificationCount > 0 && <span className={baseClasses.dot} />}
-        </button>
-
-        <button
-          className={baseClasses.iconBtn}
-          aria-label="Ajuda"
-        >
-          <HelpCircle size={20} />
         </button>
 
         <span className={baseClasses.divider} aria-hidden="true" />

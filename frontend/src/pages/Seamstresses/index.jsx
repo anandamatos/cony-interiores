@@ -88,7 +88,7 @@ const Seamstresses = () => {
             return (
               <Card key={seamstress.id} hover className="p-5">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-primary text-white flex items-center justify-center font-bold text-lg flex-shrink-0">
+                  <div className="w-12 h-12 rounded-md bg-gradient-primary text-white flex items-center justify-center font-bold text-lg flex-shrink-0">
                     {seamstress.name.charAt(0)}
                   </div>
                   <div className="flex-1 min-w-0">

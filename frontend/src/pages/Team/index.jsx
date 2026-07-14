@@ -67,7 +67,7 @@ const Team = () => {
           <Card key={member.id} hover className="p-4 sm:p-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <span className="w-10 h-10 rounded-full bg-gradient-primary text-white flex items-center justify-center font-bold">
+                <span className="w-10 h-10 rounded-md bg-gradient-primary text-white flex items-center justify-center font-bold">
                   {member.name.charAt(0)}
                 </span>
                 <div>

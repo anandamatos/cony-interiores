@@ -3,6 +3,7 @@ import { typography } from './src/styles/tokens/typography.js';
 import { spacing } from './src/styles/tokens/spacing.js';
 import { shadows } from './src/styles/tokens/shadows.js';
 import { borders } from './src/styles/tokens/borders.js';
+import { animations } from './src/styles/tokens/animations.js';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -60,6 +61,7 @@ export default {
 
       borderRadius: {
         ...borders.radius,
+        xs: borders.radius.xs,
         sm: borders.radius.sm,
         DEFAULT: borders.radius.base,
         md: borders.radius.md,
@@ -67,6 +69,8 @@ export default {
         xl: borders.radius.xl,
         '2xl': borders.radius['2xl'],
         '3xl': borders.radius['3xl'],
+        card: borders.radius.card,
+        pill: borders.radius.pill,
         full: borders.radius.full,
       },
 
@@ -75,12 +79,13 @@ export default {
       },
 
       boxShadow: {
-        ...shadows,
+        none: shadows.none,
         sm: shadows.sm,
-        base: shadows.base,
         md: shadows.md,
         lg: shadows.lg,
         xl: shadows.xl,
+        surface: shadows.surface,
+        'surface-hover': shadows.surfaceHover,
         card: shadows.card,
         'card-hover': shadows.cardHover,
         elevated: shadows.elevated,
@@ -88,6 +93,10 @@ export default {
         modal: shadows.modal,
         sidebar: shadows.sidebar,
         header: shadows.header,
+        button: shadows.button,
+        'button-hover': shadows.buttonHover,
+        'focus-gold': shadows.focusGold,
+        inset: shadows.inset,
         gold: shadows.gold,
         terracota: shadows.terracota,
         sage: shadows.sage,
@@ -99,8 +108,31 @@ export default {
       },
 
       transitionTimingFunction: {
-        spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-        smooth: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        ...animations.easing,
+      },
+
+      transitionDuration: {
+        instant: animations.duration.instant,
+        fast: animations.duration.fast,
+        normal: animations.duration.normal,
+        slow: animations.duration.slow,
+        slower: animations.duration.slower,
+      },
+
+      keyframes: {
+        ...animations.keyframes,
+      },
+
+      animation: {
+        'fade-in': `fadeIn ${animations.duration.slow} ${animations.easing.easeOut} both`,
+        'slide-up': `slideUp ${animations.duration.slow} ${animations.easing.easeOut} both`,
+        'slide-down': `slideDown ${animations.duration.slow} ${animations.easing.easeOut} both`,
+        'spring-in': `springIn ${animations.duration.normal} ${animations.easing.spring} both`,
+        pulse: `pulse ${animations.duration.slower} ${animations.easing.easeInOut} infinite`,
+        float: `float ${animations.duration.slower} ${animations.easing.easeInOut} infinite`,
+        glow: `glow ${animations.duration.slower} ${animations.easing.easeInOut} infinite`,
+        'count-up': `countUp ${animations.duration.slow} ${animations.easing.easeOut} both`,
+        'expand-width': `expandWidth ${animations.duration.slow} ${animations.easing.spring} both`,
       },
 
       backgroundImage: {

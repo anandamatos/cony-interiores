@@ -31,10 +31,11 @@ const Sidebar = () => {
 
   const baseClasses = {
     container: classNames(
-      'fixed lg:static inset-y-0 left-0 z-40',
+      'fixed inset-y-0 left-0 z-40',
       'w-64 bg-white border-r border-[rgba(75,58,46,0.08)]',
+      'shadow-sidebar',
       'flex flex-col h-screen',
-      'transition-transform duration-300 ease-spring',
+      'transition-transform duration-normal ease-spring',
       isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
     ),
     overlay: classNames(
@@ -44,10 +45,10 @@ const Sidebar = () => {
     ),
     header: 'flex items-center gap-3 px-6 h-16 border-b border-[rgba(75,58,46,0.08)] flex-shrink-0',
     logo: classNames(
-      'w-11 h-11 rounded-xl',
+      'w-11 h-11 rounded-sm',
       'bg-[#4B3A2E]',
       'flex items-center justify-center flex-shrink-0',
-      'transition-all duration-300 ease-spring',
+      'transition-all duration-normal ease-spring',
       'hover:scale-105 hover:shadow-md'
     ),
     logoImg: 'w-full h-full object-contain p-2.5',
@@ -64,17 +65,18 @@ const Sidebar = () => {
       'mt-4'
     ),
     link: ({ isActive }) => classNames(
-      'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium',
+      'flex items-center gap-3 px-3 py-2.5 text-sm font-medium',
       'transition-all duration-300 ease-spring',
+      'duration-normal',
       'focus:outline-none focus:ring-2 focus:ring-primary/20',
       isActive
-        ? 'bg-gradient-gold text-primary shadow-sm font-semibold ring-1 ring-gold/20'
-        : 'text-primary/70 opacity-70 hover:bg-offWhite hover:text-primary hover:opacity-100 hover:translate-x-1'
+        ? 'rounded-sm bg-gradient-gold text-primary shadow-sm font-semibold ring-1 ring-gold/20'
+        : 'rounded-md text-primary/70 opacity-70 hover:bg-offWhite hover:text-primary hover:opacity-100 hover:translate-x-1'
     ),
     icon: 'w-5 h-5 flex-shrink-0',
     badge: classNames(
       'ml-auto bg-gold text-white',
-      'px-2 py-0.5 rounded-lg',
+      'px-2 py-0.5 rounded-md',
       'text-xs font-semibold'
     ),
     footer: classNames(
@@ -88,13 +90,13 @@ const Sidebar = () => {
     footerRole: 'text-xs text-taupe truncate',
     logoutBtn: classNames(
       'p-2 rounded-lg text-taupe',
-      'transition-all duration-300 ease-spring',
+      'transition-all duration-normal ease-spring',
       'hover:text-danger hover:bg-danger/10'
     ),
     mobileToggle: classNames(
       'lg:hidden fixed top-4 left-4 z-50',
       'p-2 rounded-lg bg-white shadow-md border border-[rgba(75,58,46,0.08)]',
-      'transition-all duration-300 ease-spring',
+      'transition-all duration-normal ease-spring',
       'hover:bg-offWhite',
       'focus:outline-none focus:ring-2 focus:ring-primary/20'
     ),
@@ -160,7 +162,7 @@ const Sidebar = () => {
             </NavLink>
           ))}
 
-          <div className={baseClasses.navLabel}>Configurações</div>
+          <div className={classNames(baseClasses.navLabel, 'mt-10')}>Configurações</div>
           <NavLink
             to="/settings"
             className={baseClasses.link}

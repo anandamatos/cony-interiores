@@ -79,9 +79,9 @@ const Capacity = () => {
               {capacityData.currentLoad < 70 ? 'Boa' : capacityData.currentLoad < 85 ? 'Média' : 'Crítica'}
             </Badge>
           </div>
-          <div className="w-full h-2 bg-gray-200 rounded-full mt-3 overflow-hidden">
+          <div className="w-full h-2 bg-gray-200 rounded-md mt-3 overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${
+              className={`h-full rounded-md transition-all duration-500 ${
                 capacityData.currentLoad < 70 ? 'bg-success' :
                 capacityData.currentLoad < 85 ? 'bg-warning' : 'bg-danger'
               }`}
@@ -100,7 +100,7 @@ const Capacity = () => {
                 {capacityData.available}%
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-offWhite flex items-center justify-center text-taupe">
+            <div className="w-10 h-10 rounded-md bg-offWhite flex items-center justify-center text-taupe">
               <Users className="w-5 h-5" />
             </div>
           </div>
@@ -116,7 +116,7 @@ const Capacity = () => {
                 {capacityData.servicesInProgress}
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-offWhite flex items-center justify-center text-taupe">
+            <div className="w-10 h-10 rounded-md bg-offWhite flex items-center justify-center text-taupe">
               <Package className="w-5 h-5" />
             </div>
           </div>
@@ -132,7 +132,7 @@ const Capacity = () => {
                 {capacityData.upcoming}
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-offWhite flex items-center justify-center text-taupe">
+            <div className="w-10 h-10 rounded-md bg-offWhite flex items-center justify-center text-taupe">
               <Calendar className="w-5 h-5" />
             </div>
           </div>

@@ -14,11 +14,11 @@ const Button = ({
 }) => {
   // Variantes de estilo com nova paleta
   const variants = {
-    primary: 'bg-primary text-offWhite hover:bg-primary-hover focus:ring-primary/30 shadow-sm hover:shadow-md',
+    primary: 'bg-primary text-offWhite hover:bg-primary-hover focus:ring-primary/30 shadow-button hover:shadow-button-hover',
     secondary: 'bg-transparent text-primary border border-gray/400 hover:bg-offWhite focus:ring-primary/20',
-    gold: 'bg-gradient-gold text-primary hover:brightness-105 focus:ring-gold/30 shadow-sm hover:shadow-md',
-    terracota: 'bg-terracota text-white hover:bg-terracota/90 focus:ring-terracota/30 shadow-sm hover:shadow-md',
-    danger: 'bg-danger text-white hover:bg-danger/90 focus:ring-danger/30 shadow-sm hover:shadow-md',
+    gold: 'bg-gradient-gold text-primary hover:brightness-105 focus:ring-gold/30 shadow-button hover:shadow-button-hover',
+    terracota: 'bg-terracota text-white hover:bg-terracota/90 focus:ring-terracota/30 shadow-button hover:shadow-button-hover',
+    danger: 'bg-danger text-white hover:bg-danger/90 focus:ring-danger/30 shadow-button hover:shadow-button-hover',
     ghost: 'bg-transparent text-primary hover:bg-offWhite focus:ring-primary/20',
     outline: 'border border-primary text-primary hover:bg-primary/5 focus:ring-primary/20',
   };
@@ -33,8 +33,8 @@ const Button = ({
   // Classes base
   const baseClasses = {
     button: classNames(
-      'inline-flex items-center justify-center gap-2 rounded-[6px] font-semibold font-primary',
-      'transition-all duration-200 ease-spring',
+      'inline-flex items-center justify-center gap-2 rounded-sm font-semibold font-primary',
+      'transition-all duration-fast ease-spring',
       'focus:outline-none focus:ring-2 focus:ring-offset-2',
       'disabled:opacity-50 disabled:cursor-not-allowed',
       'active:scale-95',

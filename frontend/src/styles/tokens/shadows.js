@@ -6,24 +6,30 @@
 export const shadows = {
   none: 'none',
 
-  // Sombras para volume e profundidade
-  // Baseadas no protótipo HTML
-  sm: '0 1px 4px rgba(75, 58, 46, 0.04)',
-  base: '0 2px 8px rgba(75, 58, 46, 0.05)',
-  md: '0 8px 16px rgba(75, 58, 46, 0.06)',
-  lg: '0 16px 32px rgba(75, 58, 46, 0.08)',
-  xl: '0 24px 48px rgba(75, 58, 46, 0.10)',
+  // Escala principal (fiel ao HTML de referencia)
+  sm: '0 1px 4px rgba(75, 58, 46, 0.06)',
+  md: '0 4px 16px rgba(75, 58, 46, 0.08)',
+  lg: '0 8px 32px rgba(75, 58, 46, 0.12)',
+  xl: '0 16px 48px rgba(75, 58, 46, 0.16)',
 
-  // Efeitos de volume específicos
-  card: '0 8px 16px rgba(75, 58, 46, 0.05), 0 2px 4px rgba(75, 58, 46, 0.03)',
-  cardHover: '0 12px 24px rgba(75, 58, 46, 0.08), 0 4px 8px rgba(75, 58, 46, 0.04)',
+  // Camada de superficie discreta observada em cards do prototipo
+  surface: '0 2px 8px rgba(0, 0, 0, 0.04)',
+  surfaceHover: '0 6px 18px rgba(0, 0, 0, 0.07)',
 
-  // Efeitos para elementos elevados
-  elevated: '0 4px 12px rgba(75, 58, 46, 0.04), 0 1px 4px rgba(75, 58, 46, 0.02)',
-  dropdown: '0 16px 32px rgba(75, 58, 46, 0.08)',
-  modal: '0 24px 48px rgba(75, 58, 46, 0.12)',
+  // Semanticos para o DS
+  card: '0 2px 8px rgba(0, 0, 0, 0.04)',
+  cardHover: '0 4px 16px rgba(75, 58, 46, 0.08)',
   sidebar: '2px 0 16px rgba(75, 58, 46, 0.04)',
   header: '0 2px 8px rgba(75, 58, 46, 0.03)',
+  button: '0 1px 4px rgba(75, 58, 46, 0.06)',
+  buttonHover: '0 4px 16px rgba(75, 58, 46, 0.08)',
+  focusGold: '0 0 0 4px rgba(201, 168, 106, 0.15)',
+
+  // Efeitos para sobreposicoes
+  elevated: '0 8px 32px rgba(75, 58, 46, 0.12)',
+  dropdown: '0 12px 32px rgba(75, 58, 46, 0.14)',
+  modal: '0 24px 48px rgba(75, 58, 46, 0.18)',
+  inset: 'inset 0 1px 2px rgba(75, 58, 46, 0.08)',
 
   // Sombras com cores de acento
   gold: '0 4px 16px rgba(201, 168, 106, 0.15)',
@@ -37,13 +43,4 @@ export const shadows = {
   statSage: '0 8px 16px rgba(141, 154, 186, 0.12), 0 2px 4px rgba(141, 154, 186, 0.04)',
   statGold: '0 8px 16px rgba(201, 168, 106, 0.12), 0 2px 4px rgba(201, 168, 106, 0.04)',
   statTerracota: '0 8px 16px rgba(181, 106, 74, 0.12), 0 2px 4px rgba(181, 106, 74, 0.04)',
-
-  // Gradientes (mantidos)
-  gradients: {
-    primary: 'linear-gradient(135deg, #C9A86A 0%, #A8968B 50%, #4B3A2E 100%)',
-    gold: 'linear-gradient(135deg, #D9C7B1 0%, #C9A86A 100%)',
-    warm: 'linear-gradient(135deg, #4B3A2E 0%, #B56A4A 100%)',
-    sage: 'linear-gradient(135deg, #8D9ABA 0%, #465057 100%)',
-    offWhite: 'linear-gradient(135deg, #F6F3EF 0%, #E6E2DD 100%)',
-  },
 };
