@@ -69,7 +69,7 @@ export const fetchCapacityWithFilters = async (filters = {}) => {
     // Em produção, não usar mock silencioso
     if (!USE_MOCKS && import.meta.env.PROD) {
       console.error('Erro ao buscar dados de capacidade:', error);
-      throw new Error('Falha ao carregar dados de capacidade. Tente novamente.');
+      throw new Error('Erro ao processar dados de capacidade', { cause: error });
     }
     
     console.warn('API de capacidade não disponível, usando dados mockados:', error.message);

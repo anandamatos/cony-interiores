@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import CostureiraForm from '../../components/molecules/CostureiraForm';
 import { createSeamstress } from '../../services/seamstressService';
