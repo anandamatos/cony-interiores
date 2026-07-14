@@ -1,9 +1,9 @@
-import Footer from '../../components/organisms/Footer';
+import Footer from "../../components/organisms/Footer";
 
 export default {
-  title: 'Organisms/Footer',
+  title: "Organisms/Footer",
   component: Footer,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 export const Default = {

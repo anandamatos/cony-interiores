@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import Typography from '../../components/atoms/Typography';
-import Card from '../../components/atoms/Card';
-import Button from '../../components/atoms/Button';
-import Select from '../../components/atoms/Select';
-import { Bar } from 'react-chartjs-2';
+import { useState, useEffect } from "react";
+import Typography from "../../components/atoms/Typography";
+import Card from "../../components/atoms/Card";
+import Button from "../../components/atoms/Button";
+import Select from "../../components/atoms/Select";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,37 +12,30 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
-import { fetchCapacityWithFilters } from '../../services/capacityService';
+} from "chart.js";
+import { fetchCapacityWithFilters } from "../../services/capacityService";
 
 // Registrar componentes do Chart.js
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const periodOptions = [
-  { value: 'semana', label: 'Esta Semana' },
-  { value: 'mes', label: 'Este Mês' },
+  { value: "semana", label: "Esta Semana" },
+  { value: "mes", label: "Este Mês" },
 ];
 
 const specialtyOptions = [
-  { value: 'todas', label: 'Todas Especialidades' },
-  { value: 'Cortinas', label: 'Cortinas' },
-  { value: 'Forros', label: 'Forros' },
-  { value: 'Reformas', label: 'Reformas' },
-  { value: 'Almofadas', label: 'Almofadas' },
+  { value: "todas", label: "Todas Especialidades" },
+  { value: "Cortinas", label: "Cortinas" },
+  { value: "Forros", label: "Forros" },
+  { value: "Reformas", label: "Reformas" },
+  { value: "Almofadas", label: "Almofadas" },
 ];
 
 const Capacity = () => {
   // 1. DECLARE o estado primeiro
   const [data, setData] = useState([]);
-  const [period, setPeriod] = useState('semana');
-  const [specialty, setSpecialty] = useState('todas');
+  const [period, setPeriod] = useState("semana");
+  const [specialty, setSpecialty] = useState("todas");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -55,22 +48,22 @@ const Capacity = () => {
   const loadData = async (filters = {}) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const result = await fetchCapacityWithFilters({
         period: filters.period || period,
         specialty: filters.specialty || specialty,
       });
-      
+
       if (result && result.length > 0) {
         setData(result);
       } else {
         setData([]);
-        setError('Nenhum dado encontrado para os filtros selecionados.');
+        setError("Nenhum dado encontrado para os filtros selecionados.");
       }
     } catch (err) {
-      console.error('Erro ao carregar dados de capacidade:', err);
-      setError('Erro ao carregar dados. Tente novamente.');
+      console.error("Erro ao carregar dados de capacidade:", err);
+      setError("Erro ao carregar dados. Tente novamente.");
       setData([]);
     } finally {
       setLoading(false);
@@ -84,52 +77,51 @@ const Capacity = () => {
 
   // Resetar filtros
   const resetFilters = () => {
-    setPeriod('semana');
-    setSpecialty('todas');
-    loadData({ period: 'semana', specialty: 'todas' });
+    setPeriod("semana");
+    setSpecialty("todas");
+    loadData({ period: "semana", specialty: "todas" });
   };
 
   // 2. AGORA use a variável data para calcular maxCapacity
-  const maxCapacity = data.length > 0 
-    ? Math.max(...data.map(item => item.capacidade || 10), 10)
-    : 10;
+  const maxCapacity =
+    data.length > 0 ? Math.max(...data.map((item) => item.capacidade || 10), 10) : 10;
 
   // Cores personalizadas por costureira
   const colors = [
-    'rgba(46, 125, 50, 0.8)',
-    'rgba(245, 124, 0, 0.8)',
-    'rgba(33, 150, 243, 0.8)',
-    'rgba(156, 39, 176, 0.8)',
-    'rgba(255, 99, 132, 0.8)',
-    'rgba(54, 162, 235, 0.8)',
+    "rgba(46, 125, 50, 0.8)",
+    "rgba(245, 124, 0, 0.8)",
+    "rgba(33, 150, 243, 0.8)",
+    "rgba(156, 39, 176, 0.8)",
+    "rgba(255, 99, 132, 0.8)",
+    "rgba(54, 162, 235, 0.8)",
   ];
 
   const borderColors = [
-    'rgba(46, 125, 50, 1)',
-    'rgba(245, 124, 0, 1)',
-    'rgba(33, 150, 243, 1)',
-    'rgba(156, 39, 176, 1)',
-    'rgba(255, 99, 132, 1)',
-    'rgba(54, 162, 235, 1)',
+    "rgba(46, 125, 50, 1)",
+    "rgba(245, 124, 0, 1)",
+    "rgba(33, 150, 243, 1)",
+    "rgba(156, 39, 176, 1)",
+    "rgba(255, 99, 132, 1)",
+    "rgba(54, 162, 235, 1)",
   ];
 
   // Configuração do gráfico
   const chartData = {
-    labels: data.map(item => item.nome || item.costureira__nome || ''),
+    labels: data.map((item) => item.nome || item.costureira__nome || ""),
     datasets: [
       {
-        label: 'Carga Atual',
-        data: data.map(item => item.carga || 0),
+        label: "Carga Atual",
+        data: data.map((item) => item.carga || 0),
         backgroundColor: data.map((_, index) => colors[index % colors.length]),
         borderColor: data.map((_, index) => borderColors[index % borderColors.length]),
         borderWidth: 2,
         borderRadius: 4,
       },
       {
-        label: 'Capacidade Máxima',
-        data: data.map(item => item.capacidade || 10),
-        backgroundColor: 'rgba(200, 200, 200, 0.2)',
-        borderColor: 'rgba(200, 200, 200, 0.8)',
+        label: "Capacidade Máxima",
+        data: data.map((item) => item.capacidade || 10),
+        backgroundColor: "rgba(200, 200, 200, 0.2)",
+        borderColor: "rgba(200, 200, 200, 0.8)",
         borderWidth: 2,
         borderRadius: 4,
         borderDash: [5, 5],
@@ -142,31 +134,31 @@ const Capacity = () => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
         labels: {
           font: { size: 12 },
           usePointStyle: true,
-          pointStyle: 'circle',
+          pointStyle: "circle",
         },
       },
       title: {
         display: true,
-        text: 'Carga de Trabalho por Costureira',
-        font: { size: 16, weight: 'bold' },
+        text: "Carga de Trabalho por Costureira",
+        font: { size: 16, weight: "bold" },
       },
       tooltip: {
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        titleColor: '#212121',
-        bodyColor: '#757575',
-        borderColor: 'rgba(0, 0, 0, 0.1)',
+        backgroundColor: "rgba(255, 255, 255, 0.95)",
+        titleColor: "#212121",
+        bodyColor: "#757575",
+        borderColor: "rgba(0, 0, 0, 0.1)",
         borderWidth: 1,
         cornerRadius: 8,
         padding: 12,
         callbacks: {
           label: function (context) {
-            const label = context.dataset.label || '';
+            const label = context.dataset.label || "";
             const value = context.raw || 0;
-            if (label === 'Capacidade Máxima') {
+            if (label === "Capacidade Máxima") {
               return `${label}: ${value}`;
             }
             const percentage = ((value / 10) * 100).toFixed(0);
@@ -182,11 +174,11 @@ const Capacity = () => {
         ticks: {
           stepSize: Math.ceil(maxCapacity / 5),
           callback: function (value) {
-            return value + '/10';
+            return value + "/10";
           },
         },
         grid: {
-          color: 'rgba(0, 0, 0, 0.05)',
+          color: "rgba(0, 0, 0, 0.05)",
         },
       },
       x: {
@@ -197,25 +189,33 @@ const Capacity = () => {
 
   // Calcular estatísticas
   const totalSeamstresses = data.length;
-  const averageLoad = totalSeamstresses > 0 
-    ? (data.reduce((acc, curr) => acc + (curr.carga || 0), 0) / totalSeamstresses).toFixed(1)
-    : '0';
-  const maxLoad = totalSeamstresses > 0 
-    ? data.reduce((a, b) => (a.carga || 0) > (b.carga || 0) ? a : b)
-    : { nome: '-', carga: 0 };
-  const minLoad = totalSeamstresses > 0 
-    ? data.reduce((a, b) => (a.carga || 0) < (b.carga || 0) ? a : b)
-    : { nome: '-', carga: 0 };
+  const averageLoad =
+    totalSeamstresses > 0
+      ? (data.reduce((acc, curr) => acc + (curr.carga || 0), 0) / totalSeamstresses).toFixed(1)
+      : "0";
+  const maxLoad =
+    totalSeamstresses > 0
+      ? data.reduce((a, b) => ((a.carga || 0) > (b.carga || 0) ? a : b))
+      : { nome: "-", carga: 0 };
+  const minLoad =
+    totalSeamstresses > 0
+      ? data.reduce((a, b) => ((a.carga || 0) < (b.carga || 0) ? a : b))
+      : { nome: "-", carga: 0 };
 
   // Função para determinar status baseado na carga
   const getStatus = (carga) => {
     if (carga > 8) {
-      return { bg: 'bg-error/10', text: 'text-error', bar: 'bg-error', label: '🔴 Sobrecarregada' };
+      return { bg: "bg-error/10", text: "text-error", bar: "bg-error", label: "🔴 Sobrecarregada" };
     }
     if (carga > 5) {
-      return { bg: 'bg-warning/10', text: 'text-warning-dark', bar: 'bg-warning', label: '🟡 Carga Média' };
+      return {
+        bg: "bg-warning/10",
+        text: "text-warning-dark",
+        bar: "bg-warning",
+        label: "🟡 Carga Média",
+      };
     }
-    return { bg: 'bg-success/10', text: 'text-success', bar: 'bg-success', label: '🟢 Disponível' };
+    return { bg: "bg-success/10", text: "text-success", bar: "bg-success", label: "🟢 Disponível" };
   };
 
   if (loading && data.length === 0) {
@@ -223,7 +223,9 @@ const Capacity = () => {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <Typography variant="body" className="mt-4">Carregando dados de capacidade...</Typography>
+          <Typography variant="body" className="mt-4">
+            Carregando dados de capacidade...
+          </Typography>
         </div>
       </div>
     );
@@ -261,24 +263,21 @@ const Capacity = () => {
       </div>
 
       {/* Indicador de filtro ativo */}
-      {(period !== 'semana' || specialty !== 'todas') && (
+      {(period !== "semana" || specialty !== "todas") && (
         <div className="mb-4 p-3 bg-primary/5 rounded-lg border border-primary/20">
           <div className="flex flex-wrap items-center gap-4 text-sm">
             <span className="font-medium text-text-primary">Filtros ativos:</span>
-            {period !== 'semana' && (
+            {period !== "semana" && (
               <span className="px-2 py-1 bg-white rounded border border-border">
-                Período: {periodOptions.find(p => p.value === period)?.label}
+                Período: {periodOptions.find((p) => p.value === period)?.label}
               </span>
             )}
-            {specialty !== 'todas' && (
+            {specialty !== "todas" && (
               <span className="px-2 py-1 bg-white rounded border border-border">
                 Especialidade: {specialty}
               </span>
             )}
-            <button
-              onClick={resetFilters}
-              className="text-primary hover:underline text-sm"
-            >
+            <button onClick={resetFilters} className="text-primary hover:underline text-sm">
               Remover todos
             </button>
           </div>
@@ -288,7 +287,9 @@ const Capacity = () => {
       {error && data.length === 0 ? (
         <Card>
           <div className="text-center py-8">
-            <Typography variant="h4" className="text-error">⚠️ {error}</Typography>
+            <Typography variant="h4" className="text-error">
+              ⚠️ {error}
+            </Typography>
             <Typography variant="body" className="mt-2 text-text-secondary">
               Tente ajustar os filtros ou recarregar a página.
             </Typography>
@@ -303,20 +304,28 @@ const Capacity = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <Card>
               <Typography variant="caption">Total de Costureiras</Typography>
-              <Typography variant="h2" className="mt-1">{totalSeamstresses}</Typography>
+              <Typography variant="h2" className="mt-1">
+                {totalSeamstresses}
+              </Typography>
             </Card>
             <Card>
               <Typography variant="caption">Carga Média</Typography>
-              <Typography variant="h2" className="mt-1">{averageLoad}</Typography>
+              <Typography variant="h2" className="mt-1">
+                {averageLoad}
+              </Typography>
             </Card>
             <Card>
               <Typography variant="caption">Maior Carga</Typography>
-              <Typography variant="h2" className="mt-1 truncate">{maxLoad.nome}</Typography>
+              <Typography variant="h2" className="mt-1 truncate">
+                {maxLoad.nome}
+              </Typography>
               <Typography variant="caption">{maxLoad.carga}/10 serviços</Typography>
             </Card>
             <Card>
               <Typography variant="caption">Menor Carga</Typography>
-              <Typography variant="h2" className="mt-1 truncate">{minLoad.nome}</Typography>
+              <Typography variant="h2" className="mt-1 truncate">
+                {minLoad.nome}
+              </Typography>
               <Typography variant="caption">{minLoad.carga}/10 serviços</Typography>
             </Card>
           </div>
@@ -337,7 +346,9 @@ const Capacity = () => {
           </Card>
 
           {/* Detalhamento por Costureira */}
-          <Typography variant="h3" className="mb-4">Detalhamento por Costureira</Typography>
+          <Typography variant="h3" className="mb-4">
+            Detalhamento por Costureira
+          </Typography>
           {data.length === 0 ? (
             <Card>
               <Typography variant="body" className="text-text-secondary text-center py-8">
@@ -351,10 +362,14 @@ const Capacity = () => {
                 const capacidade = item.capacidade || 10;
                 const percent = (carga / capacidade) * 100;
                 const status = getStatus(carga);
-                const nome = item.nome || item.costureira__nome || 'Costureira';
+                const nome = item.nome || item.costureira__nome || "Costureira";
 
                 return (
-                  <Card key={item.id} hover className="p-4 transition-all duration-200 hover:shadow-md">
+                  <Card
+                    key={item.id}
+                    hover
+                    className="p-4 transition-all duration-200 hover:shadow-md"
+                  >
                     <div className="flex items-start gap-4">
                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold flex-shrink-0">
                         {nome.charAt(0)}
@@ -364,7 +379,9 @@ const Capacity = () => {
                           <Typography variant="h4" className="text-base sm:text-lg truncate">
                             {nome}
                           </Typography>
-                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${status.bg} ${status.text}`}>
+                          <span
+                            className={`text-xs font-medium px-2 py-0.5 rounded-full ${status.bg} ${status.text}`}
+                          >
                             {status.label}
                           </span>
                         </div>
@@ -373,7 +390,9 @@ const Capacity = () => {
                         <div className="mt-3">
                           <div className="flex items-center justify-between text-sm mb-1">
                             <span className="text-text-secondary">Carga</span>
-                            <span className="font-medium">{carga}/{capacidade}</span>
+                            <span className="font-medium">
+                              {carga}/{capacidade}
+                            </span>
                           </div>
                           <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
                             <div
@@ -387,11 +406,11 @@ const Capacity = () => {
                         <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
                           <div className="flex items-center gap-1 text-text-secondary">
                             <span className="font-medium">Complexidade:</span>
-                            <span>{item.complexidade || 'N/A'}/5</span>
+                            <span>{item.complexidade || "N/A"}/5</span>
                           </div>
                           <div className="flex items-center gap-1 text-text-secondary">
                             <span className="font-medium">Especialidade:</span>
-                            <span className="truncate">{item.especialidade || 'Geral'}</span>
+                            <span className="truncate">{item.especialidade || "Geral"}</span>
                           </div>
                         </div>
                       </div>

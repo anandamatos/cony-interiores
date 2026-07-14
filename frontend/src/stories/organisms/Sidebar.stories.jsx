@@ -1,11 +1,11 @@
 import Sidebar from "../../components/organisms/Sidebar";
 
 export default {
-  title: 'Organisms/Sidebar',
+  title: "Organisms/Sidebar",
   component: Sidebar,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
 };
 

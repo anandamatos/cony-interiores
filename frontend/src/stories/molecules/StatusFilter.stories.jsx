@@ -1,20 +1,20 @@
-import StatusFilter from '../../components/molecules/StatusFilter';
+import StatusFilter from "../../components/molecules/StatusFilter";
 
 export default {
-  title: 'Molecules/StatusFilter',
+  title: "Molecules/StatusFilter",
   component: StatusFilter,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
-    options: { control: 'object' },
-    onChange: { action: 'changed' },
+    options: { control: "object" },
+    onChange: { action: "changed" },
   },
 };
 
 const defaultOptions = [
-  { value: 'all', label: 'Todos' },
-  { value: 'active', label: 'Ativos' },
-  { value: 'inactive', label: 'Inativos' },
-  { value: 'pending', label: 'Pendentes' },
+  { value: "all", label: "Todos" },
+  { value: "active", label: "Ativos" },
+  { value: "inactive", label: "Inativos" },
+  { value: "pending", label: "Pendentes" },
 ];
 
 export const Default = {
@@ -26,6 +26,6 @@ export const Default = {
 export const WithSelected = {
   args: {
     options: defaultOptions,
-    defaultValue: 'active',
+    defaultValue: "active",
   },
 };

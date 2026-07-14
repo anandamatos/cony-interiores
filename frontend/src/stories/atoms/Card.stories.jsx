@@ -1,12 +1,12 @@
-import Card from '../../components/atoms/Card';
+import Card from "../../components/atoms/Card";
 
 export default {
-  title: 'Atoms/Card',
+  title: "Atoms/Card",
   component: Card,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
-    hover: { control: 'boolean' },
-    className: { control: 'text' },
+    hover: { control: "boolean" },
+    className: { control: "text" },
   },
 };
 
@@ -15,7 +15,9 @@ export const Default = {
     children: (
       <div className="p-6">
         <h3 className="text-lg font-bold text-gray-900">Card Title</h3>
-        <p className="text-gray-600 mt-2">This is a card content. Cards are used to group related information.</p>
+        <p className="text-gray-600 mt-2">
+          This is a card content. Cards are used to group related information.
+        </p>
         <button className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors">
           Action
         </button>

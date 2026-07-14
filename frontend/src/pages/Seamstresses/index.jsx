@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getSeamstresses } from '../../services/seamstressService';
-import Typography from '../../components/atoms/Typography';
-import Card from '../../components/atoms/Card';
-import Button from '../../components/atoms/Button';
-import Badge from '../../components/atoms/Badge';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { getSeamstresses } from "../../services/seamstressService";
+import Typography from "../../components/atoms/Typography";
+import Card from "../../components/atoms/Card";
+import Button from "../../components/atoms/Button";
+import Badge from "../../components/atoms/Badge";
 
 const Seamstresses = () => {
   const [seamstresses, setSeamstresses] = useState([]);
@@ -16,7 +16,7 @@ const Seamstresses = () => {
       const data = await getSeamstresses();
       setSeamstresses(data);
     } catch (error) {
-      console.error('Erro ao carregar costureiras:', error);
+      console.error("Erro ao carregar costureiras:", error);
     } finally {
       setLoading(false);
     }
@@ -31,7 +31,9 @@ const Seamstresses = () => {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <Typography variant="body" className="mt-4">Carregando costureiras...</Typography>
+          <Typography variant="body" className="mt-4">
+            Carregando costureiras...
+          </Typography>
         </div>
       </div>
     );
@@ -67,22 +69,25 @@ const Seamstresses = () => {
             <Card key={seamstress.id} hover className="p-4 sm:p-6">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-base sm:text-lg flex-shrink-0">
-                  {seamstress.nome?.charAt(0) || '?'}
+                  {seamstress.nome?.charAt(0) || "?"}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <Typography variant="h4" className="text-base sm:text-lg truncate">
                       {seamstress.nome}
                     </Typography>
-                    <Badge variant={seamstress.ativo ? 'success' : 'neutral'}>
-                      {seamstress.ativo ? 'Ativa' : 'Inativa'}
+                    <Badge variant={seamstress.ativo ? "success" : "neutral"}>
+                      {seamstress.ativo ? "Ativa" : "Inativa"}
                     </Badge>
                   </div>
-                  <Typography variant="caption" className="block mt-0.5 text-xs sm:text-sm truncate">
+                  <Typography
+                    variant="caption"
+                    className="block mt-0.5 text-xs sm:text-sm truncate"
+                  >
                     {seamstress.contato}
                   </Typography>
                   <Typography variant="caption" className="block mt-1 text-xs sm:text-sm">
-                    Especialidade: {seamstress.tipo_servico_preferido || 'Geral'}
+                    Especialidade: {seamstress.tipo_servico_preferido || "Geral"}
                   </Typography>
                 </div>
               </div>

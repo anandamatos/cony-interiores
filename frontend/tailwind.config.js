@@ -1,3 +1,12 @@
+// ============================================
+// TAILWIND CONFIG - CONY INTERIORES
+// ============================================
+
+import { colors } from "./src/styles/tokens/colors.js";
+import { typography } from "./src/styles/tokens/typography.js";
+import { spacing } from "./src/styles/tokens/spacing.js";
+import { shadows } from "./src/styles/tokens/shadows.js";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -6,70 +15,155 @@ export default {
     "./stories/**/*.{js,jsx,ts,tsx}",
     "./.storybook/**/*.{js,jsx,ts,tsx}",
   ],
+
   theme: {
     extend: {
+      // ==========================================
+      // CORES
+      // ==========================================
       colors: {
         primary: {
-          DEFAULT: '#4caf50',
-          hover: '#43a047',
-          50: '#e8f5e9',
-          100: '#c8e6c9',
-          200: '#a5d6a7',
-          300: '#81c784',
-          400: '#66bb6a',
-          500: '#4caf50',
-          600: '#43a047',
-          700: '#388e3c',
-          800: '#2e7d32',
-          900: '#1b5e20',
+          ...colors.primary,
+          DEFAULT: colors.primary.DEFAULT,
+          hover: colors.primary[600],
         },
         secondary: {
-          DEFAULT: '#ff9800',
-          50: '#fff3e0',
-          100: '#ffe0b2',
-          200: '#ffcc80',
-          300: '#ffb74d',
-          400: '#ffa726',
-          500: '#ff9800',
-          600: '#fb8c00',
-          700: '#f57c00',
-          800: '#ef6c00',
-          900: '#e65100',
+          ...colors.secondary,
+          DEFAULT: colors.secondary.DEFAULT,
         },
-        neutral: {
-          50: '#fafafa',
-          100: '#f5f5f5',
-          200: '#eeeeee',
-          300: '#e0e0e0',
-          400: '#bdbdbd',
-          500: '#9e9e9e',
-          600: '#757575',
-          700: '#616161',
-          800: '#424242',
-          900: '#212121',
+        taupe: {
+          ...colors.taupe,
+          DEFAULT: colors.taupe.DEFAULT,
         },
-        error: {
-          DEFAULT: '#f44336',
-          50: '#ffebee',
-          100: '#ffcdd2',
-          200: '#ef9a9a',
-          300: '#e57373',
-          400: '#ef5350',
-          500: '#f44336',
-          600: '#e53935',
-          700: '#d32f2f',
-          800: '#c62828',
-          900: '#b71c1c',
+        offWhite: {
+          ...colors.offWhite,
+          DEFAULT: colors.offWhite.DEFAULT,
         },
-        success: '#4caf50',
-        warning: '#ff9800',
-        info: '#2196f3',
-        background: '#f5f5f5',
-        'text-primary': '#212121',
-        'text-secondary': '#616161',
-        border: '#e5e7eb',
+        gray: {
+          ...colors.gray,
+          DEFAULT: colors.gray.DEFAULT,
+        },
+        sage: {
+          ...colors.sage,
+          DEFAULT: colors.sage.DEFAULT,
+        },
+        slate: {
+          ...colors.slate,
+          DEFAULT: colors.slate.DEFAULT,
+        },
+        gold: {
+          ...colors.gold,
+          DEFAULT: colors.gold.DEFAULT,
+        },
+        terracota: {
+          ...colors.terracota,
+          DEFAULT: colors.terracota.DEFAULT,
+        },
+        bronze: {
+          ...colors.bronze,
+          DEFAULT: colors.bronze.DEFAULT,
+        },
+        black: {
+          ...colors.black,
+          DEFAULT: colors.black.DEFAULT,
+        },
+        success: {
+          ...colors.success,
+          DEFAULT: colors.success.DEFAULT,
+        },
+        warning: {
+          ...colors.warning,
+          DEFAULT: colors.warning.DEFAULT,
+        },
+        danger: {
+          ...colors.danger,
+          DEFAULT: colors.danger.DEFAULT,
+        },
+        info: {
+          ...colors.info,
+          DEFAULT: colors.info.DEFAULT,
+        },
+        background: colors.background,
+        surface: colors.surface,
+        border: colors.border,
+      },
+
+      // ==========================================
+      // TIPOGRAFIA
+      // ==========================================
+      fontFamily: {
+        primary: typography.fonts.primary,
+        secondary: typography.fonts.secondary,
+        brand: typography.fonts.brand,
+      },
+
+      fontSize: {
+        xs: typography.sizes.xs,
+        sm: typography.sizes.sm,
+        base: typography.sizes.base,
+        lg: typography.sizes.lg,
+        xl: typography.sizes.xl,
+        "2xl": typography.sizes["2xl"],
+        "3xl": typography.sizes["3xl"],
+        "4xl": typography.sizes["4xl"],
+        "5xl": typography.sizes["5xl"],
+      },
+
+      fontWeight: {
+        thin: typography.weights.thin,
+        extraLight: typography.weights.extraLight,
+        light: typography.weights.light,
+        normal: typography.weights.normal,
+        medium: typography.weights.medium,
+        semibold: typography.weights.semibold,
+        bold: typography.weights.bold,
+        extrabold: typography.weights.extrabold,
+        black: typography.weights.black,
+      },
+
+      // ==========================================
+      // ESPAÇAMENTO
+      // ==========================================
+      spacing: spacing,
+
+      // ==========================================
+      // SOMBRAS
+      // ==========================================
+      boxShadow: {
+        ...shadows,
+        card: shadows.card,
+        dropdown: shadows.dropdown,
+        modal: shadows.modal,
+        sidebar: shadows.sidebar,
+        header: shadows.header,
+        gold: shadows.gold,
+        terracota: shadows.terracota,
+      },
+
+      // ==========================================
+      // BORDAS
+      // ==========================================
+      borderRadius: {
+        sm: "6px",
+        DEFAULT: "8px",
+        md: "10px",
+        lg: "16px",
+        xl: "24px",
+        full: "9999px",
+      },
+
+      // ==========================================
+      // BACKGROUND IMAGE (GRADIENTES)
+      // ==========================================
+      backgroundImage: {
+        "gradient-primary": shadows.gradients.primary,
+        "gradient-gold": shadows.gradients.gold,
+        "gradient-warm": shadows.gradients.warm,
+        "gradient-sage": shadows.gradients.sage,
+        "gradient-offWhite": shadows.gradients.offWhite,
       },
     },
   },
+
   plugins: [],
 };

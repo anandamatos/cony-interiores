@@ -1,11 +1,11 @@
-import { spacing } from '../../styles/tokens/spacing';
+import { spacing } from "../../styles/tokens/spacing";
 
 export default {
-  title: 'Tokens/Espaçamento',
+  title: "Tokens/Espaçamento",
   parameters: {
     docs: {
       description: {
-        component: 'Sistema de espaçamento da Cony Interiores',
+        component: "Sistema de espaçamento da Cony Interiores",
       },
     },
   },
@@ -18,7 +18,7 @@ export const SpacingScale = {
         <div key={key} className="flex items-center gap-4">
           <span className="w-16 font-medium">{key}:</span>
           <span className="w-16">{value}</span>
-          <div className="bg-emerald-500 rounded" style={{ width: value, height: '20px' }} />
+          <div className="bg-emerald-500 rounded" style={{ width: value, height: "20px" }} />
         </div>
       ))}
     </div>

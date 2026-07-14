@@ -1,4 +1,4 @@
-import '../src/index.css';
+import "../src/index.css";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -10,4 +10,4 @@ export const parameters = {
   },
 };
 
-export const tags = ['autodocs'];
+export const tags = ["autodocs"];

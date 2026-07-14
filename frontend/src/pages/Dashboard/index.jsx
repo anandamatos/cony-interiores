@@ -1,24 +1,25 @@
-import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import api from '../../services/api';
-import Card from '../../components/atoms/Card';
-import Typography from '../../components/atoms/Typography';
-import Button from '../../components/atoms/Button';
-import { ClipboardList, Users, DollarSign } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import api from "../../services/api";
+import Card from "../../components/atoms/Card";
+import Typography from "../../components/atoms/Typography";
+import Button from "../../components/atoms/Button";
+import { ClipboardList, Users, DollarSign } from "lucide-react";
 
 const Dashboard = () => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    api.get('/hello/')
-      .then(response => setMessage(response.data.message))
-      .catch(error => console.error('Erro ao conectar:', error));
+    api
+      .get("/hello/")
+      .then((response) => setMessage(response.data.message))
+      .catch((error) => console.error("Erro ao conectar:", error));
   }, []);
 
   const metrics = [
-    { label: 'Serviços Ativos', value: '12', icon: ClipboardList, color: 'text-primary' },
-    { label: 'Costureiras', value: '4', icon: Users, color: 'text-secondary' },
-    { label: 'Pagamentos Pendentes', value: '3', icon: DollarSign, color: 'text-error' },
+    { label: "Serviços Ativos", value: "12", icon: ClipboardList, color: "text-primary" },
+    { label: "Costureiras", value: "4", icon: Users, color: "text-secondary" },
+    { label: "Pagamentos Pendentes", value: "3", icon: DollarSign, color: "text-error" },
   ];
 
   return (
@@ -59,16 +60,18 @@ const Dashboard = () => {
 
       {/* Workload Section */}
       <Card className="mb-6 p-4 sm:p-6">
-        <Typography variant="h3" className="mb-4 text-lg sm:text-xl">Carga de Trabalho</Typography>
+        <Typography variant="h3" className="mb-4 text-lg sm:text-xl">
+          Carga de Trabalho
+        </Typography>
         <div className="space-y-4">
-          {['Sirlene', 'Maria', 'Joana', 'Ana'].map((name) => (
+          {["Sirlene", "Maria", "Joana", "Ana"].map((name) => (
             <div key={name}>
               <div className="flex justify-between text-sm mb-1">
                 <span className="font-medium">{name}</span>
                 <span className="text-text-secondary">8/10 serviços</span>
               </div>
               <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full bg-primary rounded-full" style={{ width: '80%' }}></div>
+                <div className="h-full bg-primary rounded-full" style={{ width: "80%" }}></div>
               </div>
             </div>
           ))}
@@ -77,7 +80,9 @@ const Dashboard = () => {
 
       {/* Alerts Section */}
       <Card className="p-4 sm:p-6">
-        <Typography variant="h3" className="mb-4 text-lg sm:text-xl">⚠️ Serviços em Atraso</Typography>
+        <Typography variant="h3" className="mb-4 text-lg sm:text-xl">
+          ⚠️ Serviços em Atraso
+        </Typography>
         <div className="space-y-2">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-error/5 rounded-lg border border-error/20 gap-2">
             <div>
@@ -91,7 +96,9 @@ const Dashboard = () => {
               <span className="font-medium">Cliente: Maria Souza</span>
               <p className="text-sm text-text-secondary">Forro - Prazo: 28/06</p>
             </div>
-            <span className="text-sm text-warning font-medium self-start sm:self-auto">Atraso iminente</span>
+            <span className="text-sm text-warning font-medium self-start sm:self-auto">
+              Atraso iminente
+            </span>
           </div>
         </div>
       </Card>

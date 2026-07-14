@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-const StatusFilter = ({ options = [], defaultValue = 'all', onChange }) => {
+const StatusFilter = ({ options = [], defaultValue = "all", onChange }) => {
   const [selected, setSelected] = useState(defaultValue);
 
   const handleChange = (value) => {
@@ -18,9 +18,10 @@ const StatusFilter = ({ options = [], defaultValue = 'all', onChange }) => {
           onClick={() => handleChange(option.value)}
           className={`
             px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
-            ${selected === option.value
-              ? 'bg-primary text-white shadow-md'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            ${
+              selected === option.value
+                ? "bg-primary text-white shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }
           `}
         >

@@ -1,7 +1,7 @@
-import api from './api';
+import api from "./api";
 
 export const getSeamstresses = async () => {
-  const response = await api.get('/costureiras/');
+  const response = await api.get("/costureiras/");
   return response.data;
 };
 
@@ -15,12 +15,12 @@ export const createSeamstress = async (data) => {
   const payload = {
     nome: data.nome,
     contato: data.contato,
-    observacoes: data.especialidade || '',
+    observacoes: data.especialidade || "",
     ativo: data.ativa !== undefined ? data.ativa : true,
-    tipo_servico_preferido: data.especialidade || '',
+    tipo_servico_preferido: data.especialidade || "",
   };
-  console.log('Enviando costureira:', payload);
-  const response = await api.post('/costureiras/', payload);
+  console.log("Enviando costureira:", payload);
+  const response = await api.post("/costureiras/", payload);
   return response.data;
 };
 

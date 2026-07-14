@@ -1,16 +1,16 @@
-import classNames from 'classnames';
-import { forwardRef } from 'react';
-import { ChevronDown } from 'lucide-react';
+import classNames from "classnames";
+import { forwardRef } from "react";
+import { ChevronDown } from "lucide-react";
 
 const Select = forwardRef(({ label, error, options = [], className, ...props }, ref) => {
   const selectClasses = classNames(
-    'w-full appearance-none rounded-lg border border-border bg-white px-4 py-2.5 pr-10',
-    'text-text-primary text-sm',
-    'transition-colors duration-200',
-    'focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none',
-    'disabled:opacity-50 disabled:cursor-not-allowed',
-    error && 'border-error focus:border-error focus:ring-error/20',
-    className
+    "w-full appearance-none rounded-lg border border-border bg-white px-4 py-2.5 pr-10",
+    "text-text-primary text-sm",
+    "transition-colors duration-200",
+    "focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none",
+    "disabled:opacity-50 disabled:cursor-not-allowed",
+    error && "border-error focus:border-error focus:ring-error/20",
+    className,
   );
 
   return (
@@ -37,6 +37,6 @@ const Select = forwardRef(({ label, error, options = [], className, ...props }, 
   );
 });
 
-Select.displayName = 'Select';
+Select.displayName = "Select";
 
 export default Select;

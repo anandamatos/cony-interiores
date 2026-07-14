@@ -1,54 +1,55 @@
 import Typography from "../../components/atoms/Typography";
 
 export default {
-  title: 'Atoms/Typography',
+  title: "Atoms/Typography",
   component: Typography,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: 'select',
-      options: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'caption'],
+      control: "select",
+      options: ["h1", "h2", "h3", "h4", "h5", "h6", "body", "caption"],
     },
     weight: {
-      control: 'select',
-      options: ['light', 'normal', 'medium', 'semibold', 'bold'],
+      control: "select",
+      options: ["light", "normal", "medium", "semibold", "bold"],
     },
-    className: { control: 'text' },
+    className: { control: "text" },
   },
 };
 
 export const H1 = {
   args: {
-    variant: 'h1',
-    children: 'Heading 1 - Título Principal',
+    variant: "h1",
+    children: "Heading 1 - Título Principal",
   },
 };
 
 export const H2 = {
   args: {
-    variant: 'h2',
-    children: 'Heading 2 - Título de Seção',
+    variant: "h2",
+    children: "Heading 2 - Título de Seção",
   },
 };
 
 export const H3 = {
   args: {
-    variant: 'h3',
-    children: 'Heading 3 - Subtítulo',
+    variant: "h3",
+    children: "Heading 3 - Subtítulo",
   },
 };
 
 export const Body = {
   args: {
-    variant: 'body',
-    children: 'Body text - Texto padrão para conteúdos longos. Este é o estilo principal para parágrafos e descrições.',
+    variant: "body",
+    children:
+      "Body text - Texto padrão para conteúdos longos. Este é o estilo principal para parágrafos e descrições.",
   },
 };
 
 export const Caption = {
   args: {
-    variant: 'caption',
-    children: 'Caption - Texto auxiliar para informações complementares',
+    variant: "caption",
+    children: "Caption - Texto auxiliar para informações complementares",
   },
 };
 

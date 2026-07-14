@@ -1,24 +1,24 @@
-import { useState } from 'react';
-import { 
-  LayoutDashboard, 
-  ClipboardList, 
-  Users, 
-  DollarSign, 
+import { useState } from "react";
+import {
+  LayoutDashboard,
+  ClipboardList,
+  Users,
+  DollarSign,
   BarChart3,
   Settings,
   LogOut,
   Menu,
   X,
-  Gauge
-} from 'lucide-react';
+  Gauge,
+} from "lucide-react";
 
 const menuItems = [
-  { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/services', label: 'Serviços', icon: ClipboardList },
-  { path: '/seamstresses', label: 'Costureiras', icon: Users },
-  { path: '/capacity', label: 'Capacidade', icon: Gauge },
-  { path: '/financial', label: 'Financeiro', icon: DollarSign },
-  { path: '/reports', label: 'Relatórios', icon: BarChart3 },
+  { path: "/", label: "Dashboard", icon: LayoutDashboard },
+  { path: "/services", label: "Serviços", icon: ClipboardList },
+  { path: "/seamstresses", label: "Costureiras", icon: Users },
+  { path: "/capacity", label: "Capacidade", icon: Gauge },
+  { path: "/financial", label: "Financeiro", icon: DollarSign },
+  { path: "/reports", label: "Relatórios", icon: BarChart3 },
 ];
 
 const Sidebar = () => {
@@ -58,10 +58,7 @@ const Sidebar = () => {
 
       {/* Overlay para mobile */}
       {isOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
-          onClick={closeSidebar}
-        />
+        <div className="lg:hidden fixed inset-0 bg-black/50 z-40" onClick={closeSidebar} />
       )}
 
       {/* Sidebar */}
@@ -70,7 +67,7 @@ const Sidebar = () => {
           fixed lg:static inset-y-0 left-0 z-40
           w-64 bg-white border-r border-border flex flex-col h-full
           transition-transform duration-300 ease-in-out
-          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
       >
         {/* Logo */}

@@ -1,9 +1,9 @@
 import Header from "../../components/organisms/Header";
 
 export default {
-  title: 'Organisms/Header',
+  title: "Organisms/Header",
   component: Header,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 export const Default = {

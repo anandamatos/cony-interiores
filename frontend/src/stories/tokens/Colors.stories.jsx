@@ -1,11 +1,11 @@
-import { colors } from '../../styles/tokens/colors';
+import { colors } from "../../styles/tokens/colors";
 
 export default {
-  title: 'Tokens/Cores',
+  title: "Tokens/Cores",
   parameters: {
     docs: {
       description: {
-        component: 'Sistema de cores da Cony Interiores',
+        component: "Sistema de cores da Cony Interiores",
       },
     },
   },
