@@ -209,7 +209,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Stats Cards com glassmorphism e espaçamentos ajustados */}
+      {/* Stats Cards com glassmorphism */}
       <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8" aria-label="Estatísticas">
         {statCardConfig.map((card) => {
           const Icon = card.icon;
@@ -222,6 +222,7 @@ const Dashboard = () => {
               hover
               variant="default"
               shadow={card.shadow}
+              glass={true}
               className={`p-6 border-l-4 ${card.color}`}
             >
               <div className="flex items-start justify-between">
@@ -249,7 +250,7 @@ const Dashboard = () => {
       {/* Charts Section */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Bar Chart */}
-        <Card className="lg:col-span-2 p-6">
+        <Card glass className="lg:col-span-2 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
               <Typography variant="h3" className="text-[18px] font-semibold">
@@ -299,7 +300,7 @@ const Dashboard = () => {
         </Card>
 
         {/* Donut Chart */}
-        <Card className="p-6">
+        <Card glass className="p-6">
           <div className="mb-4">
             <Typography variant="h3" className="text-[18px] font-semibold">
               Distribuição
@@ -350,7 +351,7 @@ const Dashboard = () => {
       {/* Workload Grid */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Workload */}
-        <Card className="p-6">
+        <Card glass className="p-6">
           <div className="flex items-center justify-between mb-6">
             <Typography variant="h3" className="text-[18px] font-semibold">
               Carga de Trabalho
@@ -388,7 +389,7 @@ const Dashboard = () => {
         </Card>
 
         {/* Recent Activities */}
-        <Card className="p-6">
+        <Card glass className="p-6">
           <div className="flex items-center justify-between mb-6">
             <Typography variant="h3" className="text-[18px] font-semibold">
               Últimas Atividades
@@ -449,7 +450,7 @@ const Dashboard = () => {
 
       {/* Alerts */}
       <section aria-label="Alertas e avisos">
-        <Card className="p-6">
+        <Card glass className="p-6">
           <div className="flex items-center justify-between mb-6">
             <Typography variant="h3" className="text-[18px] font-semibold">
               Alertas e Avisos

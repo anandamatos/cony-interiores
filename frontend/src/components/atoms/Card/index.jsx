@@ -7,6 +7,7 @@ const Card = ({
   padding = true,
   variant = 'default',
   shadow = 'card',
+  glass = false,
   ...props
 }) => {
   const variants = {
@@ -15,6 +16,7 @@ const Card = ({
     offWhite: 'bg-offWhite border border-[rgba(75,58,46,0.06)]',
     ghost: 'bg-transparent border border-[rgba(75,58,46,0.08)]',
     elevated: 'bg-white shadow-card',
+    glass: 'bg-white/80 backdrop-blur-sm border border-[rgba(75,58,46,0.06)]',
   };
 
   const shadowClasses = {
@@ -36,16 +38,19 @@ const Card = ({
     terracota: 'hover:shadow-terracota',
     sage: 'hover:shadow-sage',
     primary: 'hover:shadow-primary',
+    glass: 'hover:shadow-md',
   };
 
+  const variantKey = glass ? 'glass' : variant;
+
   const baseClasses = classNames(
-    'rounded-xl', // 16px de border-radius
+    'rounded-xl',
     'transition-all duration-300 ease-spring',
-    variants[variant] || variants.default,
+    variants[variantKey] || variants.default,
     shadowClasses[shadow] || shadowClasses.card,
     padding && 'p-6',
     hover && [
-      hoverShadows[variant] || hoverShadows.default,
+      hoverShadows[variantKey] || hoverShadows.default,
       'hover:-translate-y-1',
       'hover:border-primary/20',
     ],
