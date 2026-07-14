@@ -1,31 +1,31 @@
-import SearchBar from '../../components/molecules/SearchBar';
+import SearchBar from "../../components/molecules/SearchBar";
 
 export default {
-  title: 'Molecules/SearchBar',
+  title: "Molecules/SearchBar",
   component: SearchBar,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
-    placeholder: { control: 'text' },
-    onSearch: { action: 'searched' },
+    placeholder: { control: "text" },
+    onSearch: { action: "searched" },
   },
 };
 
 export const Default = {
   args: {
-    placeholder: 'Buscar...',
+    placeholder: "Buscar...",
   },
 };
 
 export const WithValue = {
   args: {
-    placeholder: 'Buscar...',
-    defaultValue: 'Costureira',
+    placeholder: "Buscar...",
+    defaultValue: "Costureira",
   },
 };
 
 export const Disabled = {
   args: {
-    placeholder: 'Buscar desabilitado...',
+    placeholder: "Buscar desabilitado...",
     disabled: true,
   },
 };

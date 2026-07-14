@@ -40,9 +40,9 @@
   font-weight: 600;
   transition: background-color var(--transition);
 
-  margin-top: 20px;   /* desce o botão */
-  width: auto;        /* impede ocupar toda a largura */
-  flex: 0 0 auto;     /* impede crescer no flex */
+  margin-top: 20px; /* desce o botão */
+  width: auto; /* impede ocupar toda a largura */
+  flex: 0 0 auto; /* impede crescer no flex */
 }
 
 .new-button:hover {

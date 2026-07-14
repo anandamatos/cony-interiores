@@ -1,18 +1,5 @@
 import classNames from 'classnames';
 
-const variants = {
-  primary: 'bg-primary text-white hover:bg-primary-hover focus:ring-primary',
-  secondary: 'border-2 border-primary text-primary hover:bg-primary/10 focus:ring-primary',
-  danger: 'bg-error text-white hover:bg-error/90 focus:ring-error',
-  ghost: 'text-text-secondary hover:bg-gray-100 focus:ring-gray-200',
-};
-
-const sizes = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2 text-base',
-  lg: 'px-6 py-3 text-lg',
-};
-
 const Button = ({
   variant = 'primary',
   size = 'md',
@@ -22,21 +9,62 @@ const Button = ({
   disabled = false,
   icon: Icon,
   onClick,
+  type = 'button',
   ...props
 }) => {
-  const classes = classNames(
-    'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200',
-    'focus:outline-none focus:ring-2 focus:ring-offset-2',
-    'disabled:opacity-50 disabled:cursor-not-allowed',
-    variants[variant],
-    sizes[size],
-    className
-  );
+  // Variantes de estilo com nova paleta
+  const variants = {
+    primary: 'bg-primary text-offWhite hover:bg-primary-hover focus:ring-primary/30 shadow-button hover:shadow-button-hover',
+    secondary: 'bg-transparent text-primary border border-gray/400 hover:bg-offWhite focus:ring-primary/20',
+    gold: 'bg-gradient-gold text-primary hover:brightness-105 focus:ring-gold/30 shadow-button hover:shadow-button-hover',
+    terracota: 'bg-terracota text-white hover:bg-terracota/90 focus:ring-terracota/30 shadow-button hover:shadow-button-hover',
+    danger: 'bg-danger text-white hover:bg-danger/90 focus:ring-danger/30 shadow-button hover:shadow-button-hover',
+    ghost: 'bg-transparent text-primary hover:bg-offWhite focus:ring-primary/20',
+    outline: 'border border-primary text-primary hover:bg-primary/5 focus:ring-primary/20',
+  };
+
+  // Tamanhos
+  const sizes = {
+    sm: 'px-4 py-2 text-sm',
+    md: 'px-5 py-3 text-sm',
+    lg: 'px-6 py-3.5 text-base',
+  };
+
+  // Classes base
+  const baseClasses = {
+    button: classNames(
+      'inline-flex items-center justify-center gap-2 rounded-sm font-semibold font-primary',
+      'transition-all duration-fast ease-spring',
+      'focus:outline-none focus:ring-2 focus:ring-offset-2',
+      'disabled:opacity-50 disabled:cursor-not-allowed',
+      'active:scale-95',
+      variants[variant] || variants.primary,
+      sizes[size] || sizes.md,
+      className
+    ),
+  };
+
+  // Atributos de acessibilidade
+  const accessibilityProps = {
+    role: 'button',
+    'aria-disabled': disabled || loading,
+    'aria-busy': loading,
+    ...(loading && { 'aria-label': 'Carregando...' }),
+  };
 
   return (
-    <button className={classes} disabled={disabled || loading} onClick={onClick} {...props}>
-      {loading && <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
-      {!loading && Icon && <Icon className="w-4 h-4" />}
+    <button
+      type={type}
+      className={baseClasses.button}
+      disabled={disabled || loading}
+      onClick={onClick}
+      {...accessibilityProps}
+      {...props}
+    >
+      {loading && (
+        <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+      )}
+      {!loading && Icon && <Icon className="w-4 h-4" aria-hidden="true" />}
       {children}
     </button>
   );

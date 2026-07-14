@@ -1,77 +1,84 @@
-import Badge from '../../components/atoms/Badge';
+import Badge from "../../components/atoms/Badge";
 
 export default {
-  title: 'Atoms/Badge',
+  title: "Atoms/Badge",
   component: Badge,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: 'select',
-      options: ['primary', 'secondary', 'success', 'warning', 'danger', 'neutral'],
+      control: "select",
+      options: ["primary", "secondary", "gold", "terracota", "success", "warning", "danger", "info", "neutral", "ghost"],
     },
     size: {
-      control: 'select',
-      options: ['sm', 'md', 'lg'],
+      control: "select",
+      options: ["sm", "md", "lg"],
     },
-    children: { control: 'text' },
+    children: { control: "text" },
   },
 };
 
 export const Primary = {
   args: {
-    variant: 'primary',
-    children: 'Primary',
+    variant: "primary",
+    children: "Primary",
   },
 };
 
 export const Secondary = {
   args: {
-    variant: 'secondary',
-    children: 'Secondary',
+    variant: "secondary",
+    children: "Secondary",
   },
 };
 
 export const Success = {
   args: {
-    variant: 'success',
-    children: 'Sucesso',
+    variant: "success",
+    children: "Sucesso",
+  },
+};
+
+export const Gold = {
+  args: {
+    variant: "gold",
+    children: "Destaque",
   },
 };
 
 export const Warning = {
   args: {
-    variant: 'warning',
-    children: 'Atenção',
+    variant: "warning",
+    children: "Atenção",
   },
 };
 
 export const Danger = {
   args: {
-    variant: 'danger',
-    children: 'Erro',
+    variant: "danger",
+    children: "Erro",
   },
 };
 
 export const Neutral = {
   args: {
-    variant: 'neutral',
-    children: 'Neutro',
+    variant: "neutral",
+    children: "Neutro",
   },
 };
 
 export const Small = {
   args: {
-    variant: 'primary',
-    size: 'sm',
-    children: 'Pequeno',
+    variant: "primary",
+    size: "sm",
+    children: "Pequeno",
   },
 };
 
 export const Large = {
   args: {
-    variant: 'primary',
-    size: 'lg',
-    children: 'Grande',
+    variant: "primary",
+    size: "lg",
+    children: "Grande",
   },
 };
 
@@ -80,9 +87,12 @@ export const AllVariants = {
     <div className="flex gap-2 flex-wrap">
       <Badge variant="primary">Primary</Badge>
       <Badge variant="secondary">Secondary</Badge>
+      <Badge variant="gold">Gold</Badge>
+      <Badge variant="terracota">Terracota</Badge>
       <Badge variant="success">Success</Badge>
       <Badge variant="warning">Warning</Badge>
       <Badge variant="danger">Danger</Badge>
+      <Badge variant="info">Info</Badge>
       <Badge variant="neutral">Neutral</Badge>
     </div>
   ),

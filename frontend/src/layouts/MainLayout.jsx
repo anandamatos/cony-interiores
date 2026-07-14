@@ -1,16 +1,16 @@
 import { Outlet } from 'react-router-dom';
-import Header from '../components/organisms/Header';
 import Sidebar from '../components/organisms/Sidebar';
+import Header from '../components/organisms/Header';
 
 const MainLayout = () => {
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="min-h-screen bg-offWhite">
       <Sidebar />
-      <div className="flex-1 flex flex-col min-h-screen lg:ml-0">
+      <div className="min-h-screen flex flex-col lg:pl-64">
         <Header />
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <div className="flex-1 pt-16">
           <Outlet />
-        </main>
+        </div>
       </div>
     </div>
   );

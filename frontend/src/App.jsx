@@ -1,12 +1,15 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import MainLayout from './layouts/MainLayout';
-import Dashboard from './pages/Dashboard';
-import Services from './pages/Services';
-import Seamstresses from './pages/Seamstresses';
-import NewService from './pages/NewService';
-import NewSeamstress from './pages/Seamstresses/NewSeamstress';
-import Capacity from './pages/Capacity';
-import { CostureiraProvider } from './context/CostureiraContext';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainLayout from "./layouts/MainLayout";
+import Dashboard from "./pages/Dashboard";
+import Services from "./pages/Services";
+import Seamstresses from "./pages/Seamstresses";
+import NewService from "./pages/NewService";
+import NewSeamstress from "./pages/Seamstresses/NewSeamstress";
+import Capacity from "./pages/Capacity";
+import Financial from "./pages/Financial";
+import Settings from "./pages/Settings";
+import Team from "./pages/Team";
+import { CostureiraProvider } from "./context/CostureiraContext";
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
             <Route path="seamstresses" element={<Seamstresses />} />
             <Route path="seamstresses/new" element={<NewSeamstress />} />
             <Route path="capacity" element={<Capacity />} />
+            <Route path="financial" element={<Financial />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="team" element={<Team />} />
             <Route path="*" element={<div>Página não encontrada</div>} />
           </Route>
         </Routes>

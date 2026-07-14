@@ -1,75 +1,149 @@
+import { colors } from './src/styles/tokens/colors.js';
+import { typography } from './src/styles/tokens/typography.js';
+import { spacing } from './src/styles/tokens/spacing.js';
+import { shadows } from './src/styles/tokens/shadows.js';
+import { borders } from './src/styles/tokens/borders.js';
+import { animations } from './src/styles/tokens/animations.js';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-    "./stories/**/*.{js,jsx,ts,tsx}",
-    "./.storybook/**/*.{js,jsx,ts,tsx}",
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
+    './stories/**/*.{js,jsx,ts,tsx}',
+    './.storybook/**/*.{js,jsx,ts,tsx}',
   ],
+
   theme: {
+    screens: {
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1536px',
+    },
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#4caf50',
-          hover: '#43a047',
-          50: '#e8f5e9',
-          100: '#c8e6c9',
-          200: '#a5d6a7',
-          300: '#81c784',
-          400: '#66bb6a',
-          500: '#4caf50',
-          600: '#43a047',
-          700: '#388e3c',
-          800: '#2e7d32',
-          900: '#1b5e20',
+          ...colors.primary,
+          DEFAULT: colors.primary.DEFAULT,
+          hover: colors.primary[600],
         },
-        secondary: {
-          DEFAULT: '#ff9800',
-          50: '#fff3e0',
-          100: '#ffe0b2',
-          200: '#ffcc80',
-          300: '#ffb74d',
-          400: '#ffa726',
-          500: '#ff9800',
-          600: '#fb8c00',
-          700: '#f57c00',
-          800: '#ef6c00',
-          900: '#e65100',
-        },
-        neutral: {
-          50: '#fafafa',
-          100: '#f5f5f5',
-          200: '#eeeeee',
-          300: '#e0e0e0',
-          400: '#bdbdbd',
-          500: '#9e9e9e',
-          600: '#757575',
-          700: '#616161',
-          800: '#424242',
-          900: '#212121',
-        },
-        error: {
-          DEFAULT: '#f44336',
-          50: '#ffebee',
-          100: '#ffcdd2',
-          200: '#ef9a9a',
-          300: '#e57373',
-          400: '#ef5350',
-          500: '#f44336',
-          600: '#e53935',
-          700: '#d32f2f',
-          800: '#c62828',
-          900: '#b71c1c',
-        },
-        success: '#4caf50',
-        warning: '#ff9800',
-        info: '#2196f3',
-        background: '#f5f5f5',
-        'text-primary': '#212121',
-        'text-secondary': '#616161',
-        border: '#e5e7eb',
+        secondary: colors.secondary,
+        taupe: colors.taupe,
+        offWhite: colors.offWhite,
+        gray: colors.gray,
+        sage: colors.sage,
+        slate: colors.slate,
+        gold: colors.gold,
+        terracota: colors.terracota,
+        bronze: colors.bronze,
+        black: colors.black,
+        success: colors.success,
+        warning: colors.warning,
+        danger: colors.danger,
+        info: colors.info,
+        background: colors.background,
+        surface: colors.surface,
+        border: colors.border,
+      },
+
+      fontFamily: {
+        primary: typography.fonts.primary,
+        secondary: typography.fonts.secondary,
+        brand: typography.fonts.brand,
+      },
+
+      fontSize: typography.sizes,
+      fontWeight: typography.weights,
+
+      spacing: spacing,
+
+      borderRadius: {
+        ...borders.radius,
+        xs: borders.radius.xs,
+        sm: borders.radius.sm,
+        DEFAULT: borders.radius.base,
+        md: borders.radius.md,
+        lg: borders.radius.lg,
+        xl: borders.radius.xl,
+        '2xl': borders.radius['2xl'],
+        '3xl': borders.radius['3xl'],
+        card: borders.radius.card,
+        pill: borders.radius.pill,
+        full: borders.radius.full,
+      },
+
+      borderWidth: {
+        ...borders.width,
+      },
+
+      boxShadow: {
+        none: shadows.none,
+        sm: shadows.sm,
+        md: shadows.md,
+        lg: shadows.lg,
+        xl: shadows.xl,
+        surface: shadows.surface,
+        'surface-hover': shadows.surfaceHover,
+        card: shadows.card,
+        'card-hover': shadows.cardHover,
+        elevated: shadows.elevated,
+        dropdown: shadows.dropdown,
+        modal: shadows.modal,
+        sidebar: shadows.sidebar,
+        header: shadows.header,
+        button: shadows.button,
+        'button-hover': shadows.buttonHover,
+        'focus-gold': shadows.focusGold,
+        inset: shadows.inset,
+        gold: shadows.gold,
+        terracota: shadows.terracota,
+        sage: shadows.sage,
+        primary: shadows.primary,
+        'stat-primary': shadows.statPrimary,
+        'stat-sage': shadows.statSage,
+        'stat-gold': shadows.statGold,
+        'stat-terracota': shadows.statTerracota,
+      },
+
+      transitionTimingFunction: {
+        ...animations.easing,
+      },
+
+      transitionDuration: {
+        instant: animations.duration.instant,
+        fast: animations.duration.fast,
+        normal: animations.duration.normal,
+        slow: animations.duration.slow,
+        slower: animations.duration.slower,
+      },
+
+      keyframes: {
+        ...animations.keyframes,
+      },
+
+      animation: {
+        'fade-in': `fadeIn ${animations.duration.slow} ${animations.easing.easeOut} both`,
+        'slide-up': `slideUp ${animations.duration.slow} ${animations.easing.easeOut} both`,
+        'slide-down': `slideDown ${animations.duration.slow} ${animations.easing.easeOut} both`,
+        'spring-in': `springIn ${animations.duration.normal} ${animations.easing.spring} both`,
+        pulse: `pulse ${animations.duration.slower} ${animations.easing.easeInOut} infinite`,
+        float: `float ${animations.duration.slower} ${animations.easing.easeInOut} infinite`,
+        glow: `glow ${animations.duration.slower} ${animations.easing.easeInOut} infinite`,
+        'count-up': `countUp ${animations.duration.slow} ${animations.easing.easeOut} both`,
+        'expand-width': `expandWidth ${animations.duration.slow} ${animations.easing.spring} both`,
+      },
+
+      backgroundImage: {
+        'gradient-primary': 'linear-gradient(135deg, #C9A86A 0%, #A8968B 50%, #4B3A2E 100%)',
+        'gradient-gold': 'linear-gradient(135deg, #D9C7B1 0%, #C9A86A 100%)',
+        'gradient-warm': 'linear-gradient(135deg, #4B3A2E 0%, #B56A4A 100%)',
+        'gradient-sage': 'linear-gradient(135deg, #8D9ABA 0%, #465057 100%)',
+        'gradient-offWhite': 'linear-gradient(135deg, #F6F3EF 0%, #E6E2DD 100%)',
       },
     },
   },
+
   plugins: [],
 };

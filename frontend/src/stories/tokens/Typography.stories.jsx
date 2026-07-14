@@ -1,11 +1,11 @@
-import { typography } from '../../styles/tokens/typography';
+import { typography } from "../../styles/tokens/typography";
 
 export default {
-  title: 'Tokens/Tipografia',
+  title: "Tokens/Tipografia",
   parameters: {
     docs: {
       description: {
-        component: 'Sistema tipográfico da Cony Interiores',
+        component: "Sistema tipográfico da Cony Interiores",
       },
     },
   },
