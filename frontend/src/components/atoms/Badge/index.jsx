@@ -16,7 +16,7 @@ const Badge = ({
     warning: 'bg-warning text-black',
     danger: 'bg-danger text-white',
     info: 'bg-info text-white',
-    neutral: 'bg-gray text-primary',
+    neutral: 'bg-gray-100 text-gray-600',
     ghost: 'bg-transparent border border-primary text-primary',
   };
 

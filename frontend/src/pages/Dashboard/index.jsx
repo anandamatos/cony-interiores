@@ -209,7 +209,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Stats Cards com glassmorphism */}
+      {/* Stats Cards com glassmorphism e espaçamentos ajustados */}
       <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8" aria-label="Estatísticas">
         {statCardConfig.map((card) => {
           const Icon = card.icon;

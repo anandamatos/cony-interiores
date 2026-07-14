@@ -16,7 +16,7 @@ const Card = ({
     offWhite: 'bg-offWhite border border-[rgba(75,58,46,0.06)]',
     ghost: 'bg-transparent border border-[rgba(75,58,46,0.08)]',
     elevated: 'bg-white shadow-card',
-    glass: 'bg-white/80 backdrop-blur-sm border border-[rgba(75,58,46,0.06)]',
+    glass: 'bg-white/70 backdrop-blur-md border border-[rgba(75,58,46,0.06)]',
   };
 
   const shadowClasses = {
@@ -38,7 +38,7 @@ const Card = ({
     terracota: 'hover:shadow-terracota',
     sage: 'hover:shadow-sage',
     primary: 'hover:shadow-primary',
-    glass: 'hover:shadow-md',
+    glass: 'hover:shadow-md hover:bg-white/80',
   };
 
   const variantKey = glass ? 'glass' : variant;
