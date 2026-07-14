@@ -1,44 +1,25 @@
-// ============================================
-// TOKENS DE SOMBRAS - CONY INTERIORES
-// Sistema de profundidade e volume
-// ============================================
-
 export const shadows = {
   none: 'none',
-
-  // Sombras para volume e profundidade
-  // Baseadas no protótipo HTML
   sm: '0 1px 4px rgba(75, 58, 46, 0.04)',
   base: '0 2px 8px rgba(75, 58, 46, 0.05)',
   md: '0 8px 16px rgba(75, 58, 46, 0.06)',
   lg: '0 16px 32px rgba(75, 58, 46, 0.08)',
   xl: '0 24px 48px rgba(75, 58, 46, 0.10)',
-
-  // Efeitos de volume específicos
   card: '0 8px 16px rgba(75, 58, 46, 0.05), 0 2px 4px rgba(75, 58, 46, 0.03)',
   cardHover: '0 12px 24px rgba(75, 58, 46, 0.08), 0 4px 8px rgba(75, 58, 46, 0.04)',
-
-  // Efeitos para elementos elevados
   elevated: '0 4px 12px rgba(75, 58, 46, 0.04), 0 1px 4px rgba(75, 58, 46, 0.02)',
   dropdown: '0 16px 32px rgba(75, 58, 46, 0.08)',
   modal: '0 24px 48px rgba(75, 58, 46, 0.12)',
   sidebar: '2px 0 16px rgba(75, 58, 46, 0.04)',
   header: '0 2px 8px rgba(75, 58, 46, 0.03)',
-
-  // Sombras com cores de acento
   gold: '0 4px 16px rgba(201, 168, 106, 0.15)',
   terracota: '0 4px 16px rgba(181, 106, 74, 0.12)',
   sage: '0 4px 16px rgba(141, 154, 186, 0.12)',
   primary: '0 4px 16px rgba(75, 58, 46, 0.12)',
-
-  // Efeitos de volume para cards específicos
-  // Stat cards com cores diferentes (como no protótipo)
   statPrimary: '0 8px 16px rgba(201, 168, 106, 0.15), 0 2px 4px rgba(201, 168, 106, 0.05)',
   statSage: '0 8px 16px rgba(141, 154, 186, 0.12), 0 2px 4px rgba(141, 154, 186, 0.04)',
   statGold: '0 8px 16px rgba(201, 168, 106, 0.12), 0 2px 4px rgba(201, 168, 106, 0.04)',
   statTerracota: '0 8px 16px rgba(181, 106, 74, 0.12), 0 2px 4px rgba(181, 106, 74, 0.04)',
-
-  // Gradientes (mantidos)
   gradients: {
     primary: 'linear-gradient(135deg, #C9A86A 0%, #A8968B 50%, #4B3A2E 100%)',
     gold: 'linear-gradient(135deg, #D9C7B1 0%, #C9A86A 100%)',

@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { borders } from '../../../styles/tokens/borders';
 
 const Card = ({
   children,
@@ -40,7 +39,7 @@ const Card = ({
   };
 
   const baseClasses = classNames(
-    'rounded-xl', // Usando o token xl (16px)
+    'rounded-xl', // 16px de border-radius
     'transition-all duration-300 ease-spring',
     variants[variant] || variants.default,
     shadowClasses[shadow] || shadowClasses.card,

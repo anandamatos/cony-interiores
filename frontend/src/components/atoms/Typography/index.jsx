@@ -9,7 +9,6 @@ const Typography = ({
   as: Component,
   ...props
 }) => {
-  // Mapeamento de variantes para tags HTML
   const tagMap = {
     h1: 'h1',
     h2: 'h2',
@@ -22,7 +21,6 @@ const Typography = ({
 
   const Tag = Component || tagMap[variant] || 'p';
 
-  // Classes base por variante (refinadas)
   const variantClasses = {
     h1: classNames(
       'font-primary text-4xl font-bold',
@@ -66,7 +64,6 @@ const Typography = ({
     ),
   };
 
-  // Classes de cor
   const colorClasses = {
     primary: 'text-[#4B3A2E]',
     secondary: 'text-[#D9C7B1]',
@@ -81,7 +78,6 @@ const Typography = ({
     info: 'text-[#8D9ABA]',
   };
 
-  // Classes de peso (sobrescreve o padrão da variante)
   const weightClasses = {
     thin: 'font-thin',
     extraLight: 'font-extraLight',

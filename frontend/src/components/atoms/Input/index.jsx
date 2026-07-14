@@ -17,7 +17,6 @@ const Input = ({
   const [focused, setFocused] = useState(false);
   const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
 
-  // Classes base - CORRIGIDAS (vírgulas entre propriedades)
   const baseClasses = {
     container: classNames('flex flex-col gap-1.5 w-full', className),
     label: classNames(
@@ -47,7 +46,6 @@ const Input = ({
     ),
   };
 
-  // Atributos de acessibilidade
   const accessibilityProps = {
     'aria-label': label || placeholder,
     'aria-invalid': !!error,

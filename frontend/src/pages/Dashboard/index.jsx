@@ -14,9 +14,6 @@ import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
 
-// ============================================
-// DADOS MOCKADOS
-// ============================================
 const mockStats = {
   activeServices: 12,
   seamstresses: 4,
@@ -80,17 +77,11 @@ const mockStats = {
 };
 
 const Dashboard = () => {
-  // ============================================
-  // ESTADOS
-  // ============================================
   const [stats, setStats] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hoveredBar, setHoveredBar] = useState(null);
 
-  // ============================================
-  // CARREGAR DADOS (simulação)
-  // ============================================
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -108,9 +99,6 @@ const Dashboard = () => {
     loadData();
   }, []);
 
-  // ============================================
-  // RENDER: LOADING
-  // ============================================
   if (isLoading) {
     return (
       <main className="flex-1 p-6 sm:p-8 lg:p-10">
@@ -124,9 +112,6 @@ const Dashboard = () => {
     );
   }
 
-  // ============================================
-  // RENDER: ERRO
-  // ============================================
   if (error) {
     return (
       <main className="flex-1 p-6 sm:p-8 lg:p-10">
@@ -151,9 +136,6 @@ const Dashboard = () => {
     );
   }
 
-  // ============================================
-  // RENDER: DADOS
-  // ============================================
   const { weeklyActivity, distribution, workload, alerts } = stats;
   const maxBarValue = Math.max(...weeklyActivity.map((item) => item.value));
 
@@ -179,112 +161,111 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Stats Cards */}
-<section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8" aria-label="Estatísticas">
-  <Card 
-    hover 
-    variant="default" 
-    shadow="stat-primary" 
-    className="p-6 border-l-4 border-l-gold"
-  >
-    <div className="flex items-start justify-between">
-      <div>
-        <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
-          Serviços Ativos
-        </Typography>
-        <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
-          {stats.activeServices}
-        </Typography>
-      </div>
-      <div className="w-11 h-11 rounded-xl bg-offWhite flex items-center justify-center text-taupe">
-        <ClipboardList className="w-5 h-5" />
-      </div>
-    </div>
-    <Badge variant="success" size="sm" className="mt-4">
-      <TrendingUp className="w-3 h-3 mr-1" />
-      3 novos esta semana
-    </Badge>
-  </Card>
+      {/* Stats Cards com Efeitos de Volume */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8" aria-label="Estatísticas">
+        <Card 
+          hover 
+          variant="default" 
+          shadow="stat-primary" 
+          className="p-6 border-l-4 border-l-gold"
+        >
+          <div className="flex items-start justify-between">
+            <div>
+              <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
+                Serviços Ativos
+              </Typography>
+              <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
+                {stats.activeServices}
+              </Typography>
+            </div>
+            <div className="w-11 h-11 rounded-xl bg-offWhite flex items-center justify-center text-taupe">
+              <ClipboardList className="w-5 h-5" />
+            </div>
+          </div>
+          <Badge variant="success" size="sm" className="mt-4">
+            <TrendingUp className="w-3 h-3 mr-1" />
+            3 novos esta semana
+          </Badge>
+        </Card>
 
-  <Card 
-    hover 
-    variant="default" 
-    shadow="stat-sage" 
-    className="p-6 border-l-4 border-l-sage"
-  >
-    <div className="flex items-start justify-between">
-      <div>
-        <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
-          Costureiras
-        </Typography>
-        <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
-          {stats.seamstresses}
-        </Typography>
-      </div>
-      <div className="w-11 h-11 rounded-xl bg-offWhite flex items-center justify-center text-taupe">
-        <Users className="w-5 h-5" />
-      </div>
-    </div>
-    <Badge variant="success" size="sm" className="mt-4">
-      <TrendingUp className="w-3 h-3 mr-1" />
-      1 nova contratada
-    </Badge>
-  </Card>
+        <Card 
+          hover 
+          variant="default" 
+          shadow="stat-sage" 
+          className="p-6 border-l-4 border-l-sage"
+        >
+          <div className="flex items-start justify-between">
+            <div>
+              <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
+                Costureiras
+              </Typography>
+              <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
+                {stats.seamstresses}
+              </Typography>
+            </div>
+            <div className="w-11 h-11 rounded-xl bg-offWhite flex items-center justify-center text-taupe">
+              <Users className="w-5 h-5" />
+            </div>
+          </div>
+          <Badge variant="success" size="sm" className="mt-4">
+            <TrendingUp className="w-3 h-3 mr-1" />
+            1 nova contratada
+          </Badge>
+        </Card>
 
-  <Card 
-    hover 
-    variant="default" 
-    shadow="stat-gold" 
-    className="p-6 border-l-4 border-l-gold"
-  >
-    <div className="flex items-start justify-between">
-      <div>
-        <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
-          Pagamentos Pendentes
-        </Typography>
-        <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
-          {stats.pendingPayments}
-        </Typography>
-      </div>
-      <div className="w-11 h-11 rounded-xl bg-offWhite flex items-center justify-center text-taupe">
-        <DollarSign className="w-5 h-5" />
-      </div>
-    </div>
-    <Badge variant="danger" size="sm" className="mt-4">
-      <TrendingDown className="w-3 h-3 mr-1" />
-      2 em atraso
-    </Badge>
-  </Card>
+        <Card 
+          hover 
+          variant="default" 
+          shadow="stat-gold" 
+          className="p-6 border-l-4 border-l-gold"
+        >
+          <div className="flex items-start justify-between">
+            <div>
+              <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
+                Pagamentos Pendentes
+              </Typography>
+              <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
+                {stats.pendingPayments}
+              </Typography>
+            </div>
+            <div className="w-11 h-11 rounded-xl bg-offWhite flex items-center justify-center text-taupe">
+              <DollarSign className="w-5 h-5" />
+            </div>
+          </div>
+          <Badge variant="danger" size="sm" className="mt-4">
+            <TrendingDown className="w-3 h-3 mr-1" />
+            2 em atraso
+          </Badge>
+        </Card>
 
-  <Card 
-    hover 
-    variant="default" 
-    shadow="stat-terracota" 
-    className="p-6 border-l-4 border-l-terracota"
-  >
-    <div className="flex items-start justify-between">
-      <div>
-        <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
-          Entregas Previstas
-        </Typography>
-        <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
-          {stats.upcomingDeliveries}
-        </Typography>
-      </div>
-      <div className="w-11 h-11 rounded-xl bg-offWhite flex items-center justify-center text-taupe">
-        <Package className="w-5 h-5" />
-      </div>
-    </div>
-    <Badge variant="success" size="sm" className="mt-4">
-      <TrendingUp className="w-3 h-3 mr-1" />
-      Esta semana
-    </Badge>
-  </Card>
-</section>
+        <Card 
+          hover 
+          variant="default" 
+          shadow="stat-terracota" 
+          className="p-6 border-l-4 border-l-terracota"
+        >
+          <div className="flex items-start justify-between">
+            <div>
+              <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
+                Entregas Previstas
+              </Typography>
+              <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
+                {stats.upcomingDeliveries}
+              </Typography>
+            </div>
+            <div className="w-11 h-11 rounded-xl bg-offWhite flex items-center justify-center text-taupe">
+              <Package className="w-5 h-5" />
+            </div>
+          </div>
+          <Badge variant="success" size="sm" className="mt-4">
+            <TrendingUp className="w-3 h-3 mr-1" />
+            Esta semana
+          </Badge>
+        </Card>
+      </section>
 
       {/* Charts Section */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Bar Chart */}
         <Card className="lg:col-span-2 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -330,7 +311,6 @@ const Dashboard = () => {
           </div>
         </Card>
 
-        {/* Donut Chart */}
         <Card className="p-6">
           <div className="mb-4">
             <Typography variant="h3">Distribuição</Typography>
@@ -374,7 +354,6 @@ const Dashboard = () => {
 
       {/* Workload Grid */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Workload */}
         <Card className="p-6">
           <div className="flex items-center justify-between mb-6">
             <Typography variant="h3">Carga de Trabalho</Typography>
@@ -404,7 +383,6 @@ const Dashboard = () => {
           })}
         </Card>
 
-        {/* Recent Activities */}
         <Card className="p-6">
           <div className="flex items-center justify-between mb-6">
             <Typography variant="h3">Últimas Atividades</Typography>

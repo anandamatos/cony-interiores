@@ -43,8 +43,9 @@ const Sidebar = () => {
       isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
     ),
     header: 'flex items-center gap-3 px-6 h-16 border-b border-[rgba(75,58,46,0.08)] flex-shrink-0',
+    // Logo com border-radius 12px (mais sóbrio)
     logo: classNames(
-      'w-11 h-11 rounded-xl',
+      'w-11 h-11 rounded-[12px]', // 12px de border-radius (mais sóbrio que círculo)
       'bg-[#4B3A2E]',
       'flex items-center justify-center flex-shrink-0',
       'transition-all duration-300 ease-spring',
@@ -61,10 +62,12 @@ const Sidebar = () => {
     navLabel: classNames(
       'text-xs font-bold text-taupe uppercase tracking-widest',
       'px-3 py-2',
-      'mt-4'
+      'mt-4' // Espaçamento reduzido (16px)
     ),
+    // Link com spring animation e active state com border-radius 8px
     link: ({ isActive }) => classNames(
-      'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium',
+      'flex items-center gap-3 px-3 py-2.5 text-sm font-medium',
+      'rounded-[8px]', // Active state mais sóbrio (8px)
       'transition-all duration-300 ease-spring',
       'focus:outline-none focus:ring-2 focus:ring-primary/20',
       isActive
@@ -72,28 +75,29 @@ const Sidebar = () => {
         : 'text-primary/70 hover:bg-offWhite hover:text-primary hover:translate-x-1'
     ),
     icon: 'w-5 h-5 flex-shrink-0',
+    // Badge com cor gold
     badge: classNames(
       'ml-auto bg-gold text-white',
-      'px-2 py-0.5 rounded-lg',
+      'px-2 py-0.5 rounded-[6px]', // 6px de border-radius
       'text-xs font-semibold'
     ),
     footer: classNames(
       'border-t border-[rgba(75,58,46,0.08)]',
       'p-4 flex items-center gap-3',
-      'mt-auto'
+      'mt-auto' // Ancoragem no final
     ),
     avatar: 'w-10 h-10 rounded-full bg-gradient-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0',
     footerInfo: 'flex-1 min-w-0',
     footerName: 'text-sm font-semibold text-primary truncate',
     footerRole: 'text-xs text-taupe truncate',
     logoutBtn: classNames(
-      'p-2 rounded-lg text-taupe',
+      'p-2 rounded-[8px] text-taupe',
       'transition-all duration-300 ease-spring',
       'hover:text-danger hover:bg-danger/10'
     ),
     mobileToggle: classNames(
       'lg:hidden fixed top-4 left-4 z-50',
-      'p-2 rounded-lg bg-white shadow-md border border-[rgba(75,58,46,0.08)]',
+      'p-2 rounded-[8px] bg-white shadow-md border border-[rgba(75,58,46,0.08)]',
       'transition-all duration-300 ease-spring',
       'hover:bg-offWhite',
       'focus:outline-none focus:ring-2 focus:ring-primary/20'
@@ -102,7 +106,6 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile Toggle Button */}
       <button
         onClick={toggleSidebar}
         className={baseClasses.mobileToggle}
@@ -112,20 +115,17 @@ const Sidebar = () => {
         {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
 
-      {/* Overlay */}
       <div
         className={baseClasses.overlay}
         onClick={closeSidebar}
         aria-hidden="true"
       />
 
-      {/* Sidebar */}
       <aside
         className={baseClasses.container}
         role="navigation"
         aria-label="Menu principal"
       >
-        {/* Header / Logo */}
         <div className={baseClasses.header}>
           <div className={baseClasses.logo}>
             <img
@@ -140,7 +140,6 @@ const Sidebar = () => {
           </div>
         </div>
 
-        {/* Navigation */}
         <nav className={baseClasses.nav}>
           <div className={baseClasses.navLabel}>Menu</div>
           {menuItems.map((item) => (
@@ -180,7 +179,6 @@ const Sidebar = () => {
           </NavLink>
         </nav>
 
-        {/* Footer - Ancorado no final com mt-auto */}
         <div className={baseClasses.footer}>
           <div className={baseClasses.avatar}>AM</div>
           <div className={baseClasses.footerInfo}>
