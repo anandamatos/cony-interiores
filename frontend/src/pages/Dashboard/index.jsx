@@ -14,16 +14,15 @@ import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
 
-const Dashboard = () => {
-  const [stats, setStats] = useState({
-    activeServices: 12,
-    seamstresses: 4,
-    pendingPayments: 3,
-    upcomingDeliveries: 8,
-  });
-
-  // Dados mockados para gráfico de barras
-  const weeklyActivity = [
+// ============================================
+// DADOS MOCKADOS (em breve serão da API)
+// ============================================
+const mockStats = {
+  activeServices: 12,
+  seamstresses: 4,
+  pendingPayments: 3,
+  upcomingDeliveries: 8,
+  weeklyActivity: [
     { day: 'Seg', value: 45 },
     { day: 'Ter', value: 75 },
     { day: 'Qua', value: 60 },
@@ -31,26 +30,20 @@ const Dashboard = () => {
     { day: 'Sex', value: 70 },
     { day: 'Sáb', value: 50 },
     { day: 'Dom', value: 30 },
-  ];
-
-  // Dados mockados para distribuição
-  const distribution = [
+  ],
+  distribution: [
     { label: 'Cortinas', value: 45, color: 'bg-secondary' },
     { label: 'Almofadas', value: 25, color: 'bg-sage' },
     { label: 'Tapetes', value: 15, color: 'bg-gold' },
     { label: 'Outros', value: 15, color: 'bg-terracota' },
-  ];
-
-  // Dados mockados para carga de trabalho
-  const workload = [
+  ],
+  workload: [
     { name: 'Sirlene', services: 4, percentage: 80 },
     { name: 'Mariana', services: 3, percentage: 60 },
     { name: 'Joana', services: 2, percentage: 40 },
     { name: 'Ana Paula', services: 1, percentage: 20 },
-  ];
-
-  // Dados mockados para alertas
-  const alerts = [
+  ],
+  alerts: [
     {
       id: 1,
       title: 'Serviço em atraso',
@@ -83,20 +76,87 @@ const Dashboard = () => {
       type: 'info',
       icon: '📌',
     },
-  ];
+  ],
+};
 
-  const getStatusBadgeVariant = (type) => {
-    const variants = {
-      danger: 'danger',
-      warning: 'warning',
-      success: 'success',
-      info: 'info',
+const Dashboard = () => {
+  // ============================================
+  // ESTADOS
+  // ============================================
+  const [stats, setStats] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [hoveredBar, setHoveredBar] = useState(null);
+
+  // ============================================
+  // CARREGAR DADOS (simulação)
+  // ============================================
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        // Simular delay da API
+        await new Promise((resolve) => setTimeout(resolve, 800));
+        setStats(mockStats);
+        setError(null);
+      } catch (err) {
+        setError('Erro ao carregar dados do dashboard');
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    return variants[type] || 'neutral';
-  };
+    loadData();
+  }, []);
 
-  // Calcular altura máxima das barras
-  const maxBarValue = Math.max(...weeklyActivity.map(item => item.value));
+  // ============================================
+  // RENDER: LOADING
+  // ============================================
+  if (isLoading) {
+    return (
+      <main className="flex-1 p-6 sm:p-8 lg:p-10">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-taupe">Carregando dashboard...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // ============================================
+  // RENDER: ERRO
+  // ============================================
+  if (error) {
+    return (
+      <main className="flex-1 p-6 sm:p-8 lg:p-10">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <span className="text-4xl block mb-4">⚠️</span>
+            <Typography variant="h2" className="text-danger mb-2">
+              Ops! Algo deu errado
+            </Typography>
+            <Typography variant="body1" className="text-taupe">
+              {error}
+            </Typography>
+            <button
+              className="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+              onClick={() => window.location.reload()}
+            >
+              Tentar novamente
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // ============================================
+  // RENDER: DADOS
+  // ============================================
+  const { weeklyActivity, distribution, workload, alerts } = stats;
+  const maxBarValue = Math.max(...weeklyActivity.map((item) => item.value));
 
   return (
     <main className="flex-1 p-6 sm:p-8 lg:p-10" role="main">
@@ -104,7 +164,7 @@ const Dashboard = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <Typography variant="h1">Bem-vinda, Ana 🌿</Typography>
-          <Typography variant="body1" className="mt-1">
+          <Typography variant="body1" className="mt-1 text-taupe">
             Aqui está o resumo da sua operação hoje.
           </Typography>
         </div>
@@ -221,19 +281,25 @@ const Dashboard = () => {
             {weeklyActivity.map((item) => (
               <div key={item.day} className="flex-1 flex flex-col items-center gap-2">
                 <div
-                  className="w-full max-w-10 rounded-t transition-all duration-500 ease-spring"
+                  className="w-full max-w-10 rounded-t transition-all duration-500 ease-spring cursor-pointer"
                   style={{
                     height: `${(item.value / maxBarValue) * 100}%`,
                     minHeight: '16px',
                     background:
-                      item.day === 'Qui'
+                      hoveredBar === item.day
+                        ? 'var(--gradient-primary)'
+                        : item.day === 'Qui'
                         ? 'var(--gradient-primary)'
                         : item.day === 'Sáb'
                         ? 'var(--color-sage)'
                         : item.day === 'Dom'
                         ? 'var(--color-gray)'
                         : 'var(--gradient-gold)',
+                    transform: hoveredBar === item.day ? 'scaleY(1.05)' : 'scaleY(1)',
+                    transformOrigin: 'bottom',
                   }}
+                  onMouseEnter={() => setHoveredBar(item.day)}
+                  onMouseLeave={() => setHoveredBar(null)}
                   role="img"
                   aria-label={`${item.day}: ${item.value} serviços`}
                 />
@@ -255,10 +321,9 @@ const Dashboard = () => {
           </div>
 
           <div className="flex flex-col items-center justify-center">
-            {/* Donut Simulado */}
             <div className="relative w-40 h-40">
               <div
-                className="w-full h-full rounded-full"
+                className="w-full h-full rounded-full transition-transform duration-300 hover:scale-105"
                 style={{
                   background: `conic-gradient(
                     ${distribution[0].color} 0% ${distribution[0].value}%,
@@ -270,7 +335,7 @@ const Dashboard = () => {
               />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-white/90 backdrop-blur rounded-full flex flex-col items-center justify-center shadow-sm">
                 <Typography variant="h2" className="text-xl">
-                  12
+                  {stats.activeServices}
                 </Typography>
                 <Typography variant="caption">Total</Typography>
               </div>
@@ -311,7 +376,7 @@ const Dashboard = () => {
                 </div>
                 <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className={`h-full rounded-full bg-${colorClass}`}
+                    className={`h-full rounded-full bg-${colorClass} transition-all duration-500 ease-spring`}
                     style={{ width: `${item.percentage}%` }}
                   />
                 </div>
@@ -407,4 +472,7 @@ const Dashboard = () => {
   );
 };
 
+// ============================================
+// EXPORT
+// ============================================
 export default Dashboard;
