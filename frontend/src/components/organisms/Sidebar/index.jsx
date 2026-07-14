@@ -32,7 +32,8 @@ const Sidebar = () => {
   const baseClasses = {
     container: classNames(
       'fixed lg:static inset-y-0 left-0 z-40',
-      'w-64 bg-white border-r border-[rgba(75,58,46,0.08)]',
+      'w-64 bg-white/80 backdrop-blur-md',
+      'border-r border-[rgba(75,58,46,0.08)]',
       'flex flex-col h-screen',
       'transition-transform duration-300 ease-spring',
       isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
@@ -43,9 +44,8 @@ const Sidebar = () => {
       isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
     ),
     header: 'flex items-center gap-3 px-6 h-16 border-b border-[rgba(75,58,46,0.08)] flex-shrink-0',
-    // Logo com border-radius 12px (mais sóbrio)
     logo: classNames(
-      'w-11 h-11 rounded-[12px]', // 12px de border-radius (mais sóbrio que círculo)
+      'w-11 h-11 rounded-[12px]',
       'bg-[#4B3A2E]',
       'flex items-center justify-center flex-shrink-0',
       'transition-all duration-300 ease-spring',
@@ -62,31 +62,34 @@ const Sidebar = () => {
     navLabel: classNames(
       'text-xs font-bold text-taupe uppercase tracking-widest',
       'px-3 py-2',
-      'mt-4' // Espaçamento reduzido (16px)
+      'mt-4'
     ),
-    // Link com spring animation e active state com border-radius 8px
     link: ({ isActive }) => classNames(
       'flex items-center gap-3 px-3 py-2.5 text-sm font-medium',
-      'rounded-[8px]', // Active state mais sóbrio (8px)
+      'rounded-[8px]',
       'transition-all duration-300 ease-spring',
       'focus:outline-none focus:ring-2 focus:ring-primary/20',
+      'opacity-70', // Menus inativos com opacidade reduzida
       isActive
-        ? 'bg-gradient-gold text-primary shadow-sm font-semibold'
-        : 'text-primary/70 hover:bg-offWhite hover:text-primary hover:translate-x-1'
+        ? 'bg-gradient-gold text-primary shadow-sm font-semibold opacity-100'
+        : 'hover:bg-offWhite hover:text-primary hover:translate-x-1 hover:opacity-100'
     ),
     icon: 'w-5 h-5 flex-shrink-0',
-    // Badge com cor gold
     badge: classNames(
-      'ml-auto bg-gold text-white',
-      'px-2 py-0.5 rounded-[6px]', // 6px de border-radius
+      'ml-auto bg-terracota text-white',
+      'px-2 py-0.5 rounded-[6px]',
       'text-xs font-semibold'
     ),
     footer: classNames(
       'border-t border-[rgba(75,58,46,0.08)]',
       'p-4 flex items-center gap-3',
-      'mt-auto' // Ancoragem no final
+      'mt-auto'
     ),
-    avatar: 'w-10 h-10 rounded-full bg-gradient-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0',
+    avatar: classNames(
+      'w-10 h-10 rounded-full',
+      'bg-gradient-primary text-white',
+      'flex items-center justify-center font-bold text-sm flex-shrink-0'
+    ),
     footerInfo: 'flex-1 min-w-0',
     footerName: 'text-sm font-semibold text-primary truncate',
     footerRole: 'text-xs text-taupe truncate',

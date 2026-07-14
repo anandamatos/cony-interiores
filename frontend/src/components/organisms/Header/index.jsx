@@ -1,11 +1,12 @@
-import { Search, Bell, HelpCircle, User } from 'lucide-react';
+import { Search, Bell, HelpCircle, User, Plus } from 'lucide-react';
 import classNames from 'classnames';
+import Button from '../../atoms/Button';
 
 const Header = ({ onSearch, notificationCount = 3 }) => {
   const baseClasses = {
     container: classNames(
       'h-16 bg-white/70 backdrop-blur-md',
-      'border-b border-gray/30',
+      'border-b border-[rgba(75,58,46,0.08)]',
       'flex items-center justify-between px-4 sm:px-6',
       'flex-shrink-0'
     ),
@@ -39,6 +40,7 @@ const Header = ({ onSearch, notificationCount = 3 }) => {
       'hover:scale-105 hover:shadow-md'
     ),
     userName: 'text-sm font-semibold text-primary hidden sm:block',
+    divider: 'w-px h-6 bg-gray mx-2',
   };
 
   return (
@@ -63,6 +65,19 @@ const Header = ({ onSearch, notificationCount = 3 }) => {
 
       {/* Right */}
       <div className={baseClasses.right}>
+        <div className="flex items-center gap-3">
+          <Button variant="secondary" size="sm" className="!px-4 !py-2">
+            <BarChart3 className="w-4 h-4" />
+            Relatórios
+          </Button>
+          <Button variant="primary" size="sm" className="!px-4 !py-2">
+            <Plus className="w-4 h-4" />
+            Novo Serviço
+          </Button>
+        </div>
+
+        <div className={baseClasses.divider} />
+
         <button
           className={baseClasses.iconBtn}
           aria-label={`Notificações (${notificationCount} não lidas)`}
