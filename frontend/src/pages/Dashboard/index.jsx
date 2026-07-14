@@ -19,7 +19,7 @@ import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
 
 // ============================================
-// DADOS MOCKADOS (mais realistas)
+// DADOS MOCKADOS (com dados reais para atividades semanais)
 // ============================================
 const mockStats = {
   activeServices: 12,
@@ -143,14 +143,27 @@ const Dashboard = () => {
     );
   }
 
-  const { weeklyActivity, distribution, workload, alerts } = stats;
-  const maxBarValue = Math.max(...weeklyActivity.map((item) => item.value));
+  // Garantir que weeklyActivity existe
+  const weeklyActivity = stats?.weeklyActivity || [
+    { day: 'Seg', value: 0 },
+    { day: 'Ter', value: 0 },
+    { day: 'Qua', value: 0 },
+    { day: 'Qui', value: 0 },
+    { day: 'Sex', value: 0 },
+    { day: 'Sáb', value: 0 },
+    { day: 'Dom', value: 0 },
+  ];
+  
+  const distribution = stats?.distribution || [];
+  const workload = stats?.workload || [];
+  const alerts = stats?.alerts || [];
+  const maxBarValue = Math.max(...weeklyActivity.map((item) => item.value), 1);
 
   const statCardConfig = [
     {
       key: 'activeServices',
       title: 'Serviços Ativos',
-      value: stats.activeServices,
+      value: stats?.activeServices || 0,
       icon: ClipboardList,
       color: 'border-l-gold',
       shadow: 'stat-primary',
@@ -159,7 +172,7 @@ const Dashboard = () => {
     {
       key: 'seamstresses',
       title: 'Costureiras',
-      value: stats.seamstresses,
+      value: stats?.seamstresses || 0,
       icon: Users,
       color: 'border-l-sage',
       shadow: 'stat-sage',
@@ -168,7 +181,7 @@ const Dashboard = () => {
     {
       key: 'pendingPayments',
       title: 'Pagamentos Pendentes',
-      value: stats.pendingPayments,
+      value: stats?.pendingPayments || 0,
       icon: DollarSign,
       color: 'border-l-gold',
       shadow: 'stat-gold',
@@ -177,7 +190,7 @@ const Dashboard = () => {
     {
       key: 'upcomingDeliveries',
       title: 'Entregas Previstas',
-      value: stats.upcomingDeliveries,
+      value: stats?.upcomingDeliveries || 0,
       icon: Package,
       color: 'border-l-terracota',
       shadow: 'stat-terracota',
@@ -209,43 +222,44 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Stats Cards com glassmorphism e espaçamentos ajustados */}
+      {/* Stats Cards com efeito de volume e animações */}
       <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8" aria-label="Estatísticas">
-        {statCardConfig.map((card) => {
-          const Icon = card.icon;
-          const TrendIcon = card.badge.trend === 'up' ? TrendingUp : TrendingDown;
-          const badgeVariant = card.badge.trend === 'up' ? 'success' : 'danger';
+  {statCardConfig.map((card, index) => {
+    const Icon = card.icon;
+    const TrendIcon = card.badge.trend === 'up' ? TrendingUp : TrendingDown;
+    const badgeVariant = card.badge.trend === 'up' ? 'success' : 'danger';
 
-          return (
-            <Card
-              key={card.key}
-              hover
-              variant="default"
-              shadow={card.shadow}
-              glass={true}
-              className={`p-6 border-l-4 ${card.color}`}
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
-                    {card.title}
-                  </Typography>
-                  <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
-                    {card.value}
-                  </Typography>
-                </div>
-                <div className="w-11 h-11 rounded-xl bg-white/50 backdrop-blur-sm flex items-center justify-center text-taupe">
-                  <Icon className="w-5 h-5" />
-                </div>
-              </div>
-              <Badge variant={badgeVariant} size="sm" className="mt-4">
-                <TrendIcon className="w-3 h-3 mr-1" />
-                {card.badge.label}
-              </Badge>
-            </Card>
-          );
-        })}
-      </section>
+    return (
+      <Card
+        key={card.key}
+        hover
+        variant="default"
+        shadow={card.shadow}
+        glass={true}
+        className={`p-6 border-l-4 ${card.color} transition-all duration-300 ease-spring hover:-translate-y-1 hover:shadow-card-hover animate-fade-in-up`}
+        style={{ animationDelay: `${index * 0.1}s` }}
+      >
+        <div className="flex items-start justify-between">
+          <div>
+            <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
+              {card.title}
+            </Typography>
+            <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
+              {card.value}
+            </Typography>
+          </div>
+          <div className="w-11 h-11 rounded-xl bg-white/50 backdrop-blur-sm flex items-center justify-center text-taupe transition-all duration-300 ease-spring group-hover:scale-110 group-hover:rotate-[-4deg]">
+            <Icon className="w-5 h-5" />
+          </div>
+        </div>
+        <Badge variant={badgeVariant} size="sm" className="mt-4">
+          <TrendIcon className="w-3 h-3 mr-1" />
+          {card.badge.label}
+        </Badge>
+      </Card>
+    );
+  })}
+</section>
 
       {/* Charts Section */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -271,8 +285,8 @@ const Dashboard = () => {
                 <div
                   className="w-full max-w-10 rounded-t transition-all duration-500 ease-spring cursor-pointer"
                   style={{
-                    height: `${(item.value / maxBarValue) * 100}%`,
-                    minHeight: '16px',
+                    height: `${Math.max((item.value / maxBarValue) * 100, 4)}%`,
+                    minHeight: '8px',
                     background:
                       hoveredBar === item.day
                         ? 'var(--gradient-primary)'
@@ -285,6 +299,7 @@ const Dashboard = () => {
                         : 'var(--gradient-gold)',
                     transform: hoveredBar === item.day ? 'scaleY(1.05)' : 'scaleY(1)',
                     transformOrigin: 'bottom',
+                    boxShadow: hoveredBar === item.day ? '0 4px 12px rgba(201,168,106,0.3)' : 'none',
                   }}
                   onMouseEnter={() => setHoveredBar(item.day)}
                   onMouseLeave={() => setHoveredBar(null)}
@@ -316,16 +331,16 @@ const Dashboard = () => {
                 className="w-full h-full rounded-full transition-transform duration-300 hover:scale-105"
                 style={{
                   background: `conic-gradient(
-                    ${distribution[0].color} 0% ${distribution[0].value}%,
-                    ${distribution[1].color} ${distribution[0].value}% ${distribution[0].value + distribution[1].value}%,
-                    ${distribution[2].color} ${distribution[0].value + distribution[1].value}% ${distribution[0].value + distribution[1].value + distribution[2].value}%,
-                    ${distribution[3].color} ${distribution[0].value + distribution[1].value + distribution[2].value}% 100%
+                    ${distribution[0]?.color || '#D9C7B1'} 0% ${distribution[0]?.value || 0}%,
+                    ${distribution[1]?.color || '#8D9ABA'} ${distribution[0]?.value || 0}% ${(distribution[0]?.value || 0) + (distribution[1]?.value || 0)}%,
+                    ${distribution[2]?.color || '#C9A86A'} ${(distribution[0]?.value || 0) + (distribution[1]?.value || 0)}% ${(distribution[0]?.value || 0) + (distribution[1]?.value || 0) + (distribution[2]?.value || 0)}%,
+                    ${distribution[3]?.color || '#B56A4A'} ${(distribution[0]?.value || 0) + (distribution[1]?.value || 0) + (distribution[2]?.value || 0)}% 100%
                   )`,
                 }}
               />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-white/90 backdrop-blur rounded-full flex flex-col items-center justify-center shadow-sm">
                 <Typography variant="h2" className="text-xl font-bold">
-                  {stats.activeServices}
+                  {stats?.activeServices || 0}
                 </Typography>
                 <Typography variant="caption" className="text-xs text-taupe">
                   Total
@@ -379,7 +394,7 @@ const Dashboard = () => {
                 </div>
                 <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                   <div
-                    className={`h-full rounded-full ${colorMap[item.color]} transition-all duration-700 ease-spring`}
+                    className={`h-full rounded-full ${colorMap[item.color] || 'bg-primary'} transition-all duration-700 ease-spring`}
                     style={{ width: `${item.percentage}%` }}
                   />
                 </div>

@@ -32,13 +32,13 @@ const Card = ({
   };
 
   const hoverShadows = {
-    default: 'hover:shadow-card-hover',
-    elevated: 'hover:shadow-lg',
-    gold: 'hover:shadow-gold',
-    terracota: 'hover:shadow-terracota',
-    sage: 'hover:shadow-sage',
-    primary: 'hover:shadow-primary',
-    glass: 'hover:shadow-md hover:bg-white/80',
+    default: 'hover:shadow-card-hover hover:border-primary/20',
+    elevated: 'hover:shadow-lg hover:border-primary/20',
+    gold: 'hover:shadow-gold hover:border-gold/30',
+    terracota: 'hover:shadow-terracota hover:border-terracota/30',
+    sage: 'hover:shadow-sage hover:border-sage/30',
+    primary: 'hover:shadow-primary hover:border-primary/30',
+    glass: 'hover:shadow-md hover:bg-white/80 hover:border-primary/20',
   };
 
   const variantKey = glass ? 'glass' : variant;
@@ -52,7 +52,6 @@ const Card = ({
     hover && [
       hoverShadows[variantKey] || hoverShadows.default,
       'hover:-translate-y-1',
-      'hover:border-primary/20',
     ],
     className
   );

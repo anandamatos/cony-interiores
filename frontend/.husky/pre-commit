@@ -1,1 +1,11 @@
-npx lint-staged
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Rodar Prettier para formatar arquivos staged
+npx prettier --write .
+
+# Rodar ESLint
+npm run lint
+
+# Adicionar arquivos formatados de volta ao staged
+git add .
