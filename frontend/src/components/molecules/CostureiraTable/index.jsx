@@ -3,7 +3,7 @@ import classNames from 'classnames';
 const CostureiraTable = ({ data = [], onRowClick, className, ...props }) => {
   if (data.length === 0) {
     return (
-      <div className="text-center py-12 text-taupe bg-offWhite rounded-lg border border-gray">
+      <div className="text-center py-12 text-taupe bg-white/70 backdrop-blur-sm rounded-xl border border-[rgba(75,58,46,0.08)]">
         <span className="text-4xl block mb-3" aria-hidden="true">📋</span>
         <p className="text-lg font-medium">Nenhum dado disponível</p>
         <p className="text-sm mt-1">Adicione uma nova costureira para começar</p>
@@ -42,21 +42,20 @@ const CostureiraTable = ({ data = [], onRowClick, className, ...props }) => {
   };
 
   const baseClasses = {
-  container: classNames(
-    'overflow-x-auto',
-    'rounded-xl', // Usando o token xl (16px)
-    'border border-[rgba(75,58,46,0.08)]',
-    'bg-white',
-    className
-  ),
+    container: classNames(
+      'overflow-x-auto rounded-xl',
+      'border border-[rgba(75,58,46,0.08)]',
+      'bg-white/70 backdrop-blur-sm',
+      className
+    ),
     table: 'w-full',
-    thead: 'bg-offWhite border-b border-gray',
+    thead: 'bg-offWhite/50 backdrop-blur-sm border-b border-[rgba(75,58,46,0.08)]',
     th: classNames(
       'px-4 py-3 text-left text-xs font-semibold text-taupe uppercase tracking-wider',
-      'border-b border-gray'
+      'border-b border-[rgba(75,58,46,0.08)]'
     ),
-    td: 'px-4 py-3 text-sm text-primary border-b border-gray/50',
-    tr: 'hover:bg-offWhite/50 transition-colors duration-150 cursor-pointer',
+    td: 'px-4 py-3 text-sm text-primary border-b border-[rgba(75,58,46,0.04)]',
+    tr: 'hover:bg-offWhite/30 transition-colors duration-150 cursor-pointer',
   };
 
   const columns = [

@@ -19,9 +19,8 @@ const StatusFilter = ({
     }
   };
 
-  // Mapeamento de cores para os botões
   const variantColors = {
-    all: 'bg-offWhite text-primary hover:bg-gray/20',
+    all: 'bg-white/70 backdrop-blur-sm text-primary hover:bg-offWhite',
     active: 'bg-success/10 text-success hover:bg-success/20',
     inactive: 'bg-gray/10 text-gray-500 hover:bg-gray/20',
     pending: 'bg-warning/10 text-warning hover:bg-warning/20',
@@ -34,13 +33,13 @@ const StatusFilter = ({
       className
     ),
     button: (isSelected, variant) => classNames(
-      'px-4 py-2 rounded-lg text-sm font-medium',
+      'px-4 py-2 rounded-xl text-sm font-medium',
       'transition-all duration-200 ease-spring',
       'focus:outline-none focus:ring-2 focus:ring-offset-1',
       'hover:scale-105 active:scale-95',
       isSelected
         ? 'bg-primary text-white shadow-sm'
-        : variantColors[variant] || 'bg-offWhite text-primary hover:bg-gray/20',
+        : variantColors[variant] || 'bg-white/70 backdrop-blur-sm text-primary hover:bg-offWhite',
       'disabled:opacity-50 disabled:cursor-not-allowed'
     ),
   };
