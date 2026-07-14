@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
@@ -8,6 +9,7 @@ import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
 
 const Seamstresses = () => {
+  const navigate = useNavigate();
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -50,7 +52,7 @@ const Seamstresses = () => {
             Gerencie sua equipe de costureiras.
           </Typography>
         </div>
-        <Button variant="primary">
+        <Button variant="primary" onClick={() => navigate('/seamstresses/new')}>
           <Plus className="w-4 h-4" />
           Nova Costureira
         </Button>

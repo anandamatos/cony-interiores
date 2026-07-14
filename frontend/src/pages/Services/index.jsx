@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Plus, MoreVertical } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
@@ -6,28 +7,79 @@ import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
 import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
+import { getServices } from '../../services/serviceService';
 
 const Services = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [services, setServices] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
 
-  // Mock data
-  const mockServices = [
-    { id: 1, client: 'João Silva', type: 'Cortina Ilhós', status: 'active', date: '25/06/2026' },
-    { id: 2, client: 'Maria Oliveira', type: 'Almofadas', status: 'pending', date: '28/06/2026' },
-    { id: 3, client: 'Ana Costa', type: 'Tapete', status: 'completed', date: '20/06/2026' },
-    { id: 4, client: 'Pedro Santos', type: 'Cortina Romana', status: 'pending', date: '30/06/2026' },
-    { id: 5, client: 'Carla Souza', type: 'Capa de Poltrona', status: 'active', date: '22/06/2026' },
-  ];
+  const deriveStatus = (service) => {
+    if (!service?.prazo_entrega) return 'active';
+
+    const parsedDate = new Date(service.prazo_entrega);
+    if (Number.isNaN(parsedDate.getTime())) return 'active';
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    parsedDate.setHours(0, 0, 0, 0);
+
+    return parsedDate < today ? 'pending' : 'active';
+  };
+
+  const formatDate = (rawDate) => {
+    if (!rawDate) return '-';
+    const parsed = new Date(rawDate);
+    if (Number.isNaN(parsed.getTime())) return String(rawDate);
+    return parsed.toLocaleDateString('pt-BR');
+  };
+
+  useEffect(() => {
+    const loadServices = async () => {
+      try {
+        setIsLoading(true);
+        setLoadError('');
+        const data = await getServices();
+        setServices(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Erro ao carregar serviços:', error);
+        setLoadError('Não foi possível carregar os serviços.');
+        setServices([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadServices();
+  }, [location.key]);
 
   const filterOptions = [
     { value: 'all', label: 'Todos', variant: 'all' },
     { value: 'active', label: 'Ativos', variant: 'active' },
     { value: 'pending', label: 'Pendentes', variant: 'pending' },
-    { value: 'completed', label: 'Concluídos', variant: 'completed' },
   ];
 
-  const filteredServices = mockServices.filter((service) => {
+  const mappedServices = useMemo(() => {
+    return services.map((service) => {
+      const firstProduct = Array.isArray(service.produto) && service.produto.length > 0
+        ? `Produto #${service.produto[0]}`
+        : 'Produto não informado';
+
+      return {
+        id: service.id,
+        client: service.cliente_nome || `Cliente #${service.cliente}`,
+        type: firstProduct,
+        status: deriveStatus(service),
+        date: formatDate(service.prazo_entrega || service.data_envio),
+      };
+    });
+  }, [services]);
+
+  const filteredServices = mappedServices.filter((service) => {
     const matchesFilter = filter === 'all' || service.status === filter;
     const matchesSearch = service.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           service.type.toLowerCase().includes(searchTerm.toLowerCase());
@@ -38,7 +90,6 @@ const Services = () => {
     const variants = {
       active: { label: 'Ativo', variant: 'success' },
       pending: { label: 'Pendente', variant: 'warning' },
-      completed: { label: 'Concluído', variant: 'info' },
     };
     return variants[status] || { label: status, variant: 'neutral' };
   };
@@ -53,7 +104,7 @@ const Services = () => {
             Gerencie todos os serviços da sua operação.
           </Typography>
         </div>
-        <Button variant="primary">
+        <Button variant="primary" onClick={() => navigate('/services/new')}>
           <Plus className="w-4 h-4" />
           Novo Serviço
         </Button>
@@ -76,7 +127,23 @@ const Services = () => {
 
       {/* Services List */}
       <div className="space-y-3">
-        {filteredServices.length === 0 ? (
+        {isLoading && (
+          <Card className="p-8 text-center">
+            <Typography variant="body1" className="text-taupe">
+              Carregando serviços...
+            </Typography>
+          </Card>
+        )}
+
+        {!isLoading && loadError && (
+          <Card className="p-8 text-center">
+            <Typography variant="body1" className="text-danger">
+              {loadError}
+            </Typography>
+          </Card>
+        )}
+
+        {!isLoading && !loadError && filteredServices.length === 0 ? (
           <Card className="p-12 text-center">
             <Typography variant="body1" className="text-taupe">
               Nenhum serviço encontrado
@@ -85,7 +152,7 @@ const Services = () => {
               Tente ajustar os filtros ou adicione um novo serviço.
             </Typography>
           </Card>
-        ) : (
+        ) : !isLoading && !loadError ? (
           filteredServices.map((service) => {
             const status = getStatusBadge(service.status);
             return (
@@ -112,7 +179,7 @@ const Services = () => {
               </Card>
             );
           })
-        )}
+        ) : null}
       </div>
     </main>
   );
