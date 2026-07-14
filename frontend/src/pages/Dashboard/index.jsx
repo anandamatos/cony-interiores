@@ -15,7 +15,7 @@ import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
 
 // ============================================
-// DADOS MOCKADOS (em breve serão da API)
+// DADOS MOCKADOS
 // ============================================
 const mockStats = {
   activeServices: 12,
@@ -95,7 +95,6 @@ const Dashboard = () => {
     const loadData = async () => {
       try {
         setIsLoading(true);
-        // Simular delay da API
         await new Promise((resolve) => setTimeout(resolve, 800));
         setStats(mockStats);
         setError(null);
@@ -181,87 +180,107 @@ const Dashboard = () => {
       </div>
 
       {/* Stats Cards */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8" aria-label="Estatísticas">
-        <Card hover className="p-5">
-          <div className="flex items-start justify-between">
-            <div>
-              <Typography variant="caption" className="uppercase text-taupe">
-                Serviços Ativos
-              </Typography>
-              <Typography variant="h1" className="text-3xl mt-1">
-                {stats.activeServices}
-              </Typography>
-            </div>
-            <div className="w-10 h-10 rounded-lg bg-offWhite flex items-center justify-center text-taupe">
-              <ClipboardList className="w-5 h-5" />
-            </div>
-          </div>
-          <Badge variant="success" size="sm" className="mt-3">
-            <TrendingUp className="w-3 h-3 mr-1" />
-            3 novos esta semana
-          </Badge>
-        </Card>
+<section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8" aria-label="Estatísticas">
+  <Card 
+    hover 
+    variant="default" 
+    shadow="stat-primary" 
+    className="p-6 border-l-4 border-l-gold"
+  >
+    <div className="flex items-start justify-between">
+      <div>
+        <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
+          Serviços Ativos
+        </Typography>
+        <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
+          {stats.activeServices}
+        </Typography>
+      </div>
+      <div className="w-11 h-11 rounded-xl bg-offWhite flex items-center justify-center text-taupe">
+        <ClipboardList className="w-5 h-5" />
+      </div>
+    </div>
+    <Badge variant="success" size="sm" className="mt-4">
+      <TrendingUp className="w-3 h-3 mr-1" />
+      3 novos esta semana
+    </Badge>
+  </Card>
 
-        <Card hover className="p-5">
-          <div className="flex items-start justify-between">
-            <div>
-              <Typography variant="caption" className="uppercase text-taupe">
-                Costureiras
-              </Typography>
-              <Typography variant="h1" className="text-3xl mt-1">
-                {stats.seamstresses}
-              </Typography>
-            </div>
-            <div className="w-10 h-10 rounded-lg bg-offWhite flex items-center justify-center text-taupe">
-              <Users className="w-5 h-5" />
-            </div>
-          </div>
-          <Badge variant="success" size="sm" className="mt-3">
-            <TrendingUp className="w-3 h-3 mr-1" />
-            1 nova contratada
-          </Badge>
-        </Card>
+  <Card 
+    hover 
+    variant="default" 
+    shadow="stat-sage" 
+    className="p-6 border-l-4 border-l-sage"
+  >
+    <div className="flex items-start justify-between">
+      <div>
+        <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
+          Costureiras
+        </Typography>
+        <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
+          {stats.seamstresses}
+        </Typography>
+      </div>
+      <div className="w-11 h-11 rounded-xl bg-offWhite flex items-center justify-center text-taupe">
+        <Users className="w-5 h-5" />
+      </div>
+    </div>
+    <Badge variant="success" size="sm" className="mt-4">
+      <TrendingUp className="w-3 h-3 mr-1" />
+      1 nova contratada
+    </Badge>
+  </Card>
 
-        <Card hover className="p-5">
-          <div className="flex items-start justify-between">
-            <div>
-              <Typography variant="caption" className="uppercase text-taupe">
-                Pagamentos Pendentes
-              </Typography>
-              <Typography variant="h1" className="text-3xl mt-1">
-                {stats.pendingPayments}
-              </Typography>
-            </div>
-            <div className="w-10 h-10 rounded-lg bg-offWhite flex items-center justify-center text-taupe">
-              <DollarSign className="w-5 h-5" />
-            </div>
-          </div>
-          <Badge variant="danger" size="sm" className="mt-3">
-            <TrendingDown className="w-3 h-3 mr-1" />
-            2 em atraso
-          </Badge>
-        </Card>
+  <Card 
+    hover 
+    variant="default" 
+    shadow="stat-gold" 
+    className="p-6 border-l-4 border-l-gold"
+  >
+    <div className="flex items-start justify-between">
+      <div>
+        <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
+          Pagamentos Pendentes
+        </Typography>
+        <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
+          {stats.pendingPayments}
+        </Typography>
+      </div>
+      <div className="w-11 h-11 rounded-xl bg-offWhite flex items-center justify-center text-taupe">
+        <DollarSign className="w-5 h-5" />
+      </div>
+    </div>
+    <Badge variant="danger" size="sm" className="mt-4">
+      <TrendingDown className="w-3 h-3 mr-1" />
+      2 em atraso
+    </Badge>
+  </Card>
 
-        <Card hover className="p-5">
-          <div className="flex items-start justify-between">
-            <div>
-              <Typography variant="caption" className="uppercase text-taupe">
-                Entregas Previstas
-              </Typography>
-              <Typography variant="h1" className="text-3xl mt-1">
-                {stats.upcomingDeliveries}
-              </Typography>
-            </div>
-            <div className="w-10 h-10 rounded-lg bg-offWhite flex items-center justify-center text-taupe">
-              <Package className="w-5 h-5" />
-            </div>
-          </div>
-          <Badge variant="success" size="sm" className="mt-3">
-            <TrendingUp className="w-3 h-3 mr-1" />
-            Esta semana
-          </Badge>
-        </Card>
-      </section>
+  <Card 
+    hover 
+    variant="default" 
+    shadow="stat-terracota" 
+    className="p-6 border-l-4 border-l-terracota"
+  >
+    <div className="flex items-start justify-between">
+      <div>
+        <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
+          Entregas Previstas
+        </Typography>
+        <Typography variant="h1" className="text-3xl mt-2 font-bold tracking-[-0.5px]">
+          {stats.upcomingDeliveries}
+        </Typography>
+      </div>
+      <div className="w-11 h-11 rounded-xl bg-offWhite flex items-center justify-center text-taupe">
+        <Package className="w-5 h-5" />
+      </div>
+    </div>
+    <Badge variant="success" size="sm" className="mt-4">
+      <TrendingUp className="w-3 h-3 mr-1" />
+      Esta semana
+    </Badge>
+  </Card>
+</section>
 
       {/* Charts Section */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -369,14 +388,14 @@ const Dashboard = () => {
             return (
               <div key={item.name} className="mb-4 last:mb-0">
                 <div className="flex justify-between text-sm mb-2">
-                  <span>{item.name}</span>
+                  <span className="font-medium">{item.name}</span>
                   <span className="text-taupe">
                     {item.services} serviços ({item.percentage}%)
                   </span>
                 </div>
-                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                   <div
-                    className={`h-full rounded-full bg-${colorClass} transition-all duration-500 ease-spring`}
+                    className={`h-full rounded-full bg-${colorClass} transition-all duration-700 ease-spring`}
                     style={{ width: `${item.percentage}%` }}
                   />
                 </div>
@@ -439,7 +458,7 @@ const Dashboard = () => {
           {alerts.map((alert) => (
             <div
               key={alert.id}
-              className="flex items-start gap-4 p-4 -mx-1 rounded-lg hover:bg-offWhite transition-colors cursor-pointer border-b border-gray/50 last:border-b-0"
+              className="flex items-start gap-4 p-4 -mx-1 rounded-lg hover:bg-offWhite transition-colors cursor-pointer border-b border-[rgba(75,58,46,0.06)] last:border-b-0"
               role="button"
               tabIndex={0}
             >
@@ -472,7 +491,4 @@ const Dashboard = () => {
   );
 };
 
-// ============================================
-// EXPORT
-// ============================================
 export default Dashboard;

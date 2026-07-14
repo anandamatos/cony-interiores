@@ -13,13 +13,12 @@ import {
 } from 'lucide-react';
 import classNames from 'classnames';
 
-// A imagem está na pasta public, então usamos o caminho direto
 const logoIcon = "/icony.png";
 
 const menuItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/services', label: 'Serviços', icon: ClipboardList },
-  { path: '/seamstresses', label: 'Costureiras', icon: Users },
+  { path: '/services', label: 'Serviços', icon: ClipboardList, badge: '12' },
+  { path: '/seamstresses', label: 'Costureiras', icon: Users, badge: '4' },
   { path: '/capacity', label: 'Capacidade', icon: Gauge },
   { path: '/financial', label: 'Financeiro', icon: DollarSign },
 ];
@@ -30,12 +29,11 @@ const Sidebar = () => {
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
 
-  // Classes base
   const baseClasses = {
     container: classNames(
       'fixed lg:static inset-y-0 left-0 z-40',
-      'w-64 bg-white border-r border-gray',
-      'flex flex-col h-full',
+      'w-64 bg-white border-r border-[rgba(75,58,46,0.08)]',
+      'flex flex-col h-screen',
       'transition-transform duration-300 ease-spring',
       isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
     ),
@@ -44,33 +42,60 @@ const Sidebar = () => {
       'transition-opacity duration-300',
       isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
     ),
-    header: 'flex items-center gap-3 px-6 h-16 border-b border-gray flex-shrink-0',
-    logo: 'w-10 h-10 bg-primary rounded-lg flex items-center justify-center flex-shrink-0 p-1.5',
-    logoImg: 'w-full h-full object-contain',
-    title: 'font-brand text-lg font-bold text-primary tracking-wide',
-    subtitle: 'text-xs text-taupe font-secondary tracking-widest uppercase block -mt-0.5',
+    header: 'flex items-center gap-3 px-6 h-16 border-b border-[rgba(75,58,46,0.08)] flex-shrink-0',
+    logo: classNames(
+      'w-11 h-11 rounded-xl',
+      'bg-[#4B3A2E]',
+      'flex items-center justify-center flex-shrink-0',
+      'transition-all duration-300 ease-spring',
+      'hover:scale-105 hover:shadow-md'
+    ),
+    logoImg: 'w-full h-full object-contain p-2.5',
+    title: classNames(
+      'font-primary font-bold text-xl',
+      'tracking-wide',
+      'text-[#4B3A2E]'
+    ),
+    subtitle: 'text-xs text-taupe font-secondary tracking-[0.2em] uppercase block -mt-0.5',
     nav: 'flex-1 px-3 py-4 space-y-1 overflow-y-auto',
-    navLabel: 'text-xs font-bold text-taupe uppercase tracking-wider px-3 py-2',
+    navLabel: classNames(
+      'text-xs font-bold text-taupe uppercase tracking-widest',
+      'px-3 py-2',
+      'mt-4'
+    ),
     link: ({ isActive }) => classNames(
       'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium',
-      'transition-all duration-200 ease-spring',
+      'transition-all duration-300 ease-spring',
       'focus:outline-none focus:ring-2 focus:ring-primary/20',
       isActive
         ? 'bg-gradient-gold text-primary shadow-sm font-semibold'
         : 'text-primary/70 hover:bg-offWhite hover:text-primary hover:translate-x-1'
     ),
     icon: 'w-5 h-5 flex-shrink-0',
-    badge: 'ml-auto bg-terracota text-white text-xs font-semibold px-2 py-0.5 rounded-full',
-    footer: 'border-t border-gray p-4 flex items-center gap-3 flex-shrink-0',
-    avatar: 'w-10 h-10 rounded-full bg-gradient-primary text-white flex items-center justify-center font-bold text-sm',
+    badge: classNames(
+      'ml-auto bg-gold text-white',
+      'px-2 py-0.5 rounded-lg',
+      'text-xs font-semibold'
+    ),
+    footer: classNames(
+      'border-t border-[rgba(75,58,46,0.08)]',
+      'p-4 flex items-center gap-3',
+      'mt-auto'
+    ),
+    avatar: 'w-10 h-10 rounded-full bg-gradient-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0',
     footerInfo: 'flex-1 min-w-0',
     footerName: 'text-sm font-semibold text-primary truncate',
     footerRole: 'text-xs text-taupe truncate',
-    logoutBtn: 'p-2 rounded-lg text-taupe hover:text-danger hover:bg-danger/10 transition-all duration-200',
+    logoutBtn: classNames(
+      'p-2 rounded-lg text-taupe',
+      'transition-all duration-300 ease-spring',
+      'hover:text-danger hover:bg-danger/10'
+    ),
     mobileToggle: classNames(
       'lg:hidden fixed top-4 left-4 z-50',
-      'p-2 rounded-lg bg-white shadow-md border border-gray',
-      'hover:bg-offWhite transition-all duration-200',
+      'p-2 rounded-lg bg-white shadow-md border border-[rgba(75,58,46,0.08)]',
+      'transition-all duration-300 ease-spring',
+      'hover:bg-offWhite',
       'focus:outline-none focus:ring-2 focus:ring-primary/20'
     ),
   };
@@ -134,9 +159,7 @@ const Sidebar = () => {
             </NavLink>
           ))}
 
-          <div className={baseClasses.navLabel} style={{ marginTop: '24px' }}>
-            Configurações
-          </div>
+          <div className={baseClasses.navLabel}>Configurações</div>
           <NavLink
             to="/settings"
             className={baseClasses.link}
@@ -157,7 +180,7 @@ const Sidebar = () => {
           </NavLink>
         </nav>
 
-        {/* Footer */}
+        {/* Footer - Ancorado no final com mt-auto */}
         <div className={baseClasses.footer}>
           <div className={baseClasses.avatar}>AM</div>
           <div className={baseClasses.footerInfo}>
@@ -169,7 +192,6 @@ const Sidebar = () => {
             aria-label="Sair"
             onClick={() => {
               console.log('🔒 Logout clicado');
-              // TODO: Implementar logout
             }}
           >
             <LogOut className="w-5 h-5" />

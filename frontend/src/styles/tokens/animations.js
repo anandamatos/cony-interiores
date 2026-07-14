@@ -20,13 +20,13 @@ export const animations = {
   // EASING FUNCTIONS
   // ==========================================
   easing: {
-    linear: "linear",
-    easeIn: "cubic-bezier(0.4, 0, 1, 1)",
-    easeOut: "cubic-bezier(0, 0, 0.2, 1)",
-    easeInOut: "cubic-bezier(0.4, 0, 0.2, 1)",
-    spring: "cubic-bezier(0.34, 1.56, 0.64, 1)",
-    smooth: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-    bouncy: "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+    linear: 'linear',
+    easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
+    easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
+    easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)', // Spring/Bounce
+    smooth: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    bouncy: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
   },
 
   // ==========================================

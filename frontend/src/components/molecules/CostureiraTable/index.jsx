@@ -42,10 +42,13 @@ const CostureiraTable = ({ data = [], onRowClick, className, ...props }) => {
   };
 
   const baseClasses = {
-    container: classNames(
-      'overflow-x-auto rounded-lg border border-gray bg-white',
-      className
-    ),
+  container: classNames(
+    'overflow-x-auto',
+    'rounded-xl', // Usando o token xl (16px)
+    'border border-[rgba(75,58,46,0.08)]',
+    'bg-white',
+    className
+  ),
     table: 'w-full',
     thead: 'bg-offWhite border-b border-gray',
     th: classNames(

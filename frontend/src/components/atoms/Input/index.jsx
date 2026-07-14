@@ -17,7 +17,7 @@ const Input = ({
   const [focused, setFocused] = useState(false);
   const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
 
-  // Classes base
+  // Classes base - CORRIGIDAS (vírgulas entre propriedades)
   const baseClasses = {
     container: classNames('flex flex-col gap-1.5 w-full', className),
     label: classNames(
@@ -26,9 +26,10 @@ const Input = ({
       disabled && 'opacity-50'
     ),
     input: classNames(
-      'w-full px-4 py-2.5 rounded-lg border-2',
+      'w-full px-4 py-2.5 rounded-xl',
+      'border-2',
       'bg-offWhite text-primary placeholder-taupe',
-      'transition-all duration-200 ease-spring',
+      'transition-all duration-300 ease-spring',
       'focus:outline-none focus:ring-2 focus:ring-offset-1',
       'disabled:opacity-50 disabled:cursor-not-allowed',
       error
