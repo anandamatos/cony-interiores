@@ -5,7 +5,7 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: 'Sistema de cantos arredondados e bordas para consistência visual.',
+      component: 'Sistema de cantos arredondados e bordas para consistência visual.',
       },
     },
   },

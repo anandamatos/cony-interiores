@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Users, Package, Calendar, Filter } from 'lucide-react';
-import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
+import Card from '../../components/atoms/Card';
 import Badge from '../../components/atoms/Badge';
-import StatusFilter from '../../components/molecules/StatusFilter';
 
 const Capacity = () => {
-  const [period, setPeriod] = useState('week');
   const [capacityData, setCapacityData] = useState(null);
+  const [period, setPeriod] = useState('week');
 
-  // Mock data
   const mockData = {
     totalCapacity: 100,
     currentLoad: 72,
@@ -28,11 +26,6 @@ const Capacity = () => {
     ],
   };
 
-  const periodOptions = [
-    { value: 'week', label: 'Semanal', variant: 'all' },
-    { value: 'month', label: 'Mensal', variant: 'active' },
-  ];
-
   useEffect(() => {
     setCapacityData(mockData);
   }, []);
@@ -43,8 +36,6 @@ const Capacity = () => {
     return 'text-danger bg-danger/10';
   };
 
-  const maxLoad = Math.max(...(capacityData?.weeklyData?.map(d => d.load) || [0]));
-
   if (!capacityData) {
     return (
       <main className="flex-1 p-6 sm:p-8 lg:p-10">
@@ -54,32 +45,51 @@ const Capacity = () => {
     );
   }
 
+  const maxLoad = Math.max(...capacityData.weeklyData.map(d => d.load));
+
   return (
     <main className="flex-1 p-6 sm:p-8 lg:p-10">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <Typography variant="h1">Capacidade</Typography>
-          <Typography variant="body1" className="mt-1">
+          <Typography variant="body1" className="mt-1 text-taupe">
             Visualize a carga de trabalho da sua operação.
           </Typography>
         </div>
-        <StatusFilter
-          options={periodOptions}
-          value={period}
-          onChange={setPeriod}
-        />
+        <div className="flex gap-2">
+          <button
+            onClick={() => setPeriod('week')}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ease-spring ${
+              period === 'week'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-white/70 backdrop-blur-sm text-primary hover:bg-offWhite'
+            }`}
+          >
+            Semanal
+          </button>
+          <button
+            onClick={() => setPeriod('month')}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ease-spring ${
+              period === 'month'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-white/70 backdrop-blur-sm text-primary hover:bg-offWhite'
+            }`}
+          >
+            Mensal
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card className="p-5">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <Card glass className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <Typography variant="caption" className="uppercase text-taupe">
+              <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
                 Carga Atual
               </Typography>
-              <Typography variant="h1" className="text-3xl mt-1">
+              <Typography variant="h1" className="text-3xl mt-2 font-bold">
                 {capacityData.currentLoad}%
               </Typography>
             </div>
@@ -91,7 +101,7 @@ const Capacity = () => {
               {capacityData.currentLoad < 70 ? 'Boa' : capacityData.currentLoad < 85 ? 'Média' : 'Crítica'}
             </Badge>
           </div>
-          <div className="w-full h-2 bg-gray-200 rounded-full mt-3 overflow-hidden">
+          <div className="w-full h-2 bg-gray-100 rounded-full mt-3 overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-500 ${
                 capacityData.currentLoad < 70 ? 'bg-success' :
@@ -102,49 +112,49 @@ const Capacity = () => {
           </div>
         </Card>
 
-        <Card className="p-5">
+        <Card glass className="p-6">
           <div className="flex items-start justify-between">
             <div>
-              <Typography variant="caption" className="uppercase text-taupe">
+              <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
                 Capacidade Disponível
               </Typography>
-              <Typography variant="h1" className="text-3xl mt-1">
+              <Typography variant="h1" className="text-3xl mt-2 font-bold">
                 {capacityData.available}%
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-offWhite flex items-center justify-center text-taupe">
+            <div className="w-11 h-11 rounded-xl bg-white/50 backdrop-blur-sm flex items-center justify-center text-taupe">
               <Users className="w-5 h-5" />
             </div>
           </div>
         </Card>
 
-        <Card className="p-5">
+        <Card glass className="p-6">
           <div className="flex items-start justify-between">
             <div>
-              <Typography variant="caption" className="uppercase text-taupe">
+              <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
                 Serviços em Andamento
               </Typography>
-              <Typography variant="h1" className="text-3xl mt-1">
+              <Typography variant="h1" className="text-3xl mt-2 font-bold">
                 {capacityData.servicesInProgress}
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-offWhite flex items-center justify-center text-taupe">
+            <div className="w-11 h-11 rounded-xl bg-white/50 backdrop-blur-sm flex items-center justify-center text-taupe">
               <Package className="w-5 h-5" />
             </div>
           </div>
         </Card>
 
-        <Card className="p-5">
+        <Card glass className="p-6">
           <div className="flex items-start justify-between">
             <div>
-              <Typography variant="caption" className="uppercase text-taupe">
+              <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
                 Próximos Serviços
               </Typography>
-              <Typography variant="h1" className="text-3xl mt-1">
+              <Typography variant="h1" className="text-3xl mt-2 font-bold">
                 {capacityData.upcoming}
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-offWhite flex items-center justify-center text-taupe">
+            <div className="w-11 h-11 rounded-xl bg-white/50 backdrop-blur-sm flex items-center justify-center text-taupe">
               <Calendar className="w-5 h-5" />
             </div>
           </div>
@@ -152,10 +162,12 @@ const Capacity = () => {
       </section>
 
       {/* Weekly Chart */}
-      <Card className="p-6">
+      <Card glass className="p-6">
         <div className="mb-6">
-          <Typography variant="h3">Carga Semanal</Typography>
-          <Typography variant="body2" className="text-taupe">
+          <Typography variant="h3" className="text-[18px] font-semibold">
+            Carga Semanal
+          </Typography>
+          <Typography variant="body2" className="text-taupe text-sm">
             Distribuição da carga de trabalho por dia
           </Typography>
         </div>

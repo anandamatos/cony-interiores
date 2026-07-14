@@ -13,7 +13,7 @@ export default {
 
 export const SpacingScale = {
   render: () => (
-    <div className="p-8 max-w-2xl">
+    <div className="p-8 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold text-primary mb-6">📏 Escala de Espaçamento</h2>
       <p className="text-taupe mb-8">
         A escala é baseada em múltiplos de 4px, garantindo consistência visual em toda a interface.

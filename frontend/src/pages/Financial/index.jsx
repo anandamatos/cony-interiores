@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { DollarSign, TrendingUp, TrendingDown, CreditCard, Wallet } from 'lucide-react';
-import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
+import Card from '../../components/atoms/Card';
 import Badge from '../../components/atoms/Badge';
 
 const Financial = () => {
   const [financialData, setFinancialData] = useState(null);
 
-  // Mock data
   const mockData = {
     totalRevenue: 28500,
     pendingPayments: 4200,
@@ -56,88 +55,88 @@ const Financial = () => {
       {/* Header */}
       <div className="mb-8">
         <Typography variant="h1">Financeiro</Typography>
-        <Typography variant="body1" className="mt-1">
+        <Typography variant="body1" className="mt-1 text-taupe">
           Acompanhe a saúde financeira da sua operação.
         </Typography>
       </div>
 
       {/* Stats Cards */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card className="p-5">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <Card glass className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <Typography variant="caption" className="uppercase text-taupe">
+              <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
                 Receita Total
               </Typography>
-              <Typography variant="h1" className="text-2xl mt-1">
+              <Typography variant="h1" className="text-2xl mt-2 font-bold">
                 {formatCurrency(financialData.totalRevenue)}
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-success/10 text-success flex items-center justify-center">
+            <div className="w-11 h-11 rounded-xl bg-success/10 text-success flex items-center justify-center">
               <DollarSign className="w-5 h-5" />
             </div>
           </div>
-          <Badge variant="success" size="sm" className="mt-3">
+          <Badge variant="success" size="sm" className="mt-4">
             <TrendingUp className="w-3 h-3 mr-1" />
             {financialData.monthlyGrowth}% este mês
           </Badge>
         </Card>
 
-        <Card className="p-5">
+        <Card glass className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <Typography variant="caption" className="uppercase text-taupe">
+              <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
                 Pagamentos Pendentes
               </Typography>
-              <Typography variant="h1" className="text-2xl mt-1">
+              <Typography variant="h1" className="text-2xl mt-2 font-bold">
                 {formatCurrency(financialData.pendingPayments)}
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-warning/10 text-warning flex items-center justify-center">
+            <div className="w-11 h-11 rounded-xl bg-warning/10 text-warning flex items-center justify-center">
               <CreditCard className="w-5 h-5" />
             </div>
           </div>
-          <Badge variant="warning" size="sm" className="mt-3">
+          <Badge variant="warning" size="sm" className="mt-4">
             <TrendingDown className="w-3 h-3 mr-1" />
             Aguardando pagamento
           </Badge>
         </Card>
 
-        <Card className="p-5">
+        <Card glass className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <Typography variant="caption" className="uppercase text-taupe">
+              <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
                 Pagamentos Realizados
               </Typography>
-              <Typography variant="h1" className="text-2xl mt-1">
+              <Typography variant="h1" className="text-2xl mt-2 font-bold">
                 {formatCurrency(financialData.completedPayments)}
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-info/10 text-info flex items-center justify-center">
+            <div className="w-11 h-11 rounded-xl bg-info/10 text-info flex items-center justify-center">
               <Wallet className="w-5 h-5" />
             </div>
           </div>
-          <Badge variant="success" size="sm" className="mt-3">
+          <Badge variant="success" size="sm" className="mt-4">
             <TrendingUp className="w-3 h-3 mr-1" />
             Recebidos
           </Badge>
         </Card>
 
-        <Card className="p-5">
+        <Card glass className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <Typography variant="caption" className="uppercase text-taupe">
+              <Typography variant="caption" className="uppercase text-taupe text-xs tracking-wider">
                 Taxa de Recebimento
               </Typography>
-              <Typography variant="h1" className="text-2xl mt-1">
+              <Typography variant="h1" className="text-2xl mt-2 font-bold">
                 85%
               </Typography>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-offWhite flex items-center justify-center text-taupe">
+            <div className="w-11 h-11 rounded-xl bg-white/50 backdrop-blur-sm flex items-center justify-center text-taupe">
               <TrendingUp className="w-5 h-5" />
             </div>
           </div>
-          <div className="w-full h-2 bg-gray-200 rounded-full mt-3 overflow-hidden">
+          <div className="w-full h-2 bg-gray-100 rounded-full mt-3 overflow-hidden">
             <div
               className="h-full rounded-full bg-success"
               style={{ width: '85%' }}
@@ -147,9 +146,11 @@ const Financial = () => {
       </section>
 
       {/* Recent Transactions */}
-      <Card className="p-6">
+      <Card glass className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <Typography variant="h3">Transações Recentes</Typography>
+          <Typography variant="h3" className="text-[18px] font-semibold">
+            Transações Recentes
+          </Typography>
           <Badge variant="neutral" size="sm">
             {financialData.recentTransactions.length} registros
           </Badge>
@@ -161,7 +162,7 @@ const Financial = () => {
             return (
               <div
                 key={transaction.id}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-lg hover:bg-offWhite transition-colors border-b border-gray/50 last:border-b-0"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl hover:bg-offWhite/30 transition-colors border-b border-[rgba(75,58,46,0.04)] last:border-b-0"
               >
                 <div>
                   <Typography variant="h4" className="text-sm">

@@ -13,7 +13,7 @@ export default {
 
 export const AnimationTokens = {
   render: () => (
-    <div className="p-8 max-w-3xl">
+    <div className="p-8 max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold text-primary mb-6">✨ Tokens de Animação</h2>
       <p className="text-taupe mb-8">
         O sistema de animações utiliza durações e easings consistentes para criar interações fluidas e naturais.
