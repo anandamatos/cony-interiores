@@ -8,41 +8,7 @@ export const parameters = {
       date: /Date$/,
     },
   },
-  // ============================================
-  // Acessibilidade: Configuração do addon a11y
-  // ============================================
-  a11y: {
-    config: {
-      rules: [
-        {
-          id: 'color-contrast',
-          enabled: true,
-        },
-        {
-          id: 'aria-required-attr',
-          enabled: true,
-        },
-        {
-          id: 'aria-roles',
-          enabled: true,
-        },
-        {
-          id: 'nested-interactive',
-          enabled: true,
-        },
-      ],
-    },
-    options: {
-      checks: {
-        'color-contrast': {
-          options: {
-            // WCAG 2.1 AA
-            contrastLevel: 'AA',
-          },
-        },
-      },
-    },
-  },
+  // Configuração de acessibilidade removida (addon incompatível)
 };
 
 export const tags = ['autodocs'];

@@ -87,3 +87,5 @@ export const AnimationTokens = {
     </div>
   ),
 };
+
+AnimationTokens.storyName = 'Tokens de Animação';

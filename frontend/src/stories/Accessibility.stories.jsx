@@ -97,96 +97,6 @@ export const Acessibilidade = () => (
 
     <hr className="my-8 border-gray" />
 
-    <h2 className="text-2xl font-bold text-primary mb-4">🔧 Boas Práticas Implementadas</h2>
-
-    <h3 className="text-lg font-semibold text-primary mb-2">Semântica HTML</h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <div className="p-4 bg-success/10 border border-success/20 rounded-lg">
-        <p className="text-sm font-semibold text-success mb-2">✅ Correto</p>
-        <pre className="text-xs bg-white p-2 rounded overflow-x-auto">
-{`<main role="main">
-  <section aria-label="Estatísticas">
-    <h1>Título da Página</h1>
-  </section>
-</main>`}
-        </pre>
-      </div>
-      <div className="p-4 bg-danger/10 border border-danger/20 rounded-lg">
-        <p className="text-sm font-semibold text-danger mb-2">❌ Incorreto</p>
-        <pre className="text-xs bg-white p-2 rounded overflow-x-auto">
-{`<div class="main">
-  <div class="section">
-    <div class="title">Título da Página</div>
-  </div>
-</div>`}
-        </pre>
-      </div>
-    </div>
-
-    <h3 className="text-lg font-semibold text-primary mb-2">ARIA Labels</h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <div className="p-4 bg-success/10 border border-success/20 rounded-lg">
-        <p className="text-sm font-semibold text-success mb-2">✅ Correto</p>
-        <pre className="text-xs bg-white p-2 rounded overflow-x-auto">
-{`<button aria-label="Fechar menu" onClick={closeMenu}>
-  <X />
-</button>`}
-        </pre>
-      </div>
-      <div className="p-4 bg-danger/10 border border-danger/20 rounded-lg">
-        <p className="text-sm font-semibold text-danger mb-2">❌ Incorreto</p>
-        <pre className="text-xs bg-white p-2 rounded overflow-x-auto">
-{`<button onClick={closeMenu}>
-  <X />
-</button>`}
-        </pre>
-      </div>
-    </div>
-
-    <hr className="my-8 border-gray" />
-
-    <h2 className="text-2xl font-bold text-primary mb-4">🛠️ Ferramentas de Teste</h2>
-    <div className="overflow-x-auto mb-8">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="bg-offWhite">
-            <th className="px-4 py-3 text-left text-sm font-semibold text-primary border-b border-gray">Ferramenta</th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-primary border-b border-gray">Uso</th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-primary border-b border-gray">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="border-b border-gray/50">
-            <td className="px-4 py-3 text-sm"><strong>axe-core</strong></td>
-            <td className="px-4 py-3 text-sm">Testes automatizados</td>
-            <td className="px-4 py-3 text-sm"><span className="text-success">✅ Configurado</span></td>
-          </tr>
-          <tr className="border-b border-gray/50">
-            <td className="px-4 py-3 text-sm"><strong>Storybook a11y</strong></td>
-            <td className="px-4 py-3 text-sm">Testes em componentes</td>
-            <td className="px-4 py-3 text-sm"><span className="text-success">✅ Configurado</span></td>
-          </tr>
-          <tr className="border-b border-gray/50">
-            <td className="px-4 py-3 text-sm"><strong>Lighthouse</strong></td>
-            <td className="px-4 py-3 text-sm">Testes em páginas</td>
-            <td className="px-4 py-3 text-sm"><span className="text-warning">⬜ MVP2</span></td>
-          </tr>
-          <tr className="border-b border-gray/50">
-            <td className="px-4 py-3 text-sm"><strong>NVDA / VoiceOver</strong></td>
-            <td className="px-4 py-3 text-sm">Testes com leitores de tela</td>
-            <td className="px-4 py-3 text-sm"><span className="text-warning">⬜ MVP2</span></td>
-          </tr>
-          <tr>
-            <td className="px-4 py-3 text-sm"><strong>Testes com PCD</strong></td>
-            <td className="px-4 py-3 text-sm">Validação com usuários</td>
-            <td className="px-4 py-3 text-sm"><span className="text-warning">⬜ MVP2</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <hr className="my-8 border-gray" />
-
     <h2 className="text-2xl font-bold text-primary mb-4">📝 Checklist de Acessibilidade</h2>
 
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -216,16 +126,6 @@ export const Acessibilidade = () => (
         </ul>
       </div>
     </div>
-
-    <hr className="my-8 border-gray" />
-
-    <h2 className="text-2xl font-bold text-primary mb-4">🔗 Links Úteis</h2>
-    <ul className="space-y-2 text-sm text-gray-600">
-      <li><a href="https://www.w3.org/WAI/WCAG21/quickref/" className="text-primary hover:underline">WCAG 2.1 Guidelines</a></li>
-      <li><a href="https://github.com/dequelabs/axe-core" className="text-primary hover:underline">axe-core Documentation</a></li>
-      <li><a href="https://storybook.js.org/addons/@storybook/addon-a11y" className="text-primary hover:underline">Storybook Accessibility Addon</a></li>
-      <li><a href="https://www.w3.org/WAI/ARIA/apg/" className="text-primary hover:underline">WAI-ARIA Practices</a></li>
-    </ul>
 
     <hr className="my-8 border-gray" />
 
