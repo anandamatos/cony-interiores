@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Users, Package, Calendar, Filter } from 'lucide-react';
+import { useState } from 'react';
+import { Users, Package, Calendar } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Badge from '../../components/atoms/Badge';
@@ -7,7 +7,6 @@ import StatusFilter from '../../components/molecules/StatusFilter';
 
 const Capacity = () => {
   const [period, setPeriod] = useState('week');
-  const [capacityData, setCapacityData] = useState(null);
 
   // Mock data
   const mockData = {
@@ -33,9 +32,7 @@ const Capacity = () => {
     { value: 'month', label: 'Mensal', variant: 'active' },
   ];
 
-  useEffect(() => {
-    setCapacityData(mockData);
-  }, []);
+  const capacityData = mockData;
 
   const getLoadColor = (percentage) => {
     if (percentage < 70) return 'text-success bg-success/10';
@@ -44,15 +41,6 @@ const Capacity = () => {
   };
 
   const maxLoad = Math.max(...(capacityData?.weeklyData?.map(d => d.load) || [0]));
-
-  if (!capacityData) {
-    return (
-      <main className="flex-1 p-6 sm:p-8 lg:p-10">
-        <Typography variant="h1">Capacidade</Typography>
-        <Typography variant="body1" className="mt-1">Carregando dados...</Typography>
-      </main>
-    );
-  }
 
   return (
     <main className="flex-1 p-6 sm:p-8 lg:p-10">

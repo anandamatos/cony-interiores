@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { borders } from '../../../styles/tokens/borders';
 
 const Card = ({
   children,
@@ -11,11 +10,11 @@ const Card = ({
   ...props
 }) => {
   const variants = {
-    default: 'bg-white border border-[rgba(75,58,46,0.08)]',
-    gold: 'bg-gradient-gold border border-gold/10',
-    offWhite: 'bg-offWhite border border-[rgba(75,58,46,0.06)]',
-    ghost: 'bg-transparent border border-[rgba(75,58,46,0.08)]',
-    elevated: 'bg-white shadow-card',
+    default: 'bg-white/80 backdrop-blur-sm border border-border',
+    gold: 'bg-gradient-gold border border-gold/15',
+    offWhite: 'bg-offWhite/80 border border-border/80',
+    ghost: 'bg-white/40 backdrop-blur-sm border border-border/70',
+    elevated: 'bg-white border border-border shadow-elevated',
   };
 
   const shadowClasses = {
@@ -40,7 +39,8 @@ const Card = ({
   };
 
   const baseClasses = classNames(
-    'rounded-xl', // Usando o token xl (16px)
+    'rounded-[10px]',
+    'overflow-hidden',
     'transition-all duration-300 ease-spring',
     variants[variant] || variants.default,
     shadowClasses[shadow] || shadowClasses.card,
@@ -48,7 +48,7 @@ const Card = ({
     hover && [
       hoverShadows[variant] || hoverShadows.default,
       'hover:-translate-y-1',
-      'hover:border-primary/20',
+      'hover:border-gold/30',
     ],
     className
   );

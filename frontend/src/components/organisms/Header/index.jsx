@@ -1,4 +1,4 @@
-import { Search, Bell, HelpCircle, User } from 'lucide-react';
+import { Search, Bell, HelpCircle } from 'lucide-react';
 import classNames from 'classnames';
 
 const Header = ({ onSearch, notificationCount = 3 }) => {
@@ -30,7 +30,8 @@ const Header = ({ onSearch, notificationCount = 3 }) => {
       'relative focus:outline-none focus:ring-2 focus:ring-primary/20'
     ),
     dot: 'absolute top-2 right-2 w-2.5 h-2.5 bg-terracota rounded-full border-2 border-white',
-    user: 'flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-gray',
+    divider: 'hidden sm:block h-8 w-px bg-border',
+    user: 'flex items-center gap-2 sm:gap-3 pl-0 sm:pl-1',
     avatar: classNames(
       'w-9 h-9 rounded-full',
       'bg-gradient-primary text-white',
@@ -77,6 +78,8 @@ const Header = ({ onSearch, notificationCount = 3 }) => {
         >
           <HelpCircle size={20} />
         </button>
+
+        <span className={baseClasses.divider} aria-hidden="true" />
 
         <div className={baseClasses.user}>
           <div className={baseClasses.avatar} aria-hidden="true">

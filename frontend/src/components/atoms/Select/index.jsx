@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import classNames from 'classnames';
 import { ChevronDown } from 'lucide-react';
 
@@ -16,7 +16,8 @@ const Select = ({
   ...props
 }) => {
   const [focused, setFocused] = useState(false);
-  const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
+  const generatedId = useId();
+  const selectId = id || `select-${generatedId}`;
 
   const baseClasses = {
     container: classNames('flex flex-col gap-1.5 w-full', className),

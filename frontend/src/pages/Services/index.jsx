@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Plus, Search, Filter, MoreVertical } from 'lucide-react';
+import { useState } from 'react';
+import { Plus, MoreVertical } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
@@ -8,7 +8,6 @@ import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
 
 const Services = () => {
-  const [services, setServices] = useState([]);
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -28,11 +27,7 @@ const Services = () => {
     { value: 'completed', label: 'Concluídos', variant: 'completed' },
   ];
 
-  useEffect(() => {
-    setServices(mockServices);
-  }, []);
-
-  const filteredServices = services.filter((service) => {
+  const filteredServices = mockServices.filter((service) => {
     const matchesFilter = filter === 'all' || service.status === filter;
     const matchesSearch = service.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           service.type.toLowerCase().includes(searchTerm.toLowerCase());

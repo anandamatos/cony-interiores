@@ -16,6 +16,7 @@ const Typography = ({
     h3: 'h3',
     h4: 'h4',
     body1: 'p',
+    body: 'p',
     body2: 'p',
     caption: 'span',
   };
@@ -25,43 +26,43 @@ const Typography = ({
   // Classes base por variante (refinadas)
   const variantClasses = {
     h1: classNames(
-      'font-primary text-4xl font-bold',
-      'tracking-[-0.8px]',
+      'font-primary text-[32px] font-bold',
+      'tracking-[-0.5px]',
       'leading-[1.2]',
       'text-[#4B3A2E]'
     ),
     h2: classNames(
-      'font-primary text-2xl font-semibold',
-      'tracking-[-0.5px]',
+      'font-primary text-[24px] font-semibold',
+      'tracking-[-0.3px]',
       'leading-[1.3]',
       'text-[#4B3A2E]'
     ),
     h3: classNames(
-      'font-primary text-xl font-semibold',
-      'tracking-[-0.3px]',
-      'leading-[1.4]',
-      'text-[#4B3A2E]'
-    ),
-    h4: classNames(
-      'font-primary text-lg font-semibold',
+      'font-primary text-[18px] font-semibold',
       'tracking-[-0.2px]',
       'leading-[1.4]',
       'text-[#4B3A2E]'
     ),
+    h4: classNames(
+      'font-primary text-[16px] font-semibold',
+      'tracking-[-0.1px]',
+      'leading-[1.4]',
+      'text-[#4B3A2E]'
+    ),
     body1: classNames(
-      'font-secondary text-base font-normal',
-      'leading-relaxed',
-      'text-[#4B3A2E]/80'
+      'font-secondary text-[16px] font-normal',
+      'leading-[1.7]',
+      'text-[#4B3A2E]/85'
     ),
     body2: classNames(
-      'font-secondary text-sm font-normal',
-      'leading-relaxed',
+      'font-secondary text-[14px] font-normal',
+      'leading-[1.6]',
       'text-[#4B3A2E]/70'
     ),
     caption: classNames(
-      'font-secondary text-xs font-normal',
-      'tracking-[0.02em]',
-      'leading-relaxed',
+      'font-secondary text-[12px] font-normal',
+      'tracking-[0.03em]',
+      'leading-[1.5]',
       'text-[#A8968B]'
     ),
   };

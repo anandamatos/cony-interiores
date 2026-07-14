@@ -1,12 +1,9 @@
-import { useState, useEffect } from 'react';
 import { DollarSign, TrendingUp, TrendingDown, CreditCard, Wallet } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Badge from '../../components/atoms/Badge';
 
 const Financial = () => {
-  const [financialData, setFinancialData] = useState(null);
-
   // Mock data
   const mockData = {
     totalRevenue: 28500,
@@ -22,9 +19,7 @@ const Financial = () => {
     ],
   };
 
-  useEffect(() => {
-    setFinancialData(mockData);
-  }, []);
+  const financialData = mockData;
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -41,15 +36,6 @@ const Financial = () => {
     };
     return variants[status] || { label: status, variant: 'neutral' };
   };
-
-  if (!financialData) {
-    return (
-      <main className="flex-1 p-6 sm:p-8 lg:p-10">
-        <Typography variant="h1">Financeiro</Typography>
-        <Typography variant="body1" className="mt-1">Carregando dados...</Typography>
-      </main>
-    );
-  }
 
   return (
     <main className="flex-1 p-6 sm:p-8 lg:p-10">

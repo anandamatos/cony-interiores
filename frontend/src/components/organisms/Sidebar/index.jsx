@@ -68,8 +68,8 @@ const Sidebar = () => {
       'transition-all duration-300 ease-spring',
       'focus:outline-none focus:ring-2 focus:ring-primary/20',
       isActive
-        ? 'bg-gradient-gold text-primary shadow-sm font-semibold'
-        : 'text-primary/70 hover:bg-offWhite hover:text-primary hover:translate-x-1'
+        ? 'bg-gradient-gold text-primary shadow-sm font-semibold ring-1 ring-gold/20'
+        : 'text-primary/70 opacity-70 hover:bg-offWhite hover:text-primary hover:opacity-100 hover:translate-x-1'
     ),
     icon: 'w-5 h-5 flex-shrink-0',
     badge: classNames(
@@ -147,6 +147,7 @@ const Sidebar = () => {
             <NavLink
               key={item.path}
               to={item.path}
+              end={item.path === '/'}
               className={baseClasses.link}
               onClick={closeSidebar}
               aria-label={item.label}

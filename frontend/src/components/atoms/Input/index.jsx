@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import classNames from 'classnames';
 
 const Input = ({
@@ -15,7 +15,8 @@ const Input = ({
   ...props
 }) => {
   const [focused, setFocused] = useState(false);
-  const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+  const generatedId = useId();
+  const inputId = id || `input-${generatedId}`;
 
   // Classes base - CORRIGIDAS (vírgulas entre propriedades)
   const baseClasses = {

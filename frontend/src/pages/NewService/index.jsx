@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "../../components/atoms/Card";
 import Button from "../../components/atoms/Button";
@@ -147,12 +148,16 @@ const NewService = () => {
   ];
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <Typography variant="h1" className="mb-6">
-        Novo Serviço
-      </Typography>
+    <main className="flex-1 p-6 sm:p-8 lg:p-10">
+      <div className="mx-auto w-full max-w-4xl">
+        <div className="mb-8">
+          <Typography variant="h1">Novo Serviço</Typography>
+          <Typography variant="body1" className="mt-1">
+            Cadastre um novo serviço e distribua para a equipe.
+          </Typography>
+        </div>
 
-      <Card className="p-6">
+        <Card className="p-6 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Select
@@ -247,7 +252,7 @@ const NewService = () => {
             </div>
           </div>
 
-          <div className="flex gap-4 pt-4">
+          <div className="flex flex-wrap gap-3 pt-4">
             <Button type="submit" variant="primary" loading={loading}>
               {loading ? "Cadastrando..." : "Cadastrar Serviço"}
             </Button>
@@ -261,8 +266,9 @@ const NewService = () => {
             </Button>
           </div>
         </form>
-      </Card>
-    </div>
+        </Card>
+      </div>
+    </main>
   );
 };
 

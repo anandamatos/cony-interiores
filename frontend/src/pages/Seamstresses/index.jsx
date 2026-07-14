@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Plus, Users as UsersIcon } from 'lucide-react';
+import { useState } from 'react';
+import { Plus } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
@@ -8,7 +8,6 @@ import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
 
 const Seamstresses = () => {
-  const [seamstresses, setSeamstresses] = useState([]);
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -26,11 +25,7 @@ const Seamstresses = () => {
     { value: 'inactive', label: 'Inativos', variant: 'inactive' },
   ];
 
-  useEffect(() => {
-    setSeamstresses(mockSeamstresses);
-  }, []);
-
-  const filteredSeamstresses = seamstresses.filter((s) => {
+  const filteredSeamstresses = mockSeamstresses.filter((s) => {
     const matchesFilter = filter === 'all' || s.status === filter;
     const matchesSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           s.specialty.toLowerCase().includes(searchTerm.toLowerCase());
