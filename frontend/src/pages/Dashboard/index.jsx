@@ -209,9 +209,9 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards com glassmorphism e espaçamentos ajustados */}
       <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8" aria-label="Estatísticas">
-        {statCardConfig.map((card, index) => {
+        {statCardConfig.map((card) => {
           const Icon = card.icon;
           const TrendIcon = card.badge.trend === 'up' ? TrendingUp : TrendingDown;
           const badgeVariant = card.badge.trend === 'up' ? 'success' : 'danger';
@@ -233,7 +233,7 @@ const Dashboard = () => {
                     {card.value}
                   </Typography>
                 </div>
-                <div className="w-11 h-11 rounded-xl bg-offWhite flex items-center justify-center text-taupe">
+                <div className="w-11 h-11 rounded-xl bg-white/50 backdrop-blur-sm flex items-center justify-center text-taupe">
                   <Icon className="w-5 h-5" />
                 </div>
               </div>
