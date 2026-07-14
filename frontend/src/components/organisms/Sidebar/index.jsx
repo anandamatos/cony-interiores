@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -25,18 +25,31 @@ const menuItems = [
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
 
   const baseClasses = {
     container: classNames(
-      'fixed lg:static inset-y-0 left-0 z-40',
-      'w-64 bg-white/80 backdrop-blur-md',
-      'border-r border-[rgba(75,58,46,0.08)]',
-      'flex flex-col h-screen',
-      'transition-transform duration-300 ease-spring',
-      isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      'fixed lg:sticky lg:top-0 inset-y-0 left-0 z-40',
+      'w-64 h-screen',
+      'flex flex-col',
+      'transition-all duration-300 ease-spring',
+      isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+      // Glass effect que intensifica com scroll
+      isScrolled
+        ? 'bg-white/90 backdrop-blur-xl shadow-lg'
+        : 'bg-white/80 backdrop-blur-md',
+      'border-r border-[rgba(75,58,46,0.08)]'
     ),
     overlay: classNames(
       'lg:hidden fixed inset-0 bg-black/40 z-30',
@@ -69,7 +82,7 @@ const Sidebar = () => {
       'rounded-[8px]',
       'transition-all duration-300 ease-spring',
       'focus:outline-none focus:ring-2 focus:ring-primary/20',
-      'opacity-70', // Menus inativos com opacidade reduzida
+      'opacity-70',
       isActive
         ? 'bg-gradient-gold text-primary shadow-sm font-semibold opacity-100'
         : 'hover:bg-offWhite hover:text-primary hover:translate-x-1 hover:opacity-100'
@@ -100,7 +113,7 @@ const Sidebar = () => {
     ),
     mobileToggle: classNames(
       'lg:hidden fixed top-4 left-4 z-50',
-      'p-2 rounded-[8px] bg-white shadow-md border border-[rgba(75,58,46,0.08)]',
+      'p-2 rounded-[8px] bg-white/80 backdrop-blur-md shadow-md border border-[rgba(75,58,46,0.08)]',
       'transition-all duration-300 ease-spring',
       'hover:bg-offWhite',
       'focus:outline-none focus:ring-2 focus:ring-primary/20'

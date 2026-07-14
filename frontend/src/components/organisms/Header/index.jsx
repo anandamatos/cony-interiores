@@ -1,14 +1,30 @@
+import { useState, useEffect } from 'react';
 import { Search, Bell, HelpCircle, User, Plus, BarChart3 } from 'lucide-react';
 import classNames from 'classnames';
 import Button from '../../atoms/Button';
 
 const Header = ({ onSearch, notificationCount = 3 }) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const baseClasses = {
     container: classNames(
-      'h-16 bg-white/70 backdrop-blur-md',
-      'border-b border-[rgba(75,58,46,0.08)]',
+      'sticky top-0 z-30',
+      'h-16',
       'flex items-center justify-between px-4 sm:px-6',
-      'flex-shrink-0'
+      'transition-all duration-300 ease-spring',
+      'border-b border-[rgba(75,58,46,0.08)]',
+      // Glass effect que intensifica com scroll
+      isScrolled
+        ? 'bg-white/90 backdrop-blur-xl shadow-sm'
+        : 'bg-white/70 backdrop-blur-md'
     ),
     left: 'flex items-center gap-3 flex-1 min-w-0',
     title: 'text-sm font-semibold text-primary hidden sm:block',
@@ -17,20 +33,22 @@ const Header = ({ onSearch, notificationCount = 3 }) => {
     searchIcon: 'absolute left-3 top-1/2 -translate-y-1/2 text-taupe',
     searchInput: classNames(
       'w-full pl-10 pr-4 py-2 rounded-full',
-      'bg-offWhite border border-transparent',
-      'text-primary placeholder-taupe',
       'transition-all duration-200 ease-spring',
-      'focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20',
-      'focus:bg-white'
+      'focus:outline-none focus:ring-2 focus:ring-primary/20',
+      isScrolled
+        ? 'bg-white/90 border-primary/20 focus:bg-white'
+        : 'bg-offWhite/80 backdrop-blur-sm border-transparent focus:bg-white'
     ),
     right: 'flex items-center gap-2 sm:gap-4 ml-4',
     iconBtn: classNames(
       'p-2 rounded-full',
-      'text-taupe hover:text-primary hover:bg-offWhite',
       'transition-all duration-200 ease-spring',
-      'relative focus:outline-none focus:ring-2 focus:ring-primary/20'
+      'relative focus:outline-none focus:ring-2 focus:ring-primary/20',
+      isScrolled
+        ? 'text-primary hover:bg-primary/10'
+        : 'text-taupe hover:text-primary hover:bg-offWhite/50'
     ),
-    dot: 'absolute top-2 right-2 w-2.5 h-2.5 bg-terracota rounded-full border-2 border-white',
+    dot: 'absolute top-2 right-2 w-2.5 h-2.5 bg-terracota rounded-full border-2 border-white animate-pulse',
     user: 'flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-gray',
     avatar: classNames(
       'w-9 h-9 rounded-full',
