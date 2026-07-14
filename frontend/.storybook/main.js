@@ -14,7 +14,6 @@ const config = {
     getAbsolutePath("@storybook/addon-links"),
     getAbsolutePath("@storybook/addon-essentials"),
     getAbsolutePath("@storybook/addon-interactions"),
-    // @storybook/addon-a11y REMOVIDO - versão incompatível
   ],
   framework: {
     name: getAbsolutePath("@storybook/react-vite"),
