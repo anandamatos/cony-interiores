@@ -1,0 +1,80 @@
+import { Meta, Title, Description } from '@storybook/blocks';
+
+<Meta title="Introdução" />
+
+<Title>🏠 Design System Cony Interiores</Title>
+
+<Description>
+Bem-vindo ao Design System da Cony Interiores! Este é o guia visual e técnico para todos os componentes da plataforma.
+</Description>
+
+---
+
+## 🎯 Sobre o Projeto
+
+Este Design System foi criado para garantir consistência visual e eficiência no desenvolvimento de interfaces para a Cony Interiores.
+
+### 📦 Tecnologias Utilizadas
+
+- **React** - Biblioteca para construção de interfaces
+- **Tailwind CSS** - Framework de estilos utilitários
+- **Storybook** - Ferramenta de documentação de componentes
+- **Vite** - Build tool e dev server
+
+---
+
+## 🎨 Tokens de Design
+
+Os tokens são as variáveis de design que garantem consistência visual:
+
+### [🎨 Cores](?path=/story/tokens-cores)
+Paleta de cores baseada na identidade visual da Cony Interiores, incluindo tons primários (verde) e secundários (laranja).
+
+### [🔤 Tipografia](?path=/story/tokens-tipografia)
+Sistema tipográfico com fontes Inter e Playfair Display, escalas e pesos padronizados.
+
+### [📏 Espaçamento](?path=/story/tokens-espa%C3%A7amento)
+Escala de espaçamento baseada em múltiplos de 4px para consistência visual.
+
+---
+
+## 🧩 Componentes por Categoria
+
+### 🔘 Átomos
+Componentes básicos e reutilizáveis, os blocos de construção da interface:
+
+- **[Button](?path=/story/atoms-button)** - Botões com diferentes variantes e tamanhos
+- **[Input](?path=/story/atoms-input)** - Campos de entrada de dados
+- **[Select](?path=/story/atoms-select)** - Menu de seleção de opções
+- **[Card](?path=/story/atoms-card)** - Container para agrupar informações
+- **[Badge](?path=/story/atoms-badge)** - Etiquetas para status e tags
+- **[Typography](?path=/story/atoms-typography)** - Elementos tipográficos
+
+### 🧬 Moléculas
+Combinações de átomos que formam componentes mais complexos:
+
+- **[SearchBar](?path=/story/molecules-searchbar)** - Barra de pesquisa com ícone
+- **[StatusFilter](?path=/story/molecules-statusfilter)** - Filtro de status com botões
+- **[CostureiraTable](?path=/story/molecules-costureiratable)** - Tabela de dados
+
+### 🧠 Organismos
+Componentes complexos que compõem páginas completas:
+
+- **[Header](?path=/story/organisms-header)** - Cabeçalho da aplicação
+- **[Sidebar](?path=/story/organisms-sidebar)** - Menu lateral de navegação
+- **[Footer](?path=/story/organisms-footer)** - Rodapé da aplicação
+
+---
+
+## 📚 Como Usar
+
+```jsx
+import Button from '@/components/atoms/Button';
+
+function MyComponent() {
+  return (
+    <Button variant="primary" size="md">
+      Clique aqui
+    </Button>
+  );
+}
