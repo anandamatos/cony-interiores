@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'users',
+    'finance',
+    'monitoring',
     "corsheaders",
 ]
 
@@ -62,6 +64,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'monitoring.middleware.FinancialApiObservabilityMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -181,3 +184,12 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+
+def _env_bool(name: str, default: bool) -> bool:
+    return os.getenv(name, str(default)).lower() in ('1', 'true', 'yes', 'on')
+
+
+FINANCIAL_API_ENABLE_SIMULATED_DELAY = _env_bool('FINANCIAL_API_ENABLE_SIMULATED_DELAY', True)
+FINANCIAL_API_MAX_SIMULATED_DELAY_MS = int(os.getenv('FINANCIAL_API_MAX_SIMULATED_DELAY_MS', '3000'))
+FINANCIAL_API_ALERT_THRESHOLD_MS = int(os.getenv('FINANCIAL_API_ALERT_THRESHOLD_MS', '800'))
