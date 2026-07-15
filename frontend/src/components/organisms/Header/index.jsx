@@ -1,36 +1,86 @@
-import { Search, Bell, User } from 'lucide-react';
+import { Search, Bell } from 'lucide-react';
+import classNames from 'classnames';
 
-const Header = () => {
+const Header = ({ onSearch, notificationCount = 3 }) => {
+  const baseClasses = {
+    container: classNames(
+      'fixed top-0 left-0 right-0 lg:left-64 z-20 h-16',
+      'bg-[rgba(255,255,255,0.78)] backdrop-blur-2xl supports-[backdrop-filter]:bg-[rgba(255,255,255,0.68)]',
+      'border-b border-[rgba(75,58,46,0.10)]',
+      'shadow-header',
+      'flex items-center justify-between pl-20 pr-3 sm:pl-24 sm:pr-4 lg:px-6',
+      'flex-shrink-0'
+    ),
+    left: 'flex items-center gap-2 sm:gap-3 flex-1 min-w-0',
+    title: 'text-sm font-semibold text-primary hidden md:block whitespace-nowrap',
+    titleSpan: 'text-taupe font-normal',
+    searchWrapper: 'relative flex-1 min-w-[120px] sm:min-w-[160px] md:min-w-[220px] max-w-[520px] ml-2 sm:ml-3 md:ml-4',
+    searchIcon: 'absolute left-3 top-1/2 -translate-y-1/2 text-taupe',
+    searchInput: classNames(
+      'w-full pl-10 pr-4 py-2 rounded-pill',
+      'bg-offWhite border border-transparent',
+      'text-primary placeholder-taupe',
+      'transition-all duration-fast ease-spring',
+      'focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20',
+      'focus:bg-white'
+    ),
+    right: 'flex items-center gap-2 sm:gap-3 md:gap-4 ml-2 sm:ml-3',
+    iconBtn: classNames(
+      'p-2 rounded-full',
+      'text-taupe hover:text-primary hover:bg-offWhite',
+      'transition-all duration-fast ease-spring',
+      'relative focus:outline-none focus:ring-2 focus:ring-primary/20'
+    ),
+    dot: 'absolute top-2 right-2 w-2.5 h-2.5 bg-terracota rounded-full border-2 border-white',
+    divider: 'hidden sm:block h-8 w-px bg-border',
+    user: 'flex items-center gap-2 sm:gap-3 pl-0 sm:pl-1',
+    avatar: classNames(
+      'w-9 h-9 rounded-full',
+      'bg-gradient-primary text-white',
+      'flex items-center justify-center font-semibold text-sm',
+      'transition-all duration-fast ease-spring',
+      'hover:scale-105 hover:shadow-md'
+    ),
+    userName: 'text-sm font-semibold text-primary hidden sm:block',
+  };
+
   return (
-    <header className="h-16 bg-white border-b border-border flex items-center justify-between px-4 sm:px-6 flex-shrink-0 pl-14 sm:pl-16 lg:pl-6">
-      {/* Left: Search - Escondido em mobile, visível em tablet+ */}
-      <div className="hidden sm:block flex-1 max-w-md">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
+    <header className={baseClasses.container} role="banner">
+      {/* Left */}
+      <div className={baseClasses.left}>
+        <div className={baseClasses.title}>
+          Dashboard <span className={baseClasses.titleSpan}>/ Visão Geral</span>
+        </div>
+
+        <div className={baseClasses.searchWrapper}>
+          <Search className={baseClasses.searchIcon} size={18} aria-hidden="true" />
           <input
             type="text"
-            placeholder="Buscar..."
-            className="w-full pl-9 pr-4 py-2 rounded-lg border border-border bg-background text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-colors duration-200"
+            placeholder="Buscar serviços, costureiras..."
+            className={baseClasses.searchInput}
+            onChange={(e) => onSearch && onSearch(e.target.value)}
+            aria-label="Buscar"
           />
         </div>
       </div>
 
-      {/* Mobile: ícone de busca */}
-      <button className="sm:hidden p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-        <Search className="w-5 h-5 text-text-secondary" />
-      </button>
-
-      {/* Right: Actions */}
-      <div className="flex items-center gap-2 sm:gap-4 ml-auto">
-        <button className="p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200 relative">
-          <Bell className="w-5 h-5 text-text-secondary" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+      {/* Right */}
+      <div className={baseClasses.right}>
+        <button
+          className={baseClasses.iconBtn}
+          aria-label={`Notificações (${notificationCount} não lidas)`}
+        >
+          <Bell size={20} />
+          {notificationCount > 0 && <span className={baseClasses.dot} />}
         </button>
-        <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-border">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <User className="w-4 h-4 text-primary" />
+
+        <span className={baseClasses.divider} aria-hidden="true" />
+
+        <div className={baseClasses.user}>
+          <div className={baseClasses.avatar} aria-hidden="true">
+            AM
           </div>
-          <span className="hidden sm:inline text-sm font-medium text-text-primary">Ana</span>
+          <span className={baseClasses.userName}>Ana</span>
         </div>
       </div>
     </header>

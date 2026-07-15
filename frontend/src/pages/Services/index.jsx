@@ -1,120 +1,187 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getServices } from '../../services/serviceService';
-import Typography from '../../components/atoms/Typography';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Plus, MoreVertical } from 'lucide-react';
 import Card from '../../components/atoms/Card';
+import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
+import SearchBar from '../../components/molecules/SearchBar';
+import StatusFilter from '../../components/molecules/StatusFilter';
+import { getServices } from '../../services/serviceService';
 
 const Services = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
   const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
 
-  const loadServices = async () => {
-    setLoading(true);
-    try {
-      const data = await getServices();
-      setServices(data);
-    } catch (error) {
-      console.error('Erro ao carregar serviços:', error);
-    } finally {
-      setLoading(false);
-    }
+  const deriveStatus = (service) => {
+    if (!service?.prazo_entrega) return 'active';
+
+    const parsedDate = new Date(service.prazo_entrega);
+    if (Number.isNaN(parsedDate.getTime())) return 'active';
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    parsedDate.setHours(0, 0, 0, 0);
+
+    return parsedDate < today ? 'pending' : 'active';
+  };
+
+  const formatDate = (rawDate) => {
+    if (!rawDate) return '-';
+    const parsed = new Date(rawDate);
+    if (Number.isNaN(parsed.getTime())) return String(rawDate);
+    return parsed.toLocaleDateString('pt-BR');
   };
 
   useEffect(() => {
-    loadServices();
-  }, []);
+    const loadServices = async () => {
+      try {
+        setIsLoading(true);
+        setLoadError('');
+        const data = await getServices();
+        setServices(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Erro ao carregar serviços:', error);
+        setLoadError('Não foi possível carregar os serviços.');
+        setServices([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const statusColors = {
-    'Em produção': 'warning',
-    'Aguardando': 'neutral',
-    'Pronto': 'success',
-    'Entregue': 'info',
+    loadServices();
+  }, [location.key]);
+
+  const filterOptions = [
+    { value: 'all', label: 'Todos', variant: 'all' },
+    { value: 'active', label: 'Ativos', variant: 'active' },
+    { value: 'pending', label: 'Pendentes', variant: 'pending' },
+  ];
+
+  const mappedServices = useMemo(() => {
+    return services.map((service) => {
+      const firstProduct = Array.isArray(service.produto) && service.produto.length > 0
+        ? `Produto #${service.produto[0]}`
+        : 'Produto não informado';
+
+      return {
+        id: service.id,
+        client: service.cliente_nome || `Cliente #${service.cliente}`,
+        type: firstProduct,
+        status: deriveStatus(service),
+        date: formatDate(service.prazo_entrega || service.data_envio),
+      };
+    });
+  }, [services]);
+
+  const filteredServices = mappedServices.filter((service) => {
+    const matchesFilter = filter === 'all' || service.status === filter;
+    const matchesSearch = service.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          service.type.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
+  const getStatusBadge = (status) => {
+    const variants = {
+      active: { label: 'Ativo', variant: 'success' },
+      pending: { label: 'Pendente', variant: 'warning' },
+    };
+    return variants[status] || { label: status, variant: 'neutral' };
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <Typography variant="body" className="mt-4">Carregando serviços...</Typography>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <Typography variant="h2">Serviços</Typography>
-        <Link to="/services/new" className="w-full sm:w-auto">
-          <Button variant="primary" className="w-full sm:w-auto">+ Novo Serviço</Button>
-        </Link>
+    <main className="flex-1 p-6 sm:p-8 lg:p-10">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <Typography variant="h1">Serviços</Typography>
+          <Typography variant="body1" className="mt-1">
+            Gerencie todos os serviços da sua operação.
+          </Typography>
+        </div>
+        <Button variant="primary" onClick={() => navigate('/services/new')}>
+          <Plus className="w-4 h-4" />
+          Novo Serviço
+        </Button>
       </div>
 
-      {services.length === 0 ? (
-        <Card>
-          <div className="text-center py-8">
-            <Typography variant="body" className="text-text-secondary">
-              Nenhum serviço cadastrado ainda.
-            </Typography>
-            <Link to="/services/new">
-              <Button variant="primary" className="mt-4">
-                Cadastrar primeiro serviço
-              </Button>
-            </Link>
-          </div>
-        </Card>
-      ) : (
-        <Card className="p-0 sm:p-6 overflow-hidden">
-          {/* Versão Desktop: Tabela */}
-          <div className="hidden md:block overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary">Cliente</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary">Produto</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary">Costureira</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary">Status</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary">Prazo</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary">Valor</th>
-                </tr>
-              </thead>
-              <tbody>
-                {services.map((service) => (
-                  <tr key={service.id} className="border-b border-border/50 hover:bg-gray-50 transition-colors duration-200">
-                    <td className="py-3 px-4 text-sm font-medium">{service.cliente_nome || service.cliente}</td>
-                    <td className="py-3 px-4 text-sm text-text-secondary">Produto</td>
-                    <td className="py-3 px-4 text-sm text-text-secondary">{service.costureira_nome || service.costureira}</td>
-                    <td className="py-3 px-4">
-                      <Badge variant="neutral">Em andamento</Badge>
-                    </td>
-                    <td className="py-3 px-4 text-sm text-text-secondary">{service.prazo_entrega}</td>
-                    <td className="py-3 px-4 text-sm font-medium">R$ {service.valor}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <SearchBar
+          placeholder="Buscar serviços..."
+          value={searchTerm}
+          onChange={setSearchTerm}
+          className="max-w-md"
+        />
+        <StatusFilter
+          options={filterOptions}
+          value={filter}
+          onChange={setFilter}
+        />
+      </div>
 
-          {/* Versão Mobile: Cards */}
-          <div className="md:hidden p-4 space-y-4">
-            {services.map((service) => (
-              <div key={service.id} className="border border-border rounded-lg p-4 space-y-2">
-                <div className="flex justify-between items-start">
-                  <span className="font-medium">{service.cliente_nome || service.cliente}</span>
-                  <Badge variant="neutral">Em andamento</Badge>
+      {/* Services List */}
+      <div className="space-y-3">
+        {isLoading && (
+          <Card className="p-8 text-center">
+            <Typography variant="body1" className="text-taupe">
+              Carregando serviços...
+            </Typography>
+          </Card>
+        )}
+
+        {!isLoading && loadError && (
+          <Card className="p-8 text-center">
+            <Typography variant="body1" className="text-danger">
+              {loadError}
+            </Typography>
+          </Card>
+        )}
+
+        {!isLoading && !loadError && filteredServices.length === 0 ? (
+          <Card className="p-12 text-center">
+            <Typography variant="body1" className="text-taupe">
+              Nenhum serviço encontrado
+            </Typography>
+            <Typography variant="body2" className="text-taupe mt-1">
+              Tente ajustar os filtros ou adicione um novo serviço.
+            </Typography>
+          </Card>
+        ) : !isLoading && !loadError ? (
+          filteredServices.map((service) => {
+            const status = getStatusBadge(service.status);
+            return (
+              <Card key={service.id} hover className="p-4 sm:p-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <Typography variant="h4">{service.client}</Typography>
+                    <Typography variant="body2" className="text-taupe">
+                      {service.type}
+                    </Typography>
+                  </div>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <Badge variant={status.variant} size="sm">
+                      {status.label}
+                    </Badge>
+                    <Typography variant="caption" className="text-gray-400">
+                      {service.date}
+                    </Typography>
+                    <Button variant="ghost" size="sm" className="!p-2">
+                      <MoreVertical className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
-                <p className="text-sm text-text-secondary">Costureira: {service.costureira_nome || service.costureira}</p>
-                <p className="text-sm text-text-secondary">Prazo: {service.prazo_entrega}</p>
-                <p className="text-sm font-medium">Valor: R$ {service.valor}</p>
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
-    </div>
+              </Card>
+            );
+          })
+        ) : null}
+      </div>
+    </main>
   );
 };
 

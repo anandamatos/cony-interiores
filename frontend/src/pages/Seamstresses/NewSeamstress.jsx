@@ -1,7 +1,6 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import CostureiraForm from '../../components/molecules/CostureiraForm';
-import { createSeamstress } from '../../services/seamstressService';
+import { useNavigate } from "react-router-dom";
+import CostureiraForm from "../../components/molecules/CostureiraForm";
+import { createSeamstress } from "../../services/seamstressService";
 
 const NewSeamstress = () => {
   const navigate = useNavigate();
@@ -10,19 +9,16 @@ const NewSeamstress = () => {
     try {
       await createSeamstress(data);
       // Navegar e recarregar a lista
-      navigate('/seamstresses', { state: { reload: true } });
+      navigate("/seamstresses", { state: { reload: true } });
     } catch (error) {
-      console.error('Erro ao criar costureira:', error);
-      alert('Erro ao criar costureira. Tente novamente.');
+      console.error("Erro ao criar costureira:", error);
+      alert("Erro ao criar costureira. Tente novamente.");
     }
   };
 
   return (
     <div className="p-6">
-      <CostureiraForm 
-        onSubmit={handleSubmit}
-        onCancel={() => navigate('/seamstresses')}
-      />
+      <CostureiraForm onSubmit={handleSubmit} onCancel={() => navigate("/seamstresses")} />
     </div>
   );
 };

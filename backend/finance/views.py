@@ -4,6 +4,7 @@ import logging
 import time
 from decimal import Decimal, InvalidOperation
 
+from django.conf import settings
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -38,6 +39,17 @@ def simulate_payment(request):
 
     if fee_rate < 0:
         return Response({'detail': 'fee_rate nao pode ser negativo.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    max_delay_ms = max(0, getattr(settings, 'FINANCIAL_API_MAX_SIMULATED_DELAY_MS', 3000))
+    delay_enabled = getattr(settings, 'FINANCIAL_API_ENABLE_SIMULATED_DELAY', True)
+
+    if simulate_delay_ms < 0:
+        return Response({'detail': 'simulate_delay_ms nao pode ser negativo.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if not delay_enabled:
+        simulate_delay_ms = 0
+    else:
+        simulate_delay_ms = min(simulate_delay_ms, max_delay_ms)
 
     if simulate_delay_ms > 0:
         # Allows reproducible load/performance tests in lower environments.

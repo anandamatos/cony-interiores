@@ -1,7 +1,7 @@
-import api from './api';
+import api from "./api";
 
 export const getServices = async () => {
-  const response = await api.get('/servicos/');
+  const response = await api.get("/servicos/");
   return response.data;
 };
 
@@ -11,8 +11,8 @@ export const getService = async (id) => {
 };
 
 export const createService = async (data) => {
-  console.log('Enviando para API:', data);
-  const response = await api.post('/servicos/', data);
+  console.log("Enviando para API:", data);
+  const response = await api.post("/servicos/", data);
   return response.data;
 };
 

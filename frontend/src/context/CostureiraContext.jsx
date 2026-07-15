@@ -18,24 +18,16 @@ export function CostureiraProvider({ children }) {
 
   function editarCostureira(id, dadosAtualizados) {
     setCostureiras((prev) =>
-      prev.map((c) =>
-        c.id === Number(id)
-          ? { ...c, ...dadosAtualizados }
-          : c
-      )
+      prev.map((c) => (c.id === Number(id) ? { ...c, ...dadosAtualizados } : c)),
     );
   }
 
   function excluirCostureira(id) {
-    setCostureiras((prev) =>
-      prev.filter((c) => c.id !== id)
-    );
+    setCostureiras((prev) => prev.filter((c) => c.id !== id));
   }
 
   function buscarPorId(id) {
-    return costureiras.find(
-      (c) => c.id === Number(id)
-    );
+    return costureiras.find((c) => c.id === Number(id));
   }
 
   return (

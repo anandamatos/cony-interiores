@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Input from '../../atoms/Input';
-import Button from '../../atoms/Button';
-import Card from '../../atoms/Card';
-import Typography from '../../atoms/Typography';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Input from "../../atoms/Input";
+import Button from "../../atoms/Button";
+import Card from "../../atoms/Card";
+import Typography from "../../atoms/Typography";
 
 const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = false }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    nome: initialData.nome || '',
-    contato: initialData.contato || '',
-    especialidade: initialData.especialidade || '',
+    nome: initialData.nome || "",
+    contato: initialData.contato || "",
+    especialidade: initialData.especialidade || "",
     ativa: initialData.ativa !== undefined ? initialData.ativa : true,
   });
 
@@ -18,8 +18,8 @@ const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = fals
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.nome.trim()) newErrors.nome = 'Nome é obrigatório';
-    if (!formData.contato.trim()) newErrors.contato = 'Contato é obrigatório';
+    if (!formData.nome.trim()) newErrors.nome = "Nome é obrigatório";
+    if (!formData.contato.trim()) newErrors.contato = "Contato é obrigatório";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -28,10 +28,10 @@ const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = fals
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     });
     if (errors[name]) {
-      setErrors({ ...errors, [name]: '' });
+      setErrors({ ...errors, [name]: "" });
     }
   };
 
@@ -45,7 +45,7 @@ const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = fals
   return (
     <Card className="max-w-2xl mx-auto p-6">
       <Typography variant="h2" className="mb-6">
-        {isEditing ? 'Editar Costureira' : 'Nova Costureira'}
+        {isEditing ? "Editar Costureira" : "Nova Costureira"}
       </Typography>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -94,9 +94,13 @@ const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = fals
 
         <div className="flex gap-4 pt-4">
           <Button type="submit" variant="primary">
-            {isEditing ? 'Atualizar' : 'Cadastrar'}
+            {isEditing ? "Atualizar" : "Cadastrar"}
           </Button>
-          <Button type="button" variant="secondary" onClick={onCancel || (() => navigate('/seamstresses'))}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={onCancel || (() => navigate("/seamstresses"))}
+          >
             Cancelar
           </Button>
         </div>
