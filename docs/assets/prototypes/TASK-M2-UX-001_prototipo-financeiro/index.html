@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cony Interiores - Protótipo Financeiro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* ============================================
+           TOKENS DE DESIGN - CONY INTERIORES
+           ============================================ */
+        :root {
+            /* Cores Principais */
+            --color-marrom-cafe: #4B3A2E;
+            --color-bege-areia: #D9C7B1;
+            --color-taupe: #A8968B;
+            --color-off-white: #F6F3EF;
+
+            /* Cores Secundárias */
+            --color-cinza-claro: #E6E2DD;
+            --color-cinza-medio: #BDB7AE;
+            --color-verde-salvia: #8D9ABA;
+            --color-azul-ardosia: #465057;
+
+            /* Cores de Acento */
+            --color-ouro: #C9A86A;
+            --color-terracota: #B56A4A;
+            --color-bronze: #8A6A4F;
+            --color-preto-suave: #1A1A1A;
+
+            /* Cores de Status */
+            --color-success: #4A7C59;
+            --color-success-bg: #E8F5E9;
+            --color-warning: #C9A86A;
+            --color-warning-bg: #FFF8E1;
+            --color-danger: #B56A4A;
+            --color-danger-bg: #FFF1F0;
+            --color-info: #8D9ABA;
+            --color-info-bg: #E8EEF5;
+
+            /* Tipografia */
+            --font-primary: 'Montserrat', sans-serif;
+            --font-secondary: 'Lato', sans-serif;
+
+            /* Espaçamento */
+            --spacing-1: 4px;
+            --spacing-2: 8px;
+            --spacing-3: 12px;
+            --spacing-4: 16px;
+            --spacing-5: 20px;
+            --spacing-6: 24px;
+            --spacing-8: 32px;
+            --spacing-10: 40px;
+            --spacing-12: 48px;
+            --spacing-16: 64px;
+
+            /* Sombras */
+            --shadow-sm: 0 1px 4px rgba(75, 58, 46, 0.04);
+            --shadow-md: 0 8px 16px rgba(75, 58, 46, 0.06);
+            --shadow-lg: 0 16px 32px rgba(75, 58, 46, 0.08);
+            --shadow-xl: 0 24px 48px rgba(75, 58, 46, 0.10);
+
+            /* Gradientes */
+            --gradient-primary: linear-gradient(135deg, #C9A86A 0%, #A8968B 50%, #4B3A2E 100%);
+            --gradient-gold: linear-gradient(135deg, #D9C7B1 0%, #C9A86A 100%);
+
+            /* Bordas */
+            --border-radius-sm: 6px;
+            --border-radius-md: 10px;
+            --border-radius-lg: 16px;
+            --border-radius-xl: 24px;
+
+            /* Tamanho dos Ícones */
+            --icon-size-sm: 16px;
+            --icon-size-md: 20px;
+            --icon-size-lg: 24px;
+            --icon-size-xl: 32px;
+        }
+
+        /* ============================================
+           RESET E BASE
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-secondary);
+            background: var(--color-off-white);
+            color: var(--color-marrom-cafe);
+            min-height: 100vh;
+            padding: var(--spacing-8);
+        }
+
+        /* ============================================
+           UTILITÁRIOS
+           ============================================ */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .flex {
+            display: flex;
+        }
+        .flex-col {
+            flex-direction: column;
+        }
+        .items-center {
+            align-items: center;
+        }
+        .justify-between {
+            justify-content: space-between;
+        }
+        .gap-4 { gap: var(--spacing-4); }
+        .gap-2 { gap: var(--spacing-2); }
+        .gap-6 { gap: var(--spacing-6); }
+        .gap-8 { gap: var(--spacing-8); }
+        .mt-1 { margin-top: var(--spacing-1); }
+        .mt-2 { margin-top: var(--spacing-2); }
+        .mt-4 { margin-top: var(--spacing-4); }
+        .mt-6 { margin-top: var(--spacing-6); }
+        .mt-8 { margin-top: var(--spacing-8); }
+        .mb-4 { margin-bottom: var(--spacing-4); }
+        .mb-6 { margin-bottom: var(--spacing-6); }
+        .mb-8 { margin-bottom: var(--spacing-8); }
+        .pt-4 { padding-top: var(--spacing-4); }
+        .p-4 { padding: var(--spacing-4); }
+        .p-6 { padding: var(--spacing-6); }
+        .p-8 { padding: var(--spacing-8); }
+        .block { display: block; }
+        .flex-wrap { flex-wrap: wrap; }
+        .border-t { border-top: 1px solid rgba(75, 58, 46, 0.06); }
+
+        .grid {
+            display: grid;
+        }
+        .grid-cols-1 { grid-template-columns: 1fr; }
+        .grid-cols-2 { grid-template-columns: 1fr 1fr; }
+        .grid-cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .grid-cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+        .gap-4 { gap: var(--spacing-4); }
+        .gap-5 { gap: var(--spacing-5); }
+        .gap-6 { gap: var(--spacing-6); }
+
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .w-full { width: 100%; }
+        .max-w-2xl { max-width: 672px; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+
+        /* ============================================
+           TIPOGRAFIA
+           ============================================ */
+        .heading-1 {
+            font-family: var(--font-primary);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-marrom-cafe);
+            letter-spacing: -0.8px;
+            line-height: 1.2;
+        }
+
+        .heading-2 {
+            font-family: var(--font-primary);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-marrom-cafe);
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+        }
+
+        .heading-3 {
+            font-family: var(--font-primary);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-marrom-cafe);
+            letter-spacing: -0.3px;
+            line-height: 1.4;
+        }
+
+        .body-text {
+            font-family: var(--font-secondary);
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--color-marrom-cafe);
+            line-height: 1.7;
+            opacity: 0.85;
+        }
+
+        .body-text-small {
+            font-family: var(--font-secondary);
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--color-taupe);
+            line-height: 1.6;
+        }
+
+        .caption {
+            font-family: var(--font-secondary);
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--color-cinza-medio);
+            letter-spacing: 0.3px;
+        }
+
+        /* ============================================
+           GLASSMORPHISM CARDS
+           ============================================ */
+        .card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(75, 58, 46, 0.06);
+            border-radius: var(--border-radius-xl);
+            padding: var(--spacing-6);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .card-gold {
+            background: var(--gradient-gold);
+            border-color: rgba(201, 168, 106, 0.2);
+        }
+
+        /* Variante com contraste reforcado para cumprir AA em textos pequenos */
+        .card-week-highlight {
+            background: linear-gradient(135deg, #efe4d1 0%, #dcc39b 100%);
+            border-color: rgba(75, 58, 46, 0.18);
+        }
+
+        .card-week-highlight .heading-3,
+        .card-week-highlight .body-text-small {
+            color: #2b2119;
+            opacity: 1;
+        }
+
+        /* ============================================
+           BOTÕES
+           ============================================ */
+        .btn {
+            padding: var(--spacing-3) var(--spacing-6);
+            border-radius: var(--border-radius-sm);
+            font-family: var(--font-primary);
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--color-marrom-cafe);
+            color: var(--color-off-white);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-bronze);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-marrom-cafe);
+            border: 1px solid var(--color-cinza-medio);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-off-white);
+            border-color: var(--color-marrom-cafe);
+            transform: translateY(-2px);
+        }
+
+        .btn-gold {
+            background: var(--gradient-gold);
+            color: var(--color-marrom-cafe);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ============================================
+           BADGES
+           ============================================ */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--spacing-1) var(--spacing-3);
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .badge-success {
+            background: var(--color-success-bg);
+            color: var(--color-success);
+        }
+
+        .badge-warning {
+            background: var(--color-warning-bg);
+            color: var(--color-warning);
+        }
+
+        .badge-danger {
+            background: var(--color-danger-bg);
+            color: var(--color-danger);
+        }
+
+        .badge-info {
+            background: var(--color-info-bg);
+            color: var(--color-info);
+        }
+
+        .badge-neutral {
+            background: var(--color-off-white);
+            color: var(--color-taupe);
+        }
+
+        /* ============================================
+           STAT CARDS
+           ============================================ */
+        .stat-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: var(--spacing-5) var(--spacing-6);
+            border-radius: var(--border-radius-md);
+            border: 1px solid rgba(75, 58, 46, 0.06);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-ouro);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-gold);
+            border-radius: var(--border-radius-md) 0 0 var(--border-radius-md);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            width: 6px;
+        }
+
+        .stat-card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--border-radius-sm);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-taupe);
+            margin-bottom: var(--spacing-3);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover .stat-card-icon {
+            transform: scale(1.08) rotate(-4deg);
+            background: var(--color-bege-areia);
+            color: var(--color-marrom-cafe);
+        }
+
+        .stat-card-title {
+            font-family: var(--font-secondary);
+            font-size: 13px;
+            color: var(--color-taupe);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 400;
+        }
+
+        .stat-card-value {
+            font-family: var(--font-primary);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-marrom-cafe);
+            margin-top: var(--spacing-1);
+            letter-spacing: -0.5px;
+        }
+
+        .stat-card-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: var(--font-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: var(--spacing-2);
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+
+        .stat-card-change.up {
+            color: var(--color-success);
+            background: var(--color-success-bg);
+        }
+
+        .stat-card-change.down {
+            color: var(--color-danger);
+            background: var(--color-danger-bg);
+        }
+
+        /* ============================================
+           FINANCIAL SPECIFIC
+           ============================================ */
+        .financial-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-5);
+            margin-bottom: var(--spacing-8);
+        }
+
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-4);
+            border-bottom: 1px solid rgba(75, 58, 46, 0.06);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .payment-item:hover {
+            background: var(--color-off-white);
+        }
+
+        .payment-item:last-child {
+            border-bottom: none;
+        }
+
+        .payment-item.hidden {
+            display: none;
+        }
+
+        .amount {
+            font-family: var(--font-primary);
+            font-weight: 700;
+            color: var(--color-marrom-cafe);
+        }
+
+        .filter-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-2);
+            margin: var(--spacing-4) 0;
+        }
+
+        .filter-chip {
+            border: 1px solid var(--color-cinza-medio);
+            background: #fff;
+            color: var(--color-marrom-cafe);
+            border-radius: 9999px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--color-marrom-cafe);
+            transform: translateY(-1px);
+        }
+
+        .filter-chip.is-active {
+            background: var(--color-marrom-cafe);
+            border-color: var(--color-marrom-cafe);
+            color: var(--color-off-white);
+        }
+
+        .toast {
+            position: fixed;
+            right: var(--spacing-4);
+            bottom: var(--spacing-4);
+            background: rgba(26, 26, 26, 0.92);
+            color: #fff;
+            border-radius: var(--border-radius-sm);
+            padding: 10px 14px;
+            font-size: 13px;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+            transition: all 0.25s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           RESPONSIVIDADE
+           ============================================ */
+        @media (max-width: 1024px) {
+            .financial-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-4);
+            }
+            .financial-summary {
+                grid-template-columns: 1fr;
+            }
+            .grid-cols-2,
+            .grid-cols-3,
+            .grid-cols-4 {
+                grid-template-columns: 1fr;
+            }
+            .heading-1 {
+                font-size: 28px;
+            }
+            .heading-2 {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .heading-1 {
+                font-size: 24px;
+            }
+            .heading-2 {
+                font-size: 18px;
+            }
+            .stat-card-value {
+                font-size: 26px;
+            }
+            .card {
+                padding: var(--spacing-4);
+            }
+        }
+
+        /* ============================================
+           ANIMAÇÕES
+           ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ============================================
+        HEADER DO PROTÓTIPO
+        ============================================ -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="heading-1">💰 Protótipo Financeiro</h1>
+                <p class="body-text mt-1">Validação de interface e fluxos com o cliente</p>
+            </div>
+            <div class="flex gap-4">
+                <span class="badge badge-info">MVP 2</span>
+                <span class="badge badge-warning">Discovery</span>
+            </div>
+        </div>
+
+        <!-- ============================================
+        SEÇÃO 1: RESUMO FINANCEIRO
+        ============================================ -->
+        <section class="mb-8">
+            <h2 class="heading-2 mb-4">📊 Resumo Financeiro</h2>
+            <p class="body-text-small mb-6">Visão consolidada da situação financeira da operação</p>
+
+            <div class="financial-summary">
+                <div class="stat-card animate-fade-in-up delay-100">
+                    <div class="stat-card-icon">
+                        <i data-lucide="dollar-sign" class="icon-lg"></i>
+                    </div>
+                    <div class="stat-card-title">Receita Total</div>
+                    <div class="stat-card-value">R$ 28.500</div>
+                    <span class="stat-card-change up">
+                        <i data-lucide="trending-up" class="icon-sm"></i>
+                        12,5% este mês
+                    </span>
+                </div>
+                <div class="stat-card animate-fade-in-up delay-200">
+                    <div class="stat-card-icon">
+                        <i data-lucide="credit-card" class="icon-lg"></i>
+                    </div>
+                    <div class="stat-card-title">Pagamentos Pendentes</div>
+                    <div class="stat-card-value">R$ 4.200</div>
+                    <span class="stat-card-change down">
+                        <i data-lucide="trending-down" class="icon-sm"></i>
+                        2 em atraso
+                    </span>
+                </div>
+                <div class="stat-card animate-fade-in-up delay-300">
+                    <div class="stat-card-icon">
+                        <i data-lucide="wallet" class="icon-lg"></i>
+                    </div>
+                    <div class="stat-card-title">Pagamentos Realizados</div>
+                    <div class="stat-card-value">R$ 24.300</div>
+                    <span class="stat-card-change up">
+                        <i data-lucide="trending-up" class="icon-sm"></i>
+                        Recebidos
+                    </span>
+                </div>
+                <div class="stat-card animate-fade-in-up delay-400">
+                    <div class="stat-card-icon">
+                        <i data-lucide="trending-up" class="icon-lg"></i>
+                    </div>
+                    <div class="stat-card-title">Taxa de Recebimento</div>
+                    <div class="stat-card-value">85%</div>
+                    <span class="stat-card-change up">
+                        <i data-lucide="trending-up" class="icon-sm"></i>
+                        Meta: 90%
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+        SEÇÃO 2: LISTA DE PAGAMENTOS
+        ============================================ -->
+        <section class="mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="heading-2">📋 Pagamentos</h2>
+                <span class="badge badge-neutral" id="payment-count">5 registros</span>
+            </div>
+
+            <div class="filter-toolbar" aria-label="Filtros de pagamento">
+                <button class="filter-chip is-active" type="button" data-filter="all">Todos</button>
+                <button class="filter-chip" type="button" data-filter="Pago">Pago</button>
+                <button class="filter-chip" type="button" data-filter="Pendente">Pendente</button>
+                <button class="filter-chip" type="button" data-filter="Atrasado">Atrasado</button>
+            </div>
+
+            <div class="card">
+                <div class="payment-item" data-status="Pago">
+                    <div>
+                        <span class="body-text-small">João Silva</span>
+                        <span class="caption block">25/06/2026</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="amount">R$ 1.500</span>
+                        <span class="badge badge-success">Pago</span>
+                    </div>
+                </div>
+                <div class="payment-item" data-status="Pendente">
+                    <div>
+                        <span class="body-text-small">Maria Oliveira</span>
+                        <span class="caption block">28/06/2026</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="amount">R$ 850</span>
+                        <span class="badge badge-warning">Pendente</span>
+                    </div>
+                </div>
+                <div class="payment-item" data-status="Pago">
+                    <div>
+                        <span class="body-text-small">Ana Costa</span>
+                        <span class="caption block">20/06/2026</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="amount">R$ 2.200</span>
+                        <span class="badge badge-success">Pago</span>
+                    </div>
+                </div>
+                <div class="payment-item" data-status="Atrasado">
+                    <div>
+                        <span class="body-text-small">Pedro Santos</span>
+                        <span class="caption block">15/06/2026</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="amount">R$ 1.200</span>
+                        <span class="badge badge-danger">Atrasado</span>
+                    </div>
+                </div>
+                <div class="payment-item" data-status="Pago">
+                    <div>
+                        <span class="body-text-small">Carla Souza</span>
+                        <span class="caption block">18/06/2026</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="amount">R$ 950</span>
+                        <span class="badge badge-success">Pago</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+        SEÇÃO 3: PLANEJAMENTO FINANCEIRO
+        ============================================ -->
+        <section class="mb-8">
+            <h2 class="heading-2 mb-4">📈 Planejamento Financeiro</h2>
+            <p class="body-text-small mb-6">Previsão de pagamentos para as próximas semanas</p>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div class="card card-gold card-week-highlight">
+                    <h3 class="heading-3">Esta Semana</h3>
+                    <p class="body-text-small">Previsão de pagamentos</p>
+                    <div class="mt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="body-text-small">Total a pagar</span>
+                            <span class="heading-3">R$ 3.200</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="body-text-small">Costureiras</span>
+                            <span class="body-text-small">4</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="body-text-small">Serviços</span>
+                            <span class="body-text-small">8</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="heading-3">Próxima Semana</h3>
+                    <p class="body-text-small">Previsão de pagamentos</p>
+                    <div class="mt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="body-text-small">Total a pagar</span>
+                            <span class="heading-3">R$ 4.500</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="body-text-small">Costureiras</span>
+                            <span class="body-text-small">5</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="body-text-small">Serviços</span>
+                            <span class="body-text-small">10</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+        SEÇÃO 4: AÇÕES
+        ============================================ -->
+        <section class="flex gap-4 flex-wrap">
+            <button class="btn btn-primary">
+                <i data-lucide="plus" class="icon-sm"></i>
+                Novo Pagamento
+            </button>
+            <button class="btn btn-secondary">
+                <i data-lucide="file-text" class="icon-sm"></i>
+                Relatório Detalhado
+            </button>
+            <button class="btn btn-gold">
+                <i data-lucide="download" class="icon-sm"></i>
+                Exportar Dados
+            </button>
+        </section>
+
+        <!-- ============================================
+        FOOTER / LEGENDA
+        ============================================ -->
+        <section class="mt-8 pt-4 border-t border-[rgba(75,58,46,0.06)]">
+            <p class="caption text-center">
+                Protótipo para validação - MVP 2 - Previsão Financeira
+            </p>
+            <p class="caption text-center mt-1">
+                Versão 1.0 - Julho 2026
+            </p>
+        </section>
+
+    </div>
+
+    <div class="toast" id="prototype-toast" role="status" aria-live="polite"></div>
+
+    <!-- ============================================
+    JAVASCRIPT
+    ============================================ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('💰 Protótipo Financeiro Cony Interiores carregado!');
+
+            // ============================================
+            // 1. INICIALIZAR LUCIDE ICONS
+            // ============================================
+            lucide.createIcons();
+
+            // ============================================
+            // 2. INTERAÇÃO COM OS CARDS
+            // ============================================
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const title = this.querySelector('.stat-card-title')?.textContent || 'Card';
+                    console.log(`📊 Card "${title}" clicado!`);
+                    this.style.transition = 'transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    this.style.transform = 'scale(0.96)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+
+            // ============================================
+            // 3. INTERAÇÃO COM OS PAGAMENTOS
+            // ============================================
+            const paymentItems = document.querySelectorAll('.payment-item');
+            const paymentCount = document.getElementById('payment-count');
+            const filterChips = document.querySelectorAll('.filter-chip');
+            const toast = document.getElementById('prototype-toast');
+
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                window.clearTimeout(showToast.timeoutId);
+                showToast.timeoutId = window.setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 1400);
+            }
+
+            function updateVisibleCount() {
+                const visibleItems = Array.from(paymentItems).filter(item => !item.classList.contains('hidden'));
+                paymentCount.textContent = `${visibleItems.length} registro${visibleItems.length === 1 ? '' : 's'}`;
+            }
+
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const selected = this.dataset.filter;
+
+                    filterChips.forEach(button => button.classList.remove('is-active'));
+                    this.classList.add('is-active');
+
+                    paymentItems.forEach(item => {
+                        const status = item.dataset.status;
+                        const matches = selected === 'all' || status === selected;
+                        item.classList.toggle('hidden', !matches);
+                    });
+
+                    updateVisibleCount();
+                    showToast(`Filtro aplicado: ${selected === 'all' ? 'Todos' : selected}`);
+                });
+            });
+
+            paymentItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const client = this.querySelector('.body-text-small')?.textContent || 'Cliente';
+                    console.log(`💰 Pagamento de "${client}" clicado!`);
+                    this.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    this.style.transform = 'scale(1.02)';
+                    this.style.background = 'var(--color-off-white)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                        this.style.background = '';
+                    }, 300);
+                    showToast(`Visualizando detalhes de ${client}`);
+                });
+            });
+
+            // ============================================
+            // 4. INTERAÇÃO COM OS BOTÕES
+            // ============================================
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const text = this.textContent.trim();
+                    console.log(`🔘 Botão "${text}" clicado!`);
+                    this.style.transition = 'transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    this.style.transform = 'scale(0.94)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                    showToast(`Ação selecionada: ${text}`);
+                });
+            });
+
+            // ============================================
+            // 5. REINICIALIZAR ÍCONES APÓS INTERAÇÕES
+            // ============================================
+            setTimeout(() => {
+                lucide.createIcons();
+            }, 500);
+
+            updateVisibleCount();
+
+            console.log('✅ Protótipo Financeiro pronto para validação!');
+        });
+    </script>
+
+</body>
+</html>
