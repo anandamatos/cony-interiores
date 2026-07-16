@@ -128,7 +128,7 @@ As tecnologias foram selecionadas para equilibrar performance com a familiaridad
 
 | Camada | Tecnologia | Justificativa |
 |--------|------------|---------------|
-| **Backend** | Python 3.12 + Django + Django REST Framework | Alta familiaridade do time, acelerando a construção da lógica de negócio e da API. |
+| **Backend** | Python 3.13 + Django + Django REST Framework | Alta familiaridade do time, acelerando a construção da lógica de negócio e da API. |
 | **Frontend** | React + React Router + Axios | Componentização reativa para interfaces dinâmicas e responsivas. |
 | **Estilização** | Tailwind CSS | Design System consistente e desenvolvimento rápido de interfaces. |
 | **Banco de Dados** | PostgreSQL (OCI Autonomous ou container local) | Robustez e compatibilidade com Django ORM. |
@@ -136,6 +136,33 @@ As tecnologias foram selecionadas para equilibrar performance com a familiaridad
 | **Orquestração** | Cloud Agnostic (OCI, AWS, Azure) | Containerização permite deploy em qualquer provedor. |
 | **Gestão de Tarefas** | GitHub Projects | Integração nativa com o repositório e transparência para o time. |
 | **Comunicação** | Discord | Canais por squad e gerais para alinhamento em tempo real. |
+
+---
+
+## Ambiente Python Local (Um Unico venv)
+
+Padrao do repositorio para desenvolvimento local sem Docker:
+
+1. Use somente o ambiente virtual em `backend/.venv`.
+2. Nao crie `.venv` ou `.venv-1` na raiz.
+3. Ative sempre o mesmo ambiente antes de rodar comandos Python.
+
+Comandos:
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python --version
+```
+
+Se existirem venvs antigos na raiz, remova:
+
+```bash
+cd ..
+rm -rf .venv .venv-1
+```
 
 ---
 
