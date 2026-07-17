@@ -1,10 +1,10 @@
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { CostureiraProvider } from '../../context/CostureiraContext';
 import MainLayout from '../../layouts/MainLayout';
-import Capacity from '../../pages/Capacity';
+import Settings from '../../pages/Settings';
 
 export default {
-  title: 'Pages/Capacity',
+  title: 'Pages/Settings',
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
@@ -14,10 +14,10 @@ export default {
 export const Prototype = {
   render: () => (
     <CostureiraProvider>
-      <MemoryRouter initialEntries={['/capacity']}>
+      <MemoryRouter initialEntries={['/settings']}>
         <Routes>
           <Route element={<MainLayout />}>
-            <Route path="/capacity" element={<Capacity />} />
+            <Route path="/settings" element={<Settings />} />
           </Route>
         </Routes>
       </MemoryRouter>
