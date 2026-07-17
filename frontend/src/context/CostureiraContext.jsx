@@ -1,18 +1,6 @@
-import React, { createContext, useState, useContext, useCallback } from 'react';
+import { createContext, useState, useContext, useCallback } from 'react';
 import { seamstressService } from '../services/seamstressService';
-
-// Constantes movidas para fora do arquivo
-export const COSTUREIRA_STATUS = {
-  ACTIVE: 'active',
-  INACTIVE: 'inactive',
-  ON_LEAVE: 'on_leave',
-};
-
-export const STATUS_LABELS = {
-  [COSTUREIRA_STATUS.ACTIVE]: 'Ativo',
-  [COSTUREIRA_STATUS.INACTIVE]: 'Inativo',
-  [COSTUREIRA_STATUS.ON_LEAVE]: 'Em Licença',
-};
+import { STATUS_LABELS } from '../constants/costureira';
 
 const CostureiraContext = createContext();
 

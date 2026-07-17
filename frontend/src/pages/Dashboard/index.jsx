@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Users, 
@@ -11,7 +11,6 @@ import {
   Plus,
   Search,
   Filter,
-  Calendar,
   UserPlus
 } from 'lucide-react';
 import { useCostureira } from '../../context/CostureiraContext';
@@ -34,26 +33,13 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
 
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        await loadCostureiras();
-        await loadStats();
-        await loadRecentActivities();
-      } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
-  }, []);
+  // ============================================
+  // FUNÇÕES MOVIDAS PARA CÁ (ANTES DO useEffect)
+  // ============================================
 
   const loadStats = async () => {
     try {
       const services = await serviceService.getAll();
-      const capacities = await capacityService.getAll();
       
       const totalServices = services.length;
       const pendingServices = services.filter(s => s.status === 'pending').length;
@@ -90,6 +76,31 @@ const Dashboard = () => {
     }
   };
 
+  // ============================================
+  // useEffect - AGORA DEPOIS DAS FUNÇÕES
+  // ============================================
+
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        await loadCostureiras();
+        await loadStats();
+        await loadRecentActivities();
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Ignorar dependências pois loadCostureiras é estável
+
+  // ============================================
+  // HANDLERS
+  // ============================================
+
   const handleCardClick = (item) => {
     if (item.type === 'service') {
       navigate(`/services/${item.id}`);
@@ -97,6 +108,10 @@ const Dashboard = () => {
       navigate(`/seamstresses/${item.id}`);
     }
   };
+
+  // ============================================
+  // DADOS ESTÁTICOS
+  // ============================================
 
   const statCards = [
     {
@@ -133,6 +148,10 @@ const Dashboard = () => {
     }
   ];
 
+  // ============================================
+  // FILTROS
+  // ============================================
+
   const filteredActivities = recentActivities.filter(activity =>
     activity.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
     activity.user.toLowerCase().includes(searchTerm.toLowerCase())
@@ -141,6 +160,10 @@ const Dashboard = () => {
   const filteredStatus = filterStatus === 'all' 
     ? filteredActivities 
     : filteredActivities.filter(a => a.type === filterStatus);
+
+  // ============================================
+  // RENDERIZAÇÃO
+  // ============================================
 
   if (loading) {
     return (
@@ -237,7 +260,7 @@ const Dashboard = () => {
           {filteredStatus.length === 0 ? (
             <p className="text-center text-gray-500 py-8">Nenhuma atividade encontrada</p>
           ) : (
-            filteredStatus.map((activity, _index) => (
+            filteredStatus.map((activity) => (
               <button
                 key={activity.id}
                 onClick={() => handleCardClick(activity)}
