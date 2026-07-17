@@ -41,16 +41,21 @@ services:
       - backend
     restart: unless-stopped
 
-  storybook:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.storybook
-    ports:
-      - "6006:6006"
-    environment:
-      - NODE_ENV=development
-    command: npm run storybook -- --no-open --host 0.0.0.0 --port 6006
-    restart: unless-stopped
+storybook:
+  build:
+    context: ./frontend
+    dockerfile: Dockerfile.storybook
+  ports:
+    - "6006:6006"
+  # Remova ou comente os volumes abaixo
+  # volumes:
+  #   - ./frontend:/app
+  #   - /app/node_modules
+  environment:
+    - NODE_ENV=development
+    - BROWSER=none
+  command: npx storybook dev -p 6006 --host 0.0.0.0 --no-open
+  restart: unless-stopped
 
 volumes:
   postgres_data:

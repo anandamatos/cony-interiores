@@ -16,10 +16,11 @@ export default defineConfig({
     },
   },
   server: {
+    host: "0.0.0.0", // 🔥 Importante: permite conexões externas
     port: 5173,
     proxy: {
       "/api": {
-        target: "http://127.0.0.1:8000",
+        target: "http://backend:8000", // 🔥 Usar o nome do serviço Docker
         changeOrigin: true,
       },
     },

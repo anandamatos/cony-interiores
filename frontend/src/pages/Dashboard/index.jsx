@@ -1,522 +1,297 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  ClipboardList,
-  Users,
-  DollarSign,
-  Package,
+import { 
+  Users, 
+  Scissors, 
+  DollarSign, 
+  Clock,
   TrendingUp,
   TrendingDown,
+  MoreVertical,
   Plus,
-  BarChart3,
-  AlertTriangle,
-  Clock3,
-  CheckCircle2,
-  Pin,
-  CirclePlus,
-  UserPlus,
+  Search,
+  Filter,
+  Calendar,
+  UserPlus
 } from 'lucide-react';
-import Card from '../../components/atoms/Card';
-import Typography from '../../components/atoms/Typography';
-import Button from '../../components/atoms/Button';
-import Badge from '../../components/atoms/Badge';
-
-// ============================================
-// DADOS MOCKADOS
-// ============================================
-const mockStats = {
-  activeServices: 12,
-  seamstresses: 4,
-  pendingPayments: 3,
-  upcomingDeliveries: 8,
-  weeklyActivity: [
-    { day: 'Seg', value: 45 },
-    { day: 'Ter', value: 75 },
-    { day: 'Qua', value: 60 },
-    { day: 'Qui', value: 95 },
-    { day: 'Sex', value: 70 },
-    { day: 'Sáb', value: 50 },
-    { day: 'Dom', value: 30 },
-  ],
-  distribution: [
-    { label: 'Cortinas', value: 45, color: '#D9C7B1', swatch: 'bg-secondary' },
-    { label: 'Almofadas', value: 25, color: '#8D9ABA', swatch: 'bg-sage' },
-    { label: 'Tapetes', value: 15, color: '#C9A86A', swatch: 'bg-gold' },
-    { label: 'Outros', value: 15, color: '#B56A4A', swatch: 'bg-terracota' },
-  ],
-  workload: [
-    { name: 'Sirlene', services: 4, percentage: 80 },
-    { name: 'Mariana', services: 3, percentage: 60 },
-    { name: 'Joana', services: 2, percentage: 40 },
-    { name: 'Ana Paula', services: 1, percentage: 20 },
-  ],
-  alerts: [
-    {
-      id: 1,
-      title: 'Serviço em atraso',
-      description: 'Cortina Ilhós - João Silva (Prazo: 25/06) • +2 dias',
-      time: 'Hoje',
-      type: 'danger',
-    },
-    {
-      id: 2,
-      title: 'Próximo do prazo',
-      description: 'Almofadas - Maria Oliveira (Prazo: 28/06) • 3 dias',
-      time: 'Hoje',
-      type: 'warning',
-    },
-    {
-      id: 3,
-      title: 'Serviço concluído',
-      description: 'Tapete - Ana Costa (Entregue em 20/06)',
-      time: 'Ontem',
-      type: 'success',
-    },
-    {
-      id: 4,
-      title: 'Novo serviço aguardando aprovação',
-      description: 'Cortina Romana - Pedro Santos',
-      time: 'Ontem',
-      type: 'info',
-    },
-  ],
-};
-
-const statCards = [
-  {
-    key: 'activeServices',
-    label: 'Serviços Ativos',
-    icon: ClipboardList,
-    accent: 'gold',
-    badgeVariant: 'success',
-    trendIcon: TrendingUp,
-    trendText: '3 novos esta semana',
-  },
-  {
-    key: 'seamstresses',
-    label: 'Costureiras',
-    icon: Users,
-    accent: 'sage',
-    badgeVariant: 'success',
-    trendIcon: TrendingUp,
-    trendText: '1 nova contratada',
-  },
-  {
-    key: 'pendingPayments',
-    label: 'Pagamentos Pendentes',
-    icon: DollarSign,
-    accent: 'gold',
-    badgeVariant: 'danger',
-    trendIcon: TrendingDown,
-    trendText: '2 em atraso',
-  },
-  {
-    key: 'upcomingDeliveries',
-    label: 'Entregas Previstas',
-    icon: Package,
-    accent: 'terracota',
-    badgeVariant: 'success',
-    trendIcon: TrendingUp,
-    trendText: 'Esta semana',
-  },
-];
-
-const getWeeklyBarColor = (value, maxValue) => {
-  const ratio = maxValue > 0 ? value / maxValue : 0;
-  if (ratio >= 0.85) return '#4A7C59';
-  if (ratio >= 0.7) return '#8D9ABA';
-  if (ratio >= 0.5) return '#C9A86A';
-  return '#B56A4A';
-};
-
-const getWorkloadGradient = (percentage) => {
-  if (percentage >= 80) {
-    return 'linear-gradient(90deg, #B56A4A 0%, #8B4A30 100%)';
-  }
-  if (percentage >= 60) {
-    return 'linear-gradient(90deg, #C9A86A 0%, #B56A4A 100%)';
-  }
-  if (percentage >= 40) {
-    return 'linear-gradient(90deg, #8D9ABA 0%, #4A7C59 100%)';
-  }
-  return 'linear-gradient(90deg, #4A7C59 0%, #8D9ABA 100%)';
-};
-
-const alertTypeIcon = {
-  danger: AlertTriangle,
-  warning: Clock3,
-  success: CheckCircle2,
-  info: Pin,
-};
-
-const statAccentMap = {
-  gold: 'before:bg-gradient-gold',
-  sage: 'before:bg-sage',
-  terracota: 'before:bg-terracota',
-};
+import { useCostureira } from '../../context/CostureiraContext';
+import { capacityService } from '../../services/capacityService';
+import { serviceService } from '../../services/serviceService';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  // ============================================
-  // ESTADOS
-  // ============================================
-  const [stats, setStats] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [hoveredBar, setHoveredBar] = useState(null);
+  const { costureiras, loadCostureiras } = useCostureira();
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalCostureiras: 0,
+    activeCostureiras: 0,
+    totalServices: 0,
+    totalRevenue: 0,
+    pendingServices: 0,
+    completedServices: 0,
+  });
+  const [recentActivities, setRecentActivities] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
 
-  // ============================================
-  // CARREGAR DADOS (simulação)
-  // ============================================
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true);
       try {
-        setIsLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        setStats(mockStats);
-        setError(null);
-      } catch (err) {
-        setError('Erro ao carregar dados do dashboard');
-        console.error(err);
+        await loadCostureiras();
+        await loadStats();
+        await loadRecentActivities();
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
     loadData();
   }, []);
 
-  // ============================================
-  // RENDER: LOADING
-  // ============================================
-  if (isLoading) {
+  const loadStats = async () => {
+    try {
+      const services = await serviceService.getAll();
+      const capacities = await capacityService.getAll();
+      
+      const totalServices = services.length;
+      const pendingServices = services.filter(s => s.status === 'pending').length;
+      const completedServices = services.filter(s => s.status === 'completed').length;
+      const totalRevenue = services
+        .filter(s => s.status === 'completed')
+        .reduce((sum, s) => sum + (s.price || 0), 0);
+
+      setStats({
+        totalCostureiras: costureiras.length,
+        activeCostureiras: costureiras.filter(c => c.status === 'active').length,
+        totalServices,
+        totalRevenue,
+        pendingServices,
+        completedServices,
+      });
+    } catch (error) {
+      console.error('Erro ao carregar estatísticas:', error);
+    }
+  };
+
+  const loadRecentActivities = async () => {
+    try {
+      // Simular atividades recentes - substituir por dados reais da API
+      const activities = [
+        { id: 1, type: 'service', action: 'Novo serviço criado', user: 'Maria Silva', time: 'há 5 minutos', icon: 'Plus' },
+        { id: 2, type: 'costureira', action: 'Costureira adicionada', user: 'João Santos', time: 'há 15 minutos', icon: 'UserPlus' },
+        { id: 3, type: 'service', action: 'Serviço concluído', user: 'Ana Oliveira', time: 'há 1 hora', icon: 'Check' },
+        { id: 4, type: 'service', action: 'Pagamento recebido', user: 'Carlos Pereira', time: 'há 2 horas', icon: 'DollarSign' },
+      ];
+      setRecentActivities(activities);
+    } catch (error) {
+      console.error('Erro ao carregar atividades:', error);
+    }
+  };
+
+  const handleCardClick = (item) => {
+    if (item.type === 'service') {
+      navigate(`/services/${item.id}`);
+    } else if (item.type === 'costureira') {
+      navigate(`/seamstresses/${item.id}`);
+    }
+  };
+
+  const statCards = [
+    {
+      title: 'Total de Costureiras',
+      value: stats.totalCostureiras,
+      icon: Users,
+      color: 'bg-blue-500',
+      change: '+12%',
+      trend: 'up'
+    },
+    {
+      title: 'Serviços Ativos',
+      value: stats.pendingServices,
+      icon: Scissors,
+      color: 'bg-green-500',
+      change: '+8%',
+      trend: 'up'
+    },
+    {
+      title: 'Receita Total',
+      value: `R$ ${stats.totalRevenue.toFixed(2)}`,
+      icon: DollarSign,
+      color: 'bg-purple-500',
+      change: '+23%',
+      trend: 'up'
+    },
+    {
+      title: 'Serviços Concluídos',
+      value: stats.completedServices,
+      icon: Clock,
+      color: 'bg-orange-500',
+      change: '+5%',
+      trend: 'up'
+    }
+  ];
+
+  const filteredActivities = recentActivities.filter(activity =>
+    activity.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    activity.user.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredStatus = filterStatus === 'all' 
+    ? filteredActivities 
+    : filteredActivities.filter(a => a.type === filterStatus);
+
+  if (loading) {
     return (
-      <main className="flex-1 p-6 sm:p-8 lg:p-10">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-taupe">Carregando dashboard...</p>
-          </div>
+      <div className="flex items-center justify-center h-96">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-500">Carregando dashboard...</p>
         </div>
-      </main>
+      </div>
     );
   }
-
-  // ============================================
-  // RENDER: ERRO
-  // ============================================
-  if (error) {
-    return (
-      <main className="flex-1 p-6 sm:p-8 lg:p-10">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="mx-auto mb-4 w-12 h-12 rounded-md bg-danger/12 text-danger flex items-center justify-center">
-              <AlertTriangle className="w-6 h-6" />
-            </div>
-            <Typography variant="h2" className="text-danger mb-2">
-              Ops! Algo deu errado
-            </Typography>
-            <Typography variant="body1" className="text-taupe">
-              {error}
-            </Typography>
-            <button
-              className="mt-4 px-6 py-2 bg-primary text-white rounded-md hover:bg-primary-hover transition-colors"
-              onClick={() => window.location.reload()}
-            >
-              Tentar novamente
-            </button>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  // ============================================
-  // RENDER: DADOS
-  // ============================================
-  const { weeklyActivity, distribution, workload, alerts } = stats;
-  const maxBarValue = Math.max(...weeklyActivity.map((item) => item.value));
 
   return (
-    <main className="flex-1 p-6 sm:p-8 lg:p-10" role="main">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <Typography variant="h1">Bem-vinda, Ana</Typography>
-          <Typography variant="body1" className="mt-1 text-taupe">
-            Aqui está o resumo da sua operação hoje.
-          </Typography>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-500">Visão geral do seu negócio</p>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <Button variant="secondary" size="sm">
-            <BarChart3 className="w-4 h-4" />
-            Relatórios
-          </Button>
-          <Button variant="primary" size="sm" onClick={() => navigate('/services/new')}>
-            <Plus className="w-4 h-4" />
+        <div className="flex gap-2">
+          <button 
+            onClick={() => navigate('/seamstresses/new')}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <UserPlus size={20} />
+            Nova Costureira
+          </button>
+          <button 
+            onClick={() => navigate('/services/new')}
+            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+          >
+            <Plus size={20} />
             Novo Serviço
-          </Button>
+          </button>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8" aria-label="Estatísticas">
-        {statCards.map((card) => {
-          const Icon = card.icon;
-          const TrendIcon = card.trendIcon;
-          const accentClass = statAccentMap[card.accent] || 'before:bg-gradient-gold';
-          const isUp = card.badgeVariant === 'success';
-
-          return (
-            <article
-              key={card.key}
-              className={`group relative overflow-hidden cursor-pointer rounded-md border border-border bg-white/80 backdrop-blur-sm px-6 py-5 transition-all duration-normal ease-spring hover:-translate-y-1 hover:scale-[1.01] hover:border-gold hover:shadow-md before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:transition-all before:duration-normal before:ease-spring hover:before:w-1.5 hover:before:bg-gradient-primary ${accentClass}`}
-            >
-              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-sm bg-offWhite text-taupe transition-all duration-normal ease-spring group-hover:scale-105 group-hover:-rotate-[4deg] group-hover:bg-secondary group-hover:text-primary">
-                <Icon className="w-5 h-5" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {statCards.map((stat, index) => (
+          <div 
+            key={index}
+            className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow"
+          >
+            <div className="flex items-center justify-between">
+              <div className={`${stat.color} p-3 rounded-lg`}>
+                <stat.icon className="w-6 h-6 text-white" />
               </div>
-              <div className="text-[13px] font-secondary font-normal uppercase tracking-[0.5px] text-taupe">
-                {card.label}
+              <div className={`flex items-center gap-1 text-sm ${
+                stat.trend === 'up' ? 'text-green-600' : 'text-red-600'
+              }`}>
+                {stat.trend === 'up' ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+                {stat.change}
               </div>
-              <div className="mt-1 text-[32px] leading-none font-primary font-bold tracking-[-0.5px] text-primary">
-                {stats[card.key]}
-              </div>
-              <span
-                className={`mt-2 inline-flex items-center gap-1 rounded-[12px] px-2.5 py-[2px] text-[12px] font-secondary font-semibold ${
-                  isUp ? 'bg-success/15 text-success' : 'bg-danger/15 text-danger'
-                }`}
-              >
-                <TrendIcon className="w-3.5 h-3.5" />
-                {card.trendText}
-              </span>
-            </article>
-          );
-        })}
-      </section>
-
-      {/* Charts Section */}
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Bar Chart */}
-        <Card className="lg:col-span-2 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <Typography variant="h3">Atividade Semanal</Typography>
-              <Typography variant="body2" className="text-taupe">
-                Serviços finalizados por dia
-              </Typography>
             </div>
-            <Typography variant="caption">Últimos 7 dias</Typography>
+            <p className="text-2xl font-bold mt-3">{stat.value}</p>
+            <p className="text-gray-500 text-sm">{stat.title}</p>
           </div>
+        ))}
+      </div>
 
-          <div className="grid grid-cols-7 h-52 gap-2 pt-4 px-1 rounded-md bg-offWhite/60 border border-border/60">
-            {weeklyActivity.map((item) => (
-              <div key={item.day} className="flex flex-col items-center justify-end h-full gap-2">
-                <Typography
-                  variant="caption"
-                  className={`text-[11px] transition-opacity duration-fast ${
-                    hoveredBar === item.day ? 'opacity-100 text-primary' : 'opacity-0'
-                  }`}
-                >
-                  {item.value}
-                </Typography>
-                <div
-                  className="w-9 rounded-t-md transition-all duration-500 ease-spring cursor-pointer"
-                  style={{
-                    height: `${(item.value / maxBarValue) * 100}%`,
-                    minHeight: '16px',
-                    backgroundColor: getWeeklyBarColor(item.value, maxBarValue),
-                    border: 'none',
-                    boxShadow:
-                      hoveredBar === item.day ? '0 10px 22px rgba(75, 58, 46, 0.18)' : '0 4px 12px rgba(75, 58, 46, 0.09)',
-                    transform: hoveredBar === item.day ? 'translateY(-2px) scaleY(1.05)' : 'scaleY(1)',
-                    transformOrigin: 'bottom',
-                  }}
-                  onMouseEnter={() => setHoveredBar(item.day)}
-                  onMouseLeave={() => setHoveredBar(null)}
-                  role="img"
-                  aria-label={`${item.day}: ${item.value} serviços`}
-                />
-                <Typography variant="caption" className="text-xs">
-                  {item.day}
-                </Typography>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Donut Chart */}
-        <Card className="p-6">
-          <div className="mb-4">
-            <Typography variant="h3">Distribuição</Typography>
-            <Typography variant="body2" className="text-taupe">
-              Serviços por tipo
-            </Typography>
-          </div>
-
-          <div className="flex flex-col items-center justify-center">
-            <div className="relative w-40 h-40">
-              <div
-                className="w-full h-full rounded-full transition-transform duration-300 hover:scale-105"
-                style={{
-                  background: `conic-gradient(
-                    ${distribution[0].color} 0% ${distribution[0].value}%,
-                    ${distribution[1].color} ${distribution[0].value}% ${distribution[0].value + distribution[1].value}%,
-                    ${distribution[2].color} ${distribution[0].value + distribution[1].value}% ${distribution[0].value + distribution[1].value + distribution[2].value}%,
-                    ${distribution[3].color} ${distribution[0].value + distribution[1].value + distribution[2].value}% 100%
-                  )`,
-                  boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.65), 0 10px 28px rgba(75, 58, 46, 0.16)',
-                }}
+      {/* Recent Activities */}
+      <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">Atividades Recentes</h2>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <div className="relative flex-1 sm:flex-initial">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Buscar atividades..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm w-full sm:w-48 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-white/90 backdrop-blur rounded-full flex flex-col items-center justify-center shadow-sm">
-                <Typography variant="h2" className="text-xl">
-                  {stats.activeServices}
-                </Typography>
-                <Typography variant="caption">Total</Typography>
-              </div>
             </div>
-
-            <div className="flex flex-wrap gap-3 mt-4 justify-center">
-              {distribution.map((item) => (
-                <div key={item.label} className="flex items-center gap-2 text-sm">
-                  <span className={`w-3 h-3 rounded ${item.swatch}`} />
-                  <span>{item.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Card>
-      </section>
-
-      {/* Workload Grid */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Workload */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <Typography variant="h3">Carga de Trabalho</Typography>
-            <Typography variant="caption">Costureiras</Typography>
-          </div>
-
-          {workload.map((item, index) => {
-            const progressGradient = getWorkloadGradient(item.percentage);
-
-            return (
-              <div key={item.name} className="mb-4 last:mb-0">
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="font-medium">{item.name}</span>
-                  <span className="text-taupe">
-                    {item.services} serviços ({item.percentage}%)
-                  </span>
-                </div>
-                <div className="w-full h-2 bg-gray-100 rounded-md overflow-hidden">
-                  <div
-                    className="h-full rounded-md transition-all duration-700 ease-spring"
-                    style={{
-                      width: `${item.percentage}%`,
-                      backgroundImage: progressGradient,
-                      boxShadow: '0 2px 10px rgba(75, 58, 46, 0.18)',
-                    }}
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </Card>
-
-        {/* Recent Activities */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <Typography variant="h3">Últimas Atividades</Typography>
-            <Typography variant="caption">Hoje</Typography>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between text-sm gap-3">
-                <span className="font-medium inline-flex items-center gap-2">
-                  <CirclePlus className="w-4 h-4 text-success" />
-                  Novo serviço adicionado
-                </span>
-                <span className="text-taupe">10:30</span>
-              </div>
-              <Typography variant="body2" className="text-taupe mt-1">
-                Cortina Ilhós - Cliente: João Silva
-              </Typography>
-            </div>
-
-            <div>
-              <div className="flex justify-between text-sm gap-3">
-                <span className="font-medium inline-flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-success" />
-                  Status atualizado
-                </span>
-                <span className="text-taupe">09:15</span>
-              </div>
-              <Typography variant="body2" className="text-taupe mt-1">
-                Almofadas - Concluído
-              </Typography>
-            </div>
-
-            <div>
-              <div className="flex justify-between text-sm gap-3">
-                <span className="font-medium inline-flex items-center gap-2">
-                  <UserPlus className="w-4 h-4 text-gold" />
-                  Nova costureira
-                </span>
-                <span className="text-taupe">08:00</span>
-              </div>
-              <Typography variant="body2" className="text-taupe mt-1">
-                Ana Paula foi adicionada ao time
-              </Typography>
-            </div>
-          </div>
-        </Card>
-      </section>
-
-      {/* Alerts */}
-      <section aria-label="Alertas e avisos">
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <Typography variant="h3">Alertas e Avisos</Typography>
-            <Badge variant="neutral" size="sm">
-              {alerts.length} itens
-            </Badge>
-          </div>
-
-          {alerts.map((alert) => {
-            const AlertIcon = alertTypeIcon[alert.type] || AlertTriangle;
-            return (
-            <div
-              key={alert.id}
-              className="flex items-start gap-4 p-4 -mx-1 rounded-md hover:bg-offWhite transition-colors cursor-pointer border-b border-[rgba(75,58,46,0.06)] last:border-b-0"
-              role="button"
-              tabIndex={0}
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <div
-                className={`w-10 h-10 rounded-md flex items-center justify-center text-lg flex-shrink-0
-                  ${alert.type === 'danger' ? 'bg-danger/10 text-danger' : ''}
-                  ${alert.type === 'warning' ? 'bg-warning/10 text-warning' : ''}
-                  ${alert.type === 'success' ? 'bg-success/10 text-success' : ''}
-                  ${alert.type === 'info' ? 'bg-info/10 text-info' : ''}
-                `}
+              <option value="all">Todos</option>
+              <option value="service">Serviços</option>
+              <option value="costureira">Costureiras</option>
+            </select>
+            <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              <Filter size={20} className="text-gray-500" />
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {filteredStatus.length === 0 ? (
+            <p className="text-center text-gray-500 py-8">Nenhuma atividade encontrada</p>
+          ) : (
+            filteredStatus.map((activity, _index) => (
+              <button
+                key={activity.id}
+                onClick={() => handleCardClick(activity)}
+                className="w-full text-left flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors"
               >
-                <AlertIcon className="w-5 h-5" />
-              </div>
-              <div className="flex-1">
-                <Typography variant="h4" className="text-sm">
-                  {alert.title}
-                </Typography>
-                <Typography variant="body2" className="text-taupe">
-                  {alert.description}
-                </Typography>
-              </div>
-              <Typography variant="caption" className="text-gray-400 whitespace-nowrap">
-                {alert.time}
-              </Typography>
-            </div>
-            );
-          })}
-        </Card>
-      </section>
-    </main>
+                <div className="flex items-center gap-3">
+                  <div className="bg-gray-100 p-2 rounded-full">
+                    {activity.icon === 'Plus' && <Plus size={16} className="text-blue-600" />}
+                    {activity.icon === 'UserPlus' && <UserPlus size={16} className="text-green-600" />}
+                    {activity.icon === 'Check' && <Scissors size={16} className="text-orange-600" />}
+                    {activity.icon === 'DollarSign' && <DollarSign size={16} className="text-purple-600" />}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{activity.action}</p>
+                    <p className="text-xs text-gray-500">por {activity.user}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-gray-400">{activity.time}</span>
+                  <button className="text-gray-400 hover:text-gray-600">
+                    <MoreVertical size={16} />
+                  </button>
+                </div>
+              </button>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white">
+          <h3 className="font-semibold mb-2">Agenda do Dia</h3>
+          <p className="text-sm opacity-90">5 serviços agendados para hoje</p>
+          <button className="mt-4 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm transition-colors">
+            Ver agenda
+          </button>
+        </div>
+        <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-6 text-white">
+          <h3 className="font-semibold mb-2">Costureiras Disponíveis</h3>
+          <p className="text-sm opacity-90">{stats.activeCostureiras} costureiras ativas</p>
+          <button className="mt-4 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm transition-colors">
+            Ver costureiras
+          </button>
+        </div>
+        <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 text-white">
+          <h3 className="font-semibold mb-2">Faturamento</h3>
+          <p className="text-sm opacity-90">R$ {stats.totalRevenue.toFixed(2)} este mês</p>
+          <button className="mt-4 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm transition-colors">
+            Ver relatório
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

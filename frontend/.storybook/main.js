@@ -7,14 +7,14 @@ function getAbsolutePath(value) {
 /** @type { import('@storybook/react-vite').StorybookConfig } */
 const config = {
   stories: [
-    "../src/**/*.stories.@(js|jsx|ts|tsx)",
-    "../src/**/*.mdx",
+    "../src/stories/**/*.stories.@(js|jsx|ts|tsx)",
+    "../src/stories/**/*.mdx",
   ],
   addons: [
     getAbsolutePath("@storybook/addon-links"),
     getAbsolutePath("@storybook/addon-essentials"),
     getAbsolutePath("@storybook/addon-interactions"),
-    getAbsolutePath("@storybook/addon-a11y"), // Adicionado
+    getAbsolutePath("@storybook/addon-a11y"),
   ],
   framework: {
     name: getAbsolutePath("@storybook/react-vite"),
