@@ -1,35 +1,39 @@
-import api from "./api";
+import api from './api';
+import { costureirasMock } from '../mocks/costureiras';
 
 export const getSeamstresses = async () => {
-  const response = await api.get("/costureiras/");
-  return response.data;
-};
-
-export const getSeamstress = async (id) => {
-  const response = await api.get(`/costureiras/${id}/`);
-  return response.data;
+  return costureirasMock;
 };
 
 export const createSeamstress = async (data) => {
-  // Mapear campos do frontend para o backend
-  const payload = {
-    nome: data.nome,
-    contato: data.contato,
-    observacoes: data.especialidade || "",
-    ativo: data.ativa !== undefined ? data.ativa : true,
-    tipo_servico_preferido: data.especialidade || "",
-  };
-  console.log("Enviando costureira:", payload);
-  const response = await api.post("/costureiras/", payload);
-  return response.data;
+  const newSeamstress = { ...data, id: Date.now() };
+  costureirasMock.push(newSeamstress);
+  return newSeamstress;
 };
 
 export const updateSeamstress = async (id, data) => {
-  const response = await api.put(`/costureiras/${id}/`, data);
-  return response.data;
+  const index = costureirasMock.findIndex(s => s.id === id);
+  if (index !== -1) {
+    costureirasMock[index] = { ...costureirasMock[index], ...data };
+    return costureirasMock[index];
+  }
+  throw new Error('Seamstress not found');
 };
 
 export const deleteSeamstress = async (id) => {
-  const response = await api.delete(`/costureiras/${id}/`);
-  return response.data;
+  const index = costureirasMock.findIndex(s => s.id === id);
+  if (index !== -1) {
+    costureirasMock.splice(index, 1);
+    return true;
+  }
+  throw new Error('Seamstress not found');
 };
+
+export const seamstressService = {
+  getAll: getSeamstresses,
+  create: createSeamstress,
+  update: updateSeamstress,
+  delete: deleteSeamstress,
+};
+
+export default seamstressService;

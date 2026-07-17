@@ -1,16 +1,34 @@
-import { Link } from 'react-router-dom';
+import classNames from 'classnames';
 
-const Footer = () => {
+const Footer = ({ className, ...props }) => {
+  const currentYear = new Date().getFullYear();
+
+  const baseClasses = {
+    container: classNames(
+      'bg-white border-t border-gray',
+      'py-6 px-4 sm:px-6',
+      className
+    ),
+    inner: 'max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4',
+    copyright: 'text-sm text-taupe font-secondary',
+    links: 'flex items-center gap-6 flex-wrap justify-center',
+    link: classNames(
+      'text-sm text-taupe hover:text-primary',
+      'transition-colors duration-200',
+      'focus:outline-none focus:ring-2 focus:ring-primary/20 rounded'
+    ),
+  };
+
   return (
-    <footer className="bg-white border-t border-gray-200 py-4 px-6">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-gray-500">
-        <div className="flex space-x-6">
-          <Link to="/" className="hover:text-gray-700">Início</Link>
-          <Link to="/about" className="hover:text-gray-700">Sobre</Link>
-          <Link to="/contact" className="hover:text-gray-700">Contato</Link>
+    <footer className={baseClasses.container} role="contentinfo" {...props}>
+      <div className={baseClasses.inner}>
+        <div className={baseClasses.copyright}>
+          © {currentYear} Cony Interiores. Todos os direitos reservados.
         </div>
-        <div className="mt-2 sm:mt-0">
-          <span>© 2024 Cony Interiores. Todos os direitos reservados.</span>
+        <div className={baseClasses.links}>
+          <a href="#" className={baseClasses.link}>Termos de Uso</a>
+          <a href="#" className={baseClasses.link}>Política de Privacidade</a>
+          <a href="#" className={baseClasses.link}>Contato</a>
         </div>
       </div>
     </footer>
