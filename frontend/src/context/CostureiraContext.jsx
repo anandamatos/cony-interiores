@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useState, useContext, useCallback } from 'react';
 import { seamstressService } from '../services/seamstressService';
 import { STATUS_LABELS } from '../constants/costureira';

@@ -14,7 +14,6 @@ import {
   UserPlus
 } from 'lucide-react';
 import { useCostureira } from '../../context/CostureiraContext';
-import { capacityService } from '../../services/capacityService';
 import { serviceService } from '../../services/serviceService';
 
 const Dashboard = () => {
@@ -32,10 +31,6 @@ const Dashboard = () => {
   const [recentActivities, setRecentActivities] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
-
-  // ============================================
-  // FUNÇÕES MOVIDAS PARA CÁ (ANTES DO useEffect)
-  // ============================================
 
   const loadStats = async () => {
     try {
@@ -63,7 +58,6 @@ const Dashboard = () => {
 
   const loadRecentActivities = async () => {
     try {
-      // Simular atividades recentes - substituir por dados reais da API
       const activities = [
         { id: 1, type: 'service', action: 'Novo serviço criado', user: 'Maria Silva', time: 'há 5 minutos', icon: 'Plus' },
         { id: 2, type: 'costureira', action: 'Costureira adicionada', user: 'João Santos', time: 'há 15 minutos', icon: 'UserPlus' },
@@ -75,10 +69,6 @@ const Dashboard = () => {
       console.error('Erro ao carregar atividades:', error);
     }
   };
-
-  // ============================================
-  // useEffect - AGORA DEPOIS DAS FUNÇÕES
-  // ============================================
 
   useEffect(() => {
     const loadData = async () => {
@@ -95,11 +85,7 @@ const Dashboard = () => {
     };
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Ignorar dependências pois loadCostureiras é estável
-
-  // ============================================
-  // HANDLERS
-  // ============================================
+  }, []);
 
   const handleCardClick = (item) => {
     if (item.type === 'service') {
@@ -108,10 +94,6 @@ const Dashboard = () => {
       navigate(`/seamstresses/${item.id}`);
     }
   };
-
-  // ============================================
-  // DADOS ESTÁTICOS
-  // ============================================
 
   const statCards = [
     {
@@ -148,10 +130,6 @@ const Dashboard = () => {
     }
   ];
 
-  // ============================================
-  // FILTROS
-  // ============================================
-
   const filteredActivities = recentActivities.filter(activity =>
     activity.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
     activity.user.toLowerCase().includes(searchTerm.toLowerCase())
@@ -160,10 +138,6 @@ const Dashboard = () => {
   const filteredStatus = filterStatus === 'all' 
     ? filteredActivities 
     : filteredActivities.filter(a => a.type === filterStatus);
-
-  // ============================================
-  // RENDERIZAÇÃO
-  // ============================================
 
   if (loading) {
     return (
@@ -178,7 +152,6 @@ const Dashboard = () => {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
@@ -202,7 +175,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((stat, index) => (
           <div 
@@ -226,7 +198,6 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* Recent Activities */}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
           <h2 className="text-lg font-semibold text-gray-900">Atividades Recentes</h2>
@@ -290,7 +261,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white">
           <h3 className="font-semibold mb-2">Agenda do Dia</h3>
