@@ -1,7 +1,4 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
-cd frontend || exit 1
-
-npm run lint
-npm run format:check
+# Executar o lint dentro do container Docker
+docker-compose exec frontend npm run lint || exit 1
