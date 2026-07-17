@@ -1,10 +1,12 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic.base import RedirectView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from monitoring.views import monitoring_dashboard, openapi_schema, swagger_ui
 
 urlpatterns = [
+    path('', RedirectView.as_view(pattern_name='swagger_ui', permanent=False)),
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
     path('api/core/', include('apps.core.urls')),
