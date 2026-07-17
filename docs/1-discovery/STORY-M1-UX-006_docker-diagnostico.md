@@ -1,160 +1,207 @@
-# 📋 **Relatório Técnico Final: Correção do Ambiente Docker**
+# 📋 Relatório Técnico Final: Correção do Ambiente Docker
 
-## 🎯 **Resumo Executivo**
+## 🎯 Resumo Executivo
 
-O ambiente Docker do projeto Cony Interiores foi completamente estabilizado. Todos os serviços (Frontend, Backend, Banco de Dados e Storybook) estão operacionais e acessíveis. O problema principal era um `package.json` com erro de sintaxe que impedia a execução dos containers.
+O ambiente Docker do projeto Cony Interiores foi estabilizado e validado no fluxo completo de execução local. Frontend, Backend, Banco e Storybook estão operacionais, com correções publicadas na `main` local e remota.
+
+Além das correções iniciais de infraestrutura, foram incorporados ajustes complementares para evitar regressões visuais no Storybook, restaurar o comportamento esperado da interface e corrigir a experiência de acesso ao backend na rota raiz.
 
 ---
 
-## 🐛 **Problemas Identificados e Soluções**
+## 🐛 Problemas Identificados e Soluções
 
-### 1. **Docker não instalado**
+### 1. Docker não instalado
 | Item | Detalhe |
 |------|---------|
-| **Sintoma** | Comandos `docker` e `docker-compose` não encontrados |
-| **Causa** | Docker Desktop não instalado no sistema |
-| **Solução** | Instalação do Docker Desktop via download manual |
+| Sintoma | Comandos `docker` e `docker-compose` não encontrados |
+| Causa | Docker Desktop não instalado no sistema |
+| Solução | Instalação manual do Docker Desktop |
 
----
-
-### 2. **docker-compose.yml com duplicidade**
+### 2. `docker-compose.yml` com duplicidade
 | Item | Detalhe |
 |------|---------|
-| **Sintoma** | Banco de dados reiniciando em loop |
-| **Causa** | Seção `ports` duplicada no serviço `db` |
-| **Solução** | Removida duplicata e adicionado `healthcheck` |
+| Sintoma | Banco de dados reiniciando em loop |
+| Causa | Seção `ports` duplicada no serviço `db` |
+| Solução | Removida duplicidade e adicionado `healthcheck` |
 
----
-
-### 3. **Dependência específica de plataforma**
+### 3. Dependência específica de plataforma
 | Item | Detalhe |
 |------|---------|
-| **Sintoma** | `npm install` falhando no container Linux |
-| **Causa** | `@rollup/rollup-darwin-x64` requer macOS, mas container é Linux |
-| **Solução** | Movido para `optionalDependencies` no `package.json` |
+| Sintoma | `npm install` falhando em Linux |
+| Causa | `@rollup/rollup-darwin-x64` depende de macOS |
+| Solução | Movido para `optionalDependencies` |
 
----
-
-### 4. **Vite ouvindo apenas localhost**
+### 4. Vite ouvindo apenas localhost
 | Item | Detalhe |
 |------|---------|
-| **Sintoma** | Conexão recusada (ERR_CONNECTION_RESET) |
-| **Causa** | Vite ouvindo em `localhost` (::1), não em `0.0.0.0` |
-| **Solução** | Adicionado `host: "0.0.0.0"` no `vite.config.js` e no script `dev` |
+| Sintoma | `ERR_CONNECTION_RESET` |
+| Causa | Servidor ouvindo apenas `localhost` |
+| Solução | Ajustado para `0.0.0.0` em config e scripts |
 
----
-
-### 5. **Proxy incorreto para API**
+### 5. Proxy incorreto da API
 | Item | Detalhe |
 |------|---------|
-| **Sintoma** | Requisições para `/api` não chegavam ao backend |
-| **Causa** | Proxy apontando para `127.0.0.1:8000` (fora do container) |
-| **Solução** | Alterado para `http://backend:8000` (nome do serviço) |
+| Sintoma | Chamadas `/api` não chegavam ao backend |
+| Causa | Proxy para `127.0.0.1` dentro de container |
+| Solução | Ajustado para `http://backend:8000` |
 
----
-
-### 6. **Storybook tentando abrir navegador**
+### 6. Storybook tentando abrir navegador no container
 | Item | Detalhe |
 |------|---------|
-| **Sintoma** | Container reiniciando em loop com erro `spawn xdg-open ENOENT` |
-| **Causa** | Storybook tentando abrir navegador no container Linux |
-| **Solução** | Adicionado `--no-open` no script `storybook` |
+| Sintoma | Reinício em loop com `spawn xdg-open ENOENT` |
+| Causa | Tentativa de abrir browser em ambiente sem GUI |
+| Solução | Uso de `--no-open` |
 
----
-
-### 7. **package.json com erro de sintaxe**
+### 7. `package.json` inválido
 | Item | Detalhe |
 |------|---------|
-| **Sintoma** | Frontend em loop de reinício com erro `EJSONPARSE` |
-| **Causa** | `package.json` com JSON inválido (vírgula faltando) |
-| **Solução** | Corrigida a estrutura do `package.json` |
+| Sintoma | Frontend em loop com `EJSONPARSE` |
+| Causa | JSON malformado |
+| Solução | Estrutura corrigida |
+
+### 8. Regressão visual no Storybook
+| Item | Detalhe |
+|------|---------|
+| Sintoma | Layout e páginas renderizando diferentes do app real |
+| Causa | Stories de página fora do `MainLayout` e sem providers necessários |
+| Solução | Restaurado padrão com `MemoryRouter + Routes + MainLayout` e providers globais/contextuais |
+
+### 9. Componentes "puros" na interface
+| Item | Detalhe |
+|------|---------|
+| Sintoma | Botões e títulos fora do design system |
+| Causa | Arquivos duplicados simplificados em `components/atoms/*.jsx` sendo resolvidos por import |
+| Solução | Consolidado para reexportar os componentes oficiais (`index.jsx`) |
+
+### 10. Acesso ao backend em `/` retornando 404
+| Item | Detalhe |
+|------|---------|
+| Sintoma | `Page not found (404)` em `http://localhost:8000/` |
+| Causa | Projeto expunha apenas rotas `/admin` e `/api/*` |
+| Solução | Adicionado redirecionamento da raiz para `/api/docs/swagger/` |
+
+### 11. Interpretação incorreta da porta 5432 no navegador
+| Item | Detalhe |
+|------|---------|
+| Sintoma | "`http://localhost:5432` não rodou" |
+| Causa | Porta PostgreSQL (protocolo de banco), não HTTP |
+| Solução | Validação via `pg_isready` e orientação para uso com cliente SQL |
 
 ---
 
-## 🔧 **Arquivos Modificados**
+## 🔧 Arquivos Atualizados (Consolidação)
 
-| Arquivo | Mudança | Motivo |
-|---------|---------|--------|
-| `docker-compose.yml` | Removida duplicata de ports, adicionado healthcheck, adicionado serviço storybook | Banco reiniciando, orquestração completa |
-| `frontend/package.json` | Movido rollup-darwin-x64 para optionalDependencies, corrigido JSON, adicionado --no-open e --host | Erro de plataforma, sintaxe, Storybook |
-| `frontend/vite.config.js` | Adicionado `host: "0.0.0.0"` e proxy corrigido | Conexão recusada |
-| `frontend/Dockerfile.storybook` | Criado para gerenciar o Storybook | Isolar configuração do Storybook |
-| `.env` | Criado com variáveis do banco | Warnings de ambiente |
+### Infra
+- `docker-compose.yml`
+- `frontend/package.json`
+- `frontend/Dockerfile.storybook`
+- `package.json`
+- `package-lock.json`
+
+### Front / Interface
+- `frontend/src/pages/Financial/index.jsx`
+- `frontend/src/pages/Dashboard/index.jsx`
+- `frontend/src/services/api.js`
+- `frontend/src/services/capacityService.js`
+- `frontend/src/services/seamstressService.js`
+- `frontend/src/services/serviceService.js`
+- `frontend/src/components/atoms/Typography/index.jsx`
+- `frontend/src/components/atoms/Button.jsx`
+- `frontend/src/components/atoms/Typography.jsx`
+- `frontend/src/components/atoms/Card.jsx`
+- `frontend/src/components/atoms/Badge.jsx`
+- `frontend/src/components/organisms/Footer/index.jsx`
+- `frontend/src/context/CostureiraContext.jsx`
+
+### Storybook
+- `frontend/.storybook/main.js`
+- `frontend/.storybook/preview.js`
+- `frontend/src/stories/pages/Capacity.stories.jsx`
+- `frontend/src/stories/pages/Dashboard.stories.jsx`
+- `frontend/src/stories/pages/Financial.stories.jsx`
+- `frontend/src/stories/pages/NewService.stories.jsx`
+- `frontend/src/stories/pages/Seamstresses.stories.jsx`
+- `frontend/src/stories/pages/Services.stories.jsx`
+- `frontend/src/stories/pages/Settings.stories.jsx`
+- `frontend/src/stories/pages/Team.stories.jsx`
+
+### Back
+- `backend/config/urls.py`
 
 ---
 
-## 🚀 **Comandos para Rodar**
+## ✅ Status Final Validado
+
+| Serviço | Porta | Status | Observação |
+|---------|-------|--------|------------|
+| Frontend | 5173 | ✅ Rodando | Acessível via navegador |
+| Backend | 8000 | ✅ Rodando | Raiz redireciona para Swagger |
+| Banco de Dados | 5432 | ✅ Healthy | Conexão validada por `pg_isready` |
+| Storybook | 6006 | ✅ Rodando | Build e dev server validados em container |
+
+---
+
+## 🚀 Comandos Recomendados
 
 ```bash
-# 1. Subir todos os serviços
+# Subir serviços
 docker-compose up -d
 
-# 2. Verificar status
+# Verificar estado
 docker-compose ps
 
-# 3. Ver logs
-docker-compose logs -f
-```
-
----
-
-## ✅ **Status Final dos Serviços**
-
-| Serviço | Porta | Status | Acessível |
-|---------|-------|--------|-----------|
-| **Frontend** | 5173 | ✅ Rodando | http://localhost:5173 |
-| **Backend** | 8000 | ✅ Rodando | http://localhost:8000 |
-| **Banco de Dados** | 5432 | ✅ Rodando (healthy) | - |
-| **Storybook** | 6006 | ✅ Rodando | http://localhost:6006 |
-
----
-
-## 📋 **Comandos Úteis para o Dia a Dia**
-
-```bash
-# Subir todos os serviços
-docker-compose up -d
-
-# Parar todos os serviços
-docker-compose down
-
-# Ver status
-docker-compose ps
-
-# Ver logs em tempo real
+# Logs gerais
 docker-compose logs -f
 
-# Ver logs de um serviço específico
-docker-compose logs frontend
+# Logs de serviço específico
 docker-compose logs backend
+docker-compose logs frontend
 docker-compose logs storybook
 
-# Reconstruir após mudanças
+# Rebuild
 docker-compose up -d --build
+
+# Validar banco
+docker-compose exec -T db pg_isready -U ${POSTGRES_USER:-cony_user} -d ${POSTGRES_DB:-cony_db}
 ```
 
 ---
 
-## 📝 **Lições Aprendidas**
+## 🧾 Publicação dos Ajustes
 
-1. **Sempre usar `host: "0.0.0.0"`** em containers para permitir conexões externas
-2. **Proxy deve apontar para o nome do serviço**, não para localhost
-3. **Dependências específicas de plataforma** devem ser opcionais
-4. **Sempre criar arquivo `.env`** com as variáveis necessárias
-5. **Usar `healthcheck`** para garantir que o banco está pronto antes de iniciar outros serviços
-6. **Storybook em container precisa de `--no-open`** para não tentar abrir navegador
-7. **Sempre validar a sintaxe do `package.json`** antes de rodar
+Commits publicados em `main`:
 
----
+1. `56b4e4b` - `chore(infra): align storybook dependency setup`
+2. `c35b1ff` - `chore(storybook): restore layout and providers`
+3. `02b603c` - `feat(interface): restore financial ui and typography`
+4. `045c8b7` - `feat(front): publish dashboard and service fallback updates`
+5. `c520c50` - `fix(back): redirect root to api docs`
 
-## 🎯 **Próximos Passos**
-
-1. ✅ Ambiente Docker completamente funcional
-2. ⬜ Validar protótipo financeiro com cliente
-3. ⬜ Continuar desenvolvimento do MVP2
+Publicação remota confirmada em `origin/main`.
 
 ---
 
-**Documento criado em:** 17/07/2026
+## 📝 Lições Aprendidas
+
+1. Em container, serviços web devem ouvir `0.0.0.0`.
+2. Proxy interno deve usar nome de serviço do compose.
+3. Dependências por plataforma devem ser opcionais.
+4. Storybook em container deve usar `--no-open`.
+5. Stories de página devem refletir o layout real da aplicação para evitar falso positivo visual.
+6. Evitar duplicação de arquivos de componentes com mesma responsabilidade.
+7. Porta 5432 é de banco (não endpoint HTTP).
+8. Rota raiz do backend deve orientar o usuário para endpoint útil (ex.: docs).
+
+---
+
+## 🎯 Próximos Passos
+
+1. ✅ Ambiente Docker funcional para squad local.
+2. ✅ Correções publicadas em `main` local e remota.
+3. ⬜ Seguir validação funcional do protótipo financeiro com cliente.
+
+---
+
+**Documento atualizado em:** 17/07/2026
 **Responsável:** @anandamatos
 **Squad:** UX & Experience (com suporte da Foundation)
