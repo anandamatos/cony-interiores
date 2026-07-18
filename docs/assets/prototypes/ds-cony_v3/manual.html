@@ -1,0 +1,2130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cony · Manual do Design System</title>
+
+  <!-- Fontes oficiais alinhadas ao prototipo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    /* ================================================================
+       TOKENS DO NOVO DS (index.html) — aplicados rigorosamente
+       ================================================================ */
+    :root {
+      /* ---- PALETA OFICIAL (index.html) ---- */
+      --cony-cream: #E8E3D9;
+      --cony-nude:  #DEBBA4;
+      --cony-wine:  #903839;
+      --cony-brown: #703824;
+
+      --color-marrom-cafe: var(--cony-brown);
+      --color-bege-areia: var(--cony-nude);
+      --color-taupe: #8C7568;
+      --color-off-white: #F8F5F0;
+
+      --color-cinza-claro: var(--cony-cream);
+      --color-cinza-medio: #BFB3A6;
+      --color-verde-sálvia: #7C8A6E;
+      --color-azul-ardósia: #5C6B63;
+
+      --color-ouro-acetinado: #C2996A;
+      --color-terracota: var(--cony-wine);
+      --color-bronze: #8B4A2E;
+      --color-preto-suave: #1A1412;
+
+      --color-success: #4B7A5B;
+      --color-success-bg: #EAF1E7;
+      --color-warning: #C2996A;
+      --color-warning-bg: #FBF3E7;
+      --color-danger: #903839;
+      --color-danger-bg: #F7EAEA;
+      --color-info: #7C7267;
+      --color-info-bg: #F0ECE7;
+
+      /* ---- TIPOGRAFIA ---- */
+      --font-display: 'Syncopate', sans-serif;
+      --font-primary: 'Montserrat', sans-serif;
+      --font-secondary: 'Montserrat', sans-serif;
+      --tracking-label: 0.15em;
+      --tracking-logo: 0.3em;
+
+      /* ---- ESPAÇAMENTO (mesma escala do index) ---- */
+      --spacing-1: 4px;
+      --spacing-2: 8px;
+      --spacing-3: 12px;
+      --spacing-4: 16px;
+      --spacing-5: 20px;
+      --spacing-6: 24px;
+      --spacing-8: 32px;
+      --spacing-10: 40px;
+      --spacing-12: 48px;
+      --spacing-16: 64px;
+
+      /* ---- SOMBRAS (index) ---- */
+      --shadow-sm: 0 1px 4px rgba(112, 56, 36, 0.06);
+      --shadow-md: 0 4px 16px rgba(112, 56, 36, 0.08);
+      --shadow-lg: 0 8px 32px rgba(112, 56, 36, 0.12);
+      --shadow-xl: 0 16px 48px rgba(112, 56, 36, 0.16);
+
+      /* ---- GRADIENTES (index) ---- */
+      --gradient-primary: linear-gradient(135deg, var(--cony-nude) 0%, var(--cony-wine) 55%, var(--cony-brown) 100%);
+      --gradient-gold: linear-gradient(135deg, var(--cony-cream) 0%, var(--cony-nude) 100%);
+      --gradient-warm: linear-gradient(135deg, var(--cony-brown) 0%, var(--cony-wine) 100%);
+
+      /* ---- BORDAS (index) ---- */
+      --border-radius-sm: 3px;
+      --border-radius-md: 6px;
+      --border-radius-lg: 8px;
+      --border-radius-xl: 12px;
+      --border-width: 1px;
+
+      /* ---- ÍCONES ---- */
+      --icon-size-sm: 16px;
+      --icon-size-md: 20px;
+      --icon-size-lg: 24px;
+      --icon-size-xl: 32px;
+
+      /* ---- DURAÇÕES ---- */
+      --duration-instant: 0.1s;
+      --duration-fast: 0.2s;
+      --duration-normal: 0.3s;
+      --duration-slow: 0.5s;
+      --duration-slower: 0.8s;
+
+      --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-out: cubic-bezier(0, 0, 0.2, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      /* ---- ALTURA DO TOPBAR (index) ---- */
+      --topbar-height: 88px;
+    }
+
+    /* ================================================================
+       RESET + BASE (herdado do index, com leve ajuste)
+       ================================================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-secondary);
+      background: var(--color-off-white);
+      color: var(--color-marrom-cafe);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    /* ================================================================
+       ANIMAÇÕES (index)
+       ================================================================ */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes springIn {
+      0% { opacity: 0; transform: scale(0.92); }
+      60% { transform: scale(1.04); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .fade-in {
+      animation: fadeIn var(--duration-slow) var(--ease-out);
+    }
+
+    .slide-up {
+      animation: slideUp var(--duration-slow) var(--ease-out);
+    }
+
+    .spring-in {
+      animation: springIn var(--duration-normal) var(--ease-spring);
+    }
+
+    /* ================================================================
+       SHELL (estrutura da landing page, mantida)
+       ================================================================ */
+    .page-shell {
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .page-shell::before,
+    .page-shell::after {
+      content: "";
+      position: fixed;
+      inset: auto;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(24px);
+    }
+
+    .page-shell::before {
+      width: 320px;
+      height: 320px;
+      top: 80px;
+      right: -120px;
+      background: rgba(222, 187, 164, 0.12);
+      border-radius: 50%;
+    }
+
+    .page-shell::after {
+      width: 260px;
+      height: 260px;
+      bottom: 12%;
+      left: -80px;
+      background: rgba(124, 138, 110, 0.08);
+      border-radius: 50%;
+    }
+
+    /* ================================================================
+       TOPBAR (adaptado com os tokens do index)
+       ================================================================ */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border-bottom: 1px solid var(--color-cinza-claro);
+      box-shadow: none;
+      transition: background var(--duration-normal) var(--ease-in-out),
+                  backdrop-filter var(--duration-normal) var(--ease-in-out),
+                  border-color var(--duration-normal) var(--ease-in-out),
+                  box-shadow var(--duration-normal) var(--ease-in-out);
+    }
+
+    main#inicio {
+      padding-top: var(--topbar-height);
+    }
+
+    .topbar.is-glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-color: rgba(222, 187, 164, 0.3);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .topbar-inner,
+    .section,
+    .footer-inner {
+      width: min(calc(100% - var(--spacing-8)), 1280px);
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-4);
+      padding: 18px 0;
+      flex-wrap: wrap;
+    }
+
+    /* ---- BRAND (com o símbolo SVG do index) ---- */
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-3);
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      background: var(--cony-cream);
+      border: 1px solid rgba(112, 56, 36, 0.15);
+      border-radius: var(--border-radius-sm);
+      display: grid;
+      place-items: center;
+      padding: 6px;
+      transition: transform 0.3s var(--ease-spring);
+    }
+
+    .brand-mark:hover {
+      transform: scale(1.05) rotate(-2deg);
+    }
+
+    .brand-mark svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .brand-copy strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 19px;
+      letter-spacing: var(--tracking-logo);
+      text-transform: uppercase;
+      color: var(--color-marrom-cafe);
+    }
+
+    .brand-copy span {
+      display: block;
+      margin-top: 2px;
+      font-family: var(--font-display);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: var(--tracking-label);
+      color: var(--color-terracota);
+    }
+
+    /* ---- TOP NAV (index) ---- */
+    .topnav {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .topnav a {
+      padding: var(--spacing-3) var(--spacing-4);
+      font-size: 14px;
+      font-family: var(--font-display);
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+      color: var(--color-taupe);
+      border-radius: var(--border-radius-sm);
+      transition: all var(--duration-fast) var(--ease-in-out);
+    }
+
+    .topnav a:hover {
+      background: rgba(222, 187, 164, 0.25);
+      color: var(--color-marrom-cafe);
+      transform: translateY(-1px);
+    }
+
+    /* ================================================================
+       SEÇÃO (padding herdado do manual, mas com tokens)
+       ================================================================ */
+    .section {
+      padding: var(--spacing-16) 0;
+    }
+
+    /* ================================================================
+       EYEBROW (index)
+       ================================================================ */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-2) var(--spacing-4);
+      border-radius: var(--border-radius-pill, 999px);
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(222, 187, 164, 0.3);
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+      color: var(--color-taupe);
+    }
+
+    /* ================================================================
+       HERO (mantida estrutura, visual com tokens)
+       ================================================================ */
+    .hero {
+      padding-top: var(--spacing-12);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.95fr);
+      gap: var(--spacing-8);
+      align-items: start;
+    }
+
+    .hero h1 {
+      margin-top: var(--spacing-5);
+      font-family: var(--font-primary);
+      font-size: clamp(2.75rem, 5vw, 4.8rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--color-marrom-cafe);
+      max-width: 12ch;
+    }
+
+    .hero p.lead {
+      margin-top: var(--spacing-5);
+      max-width: 58ch;
+      font-size: 1.125rem;
+      line-height: 1.7;
+      color: rgba(75, 58, 46, 0.8);
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      margin-top: var(--spacing-8);
+      display: flex;
+      gap: var(--spacing-3);
+      flex-wrap: wrap;
+    }
+
+    .hero-note {
+      margin-top: var(--spacing-5);
+      font-size: 0.875rem;
+      color: var(--color-taupe);
+    }
+
+    /* ================================================================
+       BOTÕES (index)
+       ================================================================ */
+    .button {
+      border: 0;
+      border-radius: var(--border-radius-sm);
+      padding: var(--spacing-3) var(--spacing-6);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+      transition: all var(--duration-normal) var(--ease-spring);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .button i,
+    .button svg {
+      width: var(--icon-size-sm);
+      height: var(--icon-size-sm);
+      flex-shrink: 0;
+    }
+
+    .button::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0);
+      transition: var(--duration-fast);
+    }
+
+    .button:hover::after {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .button:active {
+      transform: scale(0.96);
+    }
+
+    .button-primary {
+      background: var(--color-marrom-cafe);
+      color: var(--color-off-white);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .button-primary:hover {
+      background: var(--color-bronze);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .button-secondary {
+      background: transparent;
+      color: var(--color-marrom-cafe);
+      border: 1px solid var(--color-cinza-medio);
+    }
+
+    .button-secondary:hover {
+      background: var(--color-off-white);
+      border-color: var(--color-marrom-cafe);
+      transform: translateY(-2px);
+    }
+
+    .button-gold {
+      background: var(--gradient-gold);
+      color: var(--color-marrom-cafe);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .button-gold:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: var(--shadow-md);
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 0;
+      background: transparent;
+      color: var(--color-marrom-cafe);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--duration-fast) var(--ease-spring);
+      padding: 0;
+    }
+
+    .icon-button:hover {
+      background: var(--color-off-white);
+      transform: scale(1.08);
+    }
+
+    .icon-button i,
+    .icon-button svg {
+      width: var(--icon-size-md);
+      height: var(--icon-size-md);
+    }
+
+    /* ================================================================
+       GLASS / SURFACE CARDS (index)
+       ================================================================ */
+    .hero-panel,
+    .glass-card,
+    .surface-card,
+    .token-card,
+    .component-card,
+    .stat-card,
+    .preview-panel,
+    .footer-card {
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-cinza-claro);
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero-panel {
+      padding: var(--spacing-6);
+      display: grid;
+      gap: var(--spacing-5);
+      position: sticky;
+      top: 104px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--spacing-4);
+      align-items: flex-start;
+    }
+
+    .panel-title {
+      font-family: var(--font-primary);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--color-marrom-cafe);
+    }
+
+    .panel-subtitle {
+      margin-top: var(--spacing-2);
+      font-size: 0.875rem;
+      line-height: 1.7;
+      color: var(--color-taupe);
+    }
+
+    /* ---- BADGES (index) ---- */
+    .version-badge,
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      border-radius: 999px;
+      padding: var(--spacing-2) var(--spacing-3);
+      font-size: 10px;
+      font-family: var(--font-display);
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    .version-badge {
+      background: rgba(194, 153, 106, 0.16);
+      color: var(--color-ouro-acetinado);
+    }
+
+    .badge-primary {
+      background: rgba(75, 58, 46, 0.1);
+      color: var(--color-marrom-cafe);
+    }
+    .badge-gold {
+      background: rgba(194, 153, 106, 0.16);
+      color: var(--color-ouro-acetinado);
+    }
+    .badge-success {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+    }
+    .badge-info {
+      background: var(--color-info-bg);
+      color: var(--color-info);
+    }
+    .badge-danger {
+      background: var(--color-danger-bg);
+      color: var(--color-danger);
+    }
+    .badge-neutral {
+      background: rgba(191, 179, 166, 0.16);
+      color: var(--color-taupe);
+    }
+
+    /* ---- PRINCIPLES ---- */
+    .principles-list {
+      display: grid;
+      gap: var(--spacing-3);
+    }
+
+    .principles-list li {
+      list-style: none;
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-3);
+      font-size: 0.875rem;
+      line-height: 1.7;
+      color: rgba(75, 58, 46, 0.84);
+    }
+
+    .principles-list li i {
+      margin-top: var(--spacing-1);
+      color: var(--color-ouro-acetinado);
+    }
+
+    /* ---- MINI STATS (index) ---- */
+    .mini-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--spacing-3);
+    }
+
+    .mini-stat {
+      padding: var(--spacing-4);
+      border-radius: var(--border-radius-sm);
+      background: linear-gradient(135deg, var(--color-off-white) 0%, var(--cony-cream) 100%);
+      border: 1px solid var(--color-cinza-claro);
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-family: var(--font-primary);
+      font-size: 1.5rem;
+      color: var(--color-marrom-cafe);
+    }
+
+    .mini-stat span {
+      display: block;
+      margin-top: var(--spacing-2);
+      font-size: 0.875rem;
+      color: var(--color-taupe);
+    }
+
+    /* ================================================================
+       SECTION HEADING (manual adaptado)
+       ================================================================ */
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: var(--spacing-5);
+      margin-bottom: var(--spacing-8);
+      flex-wrap: wrap;
+    }
+
+    .section-heading h2 {
+      font-family: var(--font-primary);
+      font-size: clamp(1.9rem, 3vw, 2.8rem);
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      color: var(--color-marrom-cafe);
+    }
+
+    .section-heading p {
+      max-width: 56ch;
+      color: var(--color-taupe);
+      line-height: 1.7;
+    }
+
+    /* ================================================================
+       GRIDS (manual)
+       ================================================================ */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--spacing-5);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--spacing-5);
+    }
+
+    /* ================================================================
+       CARDS (manual com tokens)
+       ================================================================ */
+    .glass-card,
+    .surface-card,
+    .component-card,
+    .preview-panel,
+    .footer-card {
+      padding: var(--spacing-6);
+    }
+
+    .token-card {
+      overflow: hidden;
+    }
+
+    .token-card-header {
+      padding: var(--spacing-5) var(--spacing-5) var(--spacing-4);
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: var(--spacing-4);
+    }
+
+    .token-card h3,
+    .component-card h3,
+    .preview-panel h3,
+    .footer-card h3 {
+      font-family: var(--font-primary);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-marrom-cafe);
+    }
+
+    .token-card p,
+    .component-card p,
+    .preview-panel p,
+    .footer-card p {
+      color: var(--color-taupe);
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+
+    .stack {
+      display: grid;
+      gap: var(--spacing-4);
+    }
+
+    /* ================================================================
+       PALETTE (index)
+       ================================================================ */
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 1px;
+      background: rgba(230, 227, 221, 0.92);
+      border-top: 1px solid rgba(230, 227, 221, 0.92);
+    }
+
+    .swatch {
+      min-height: 128px;
+      padding: var(--spacing-4);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: var(--spacing-1);
+      color: white;
+    }
+
+    .swatch.light {
+      color: var(--color-marrom-cafe);
+    }
+
+    .swatch strong {
+      font-size: 10px;
+      font-family: var(--font-display);
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+    }
+
+    .swatch span {
+      font-size: 10px;
+      opacity: 0.86;
+    }
+
+    /* ================================================================
+       TYPOGRAPHY STACK (manual)
+       ================================================================ */
+    .typography-stack {
+      display: grid;
+      gap: var(--spacing-4);
+    }
+
+    .type-line {
+      padding-bottom: var(--spacing-4);
+      border-bottom: 1px solid var(--color-cinza-claro);
+    }
+
+    .type-line:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .type-meta {
+      font-family: var(--font-display);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: var(--tracking-label);
+      color: var(--color-taupe);
+    }
+
+    .type-display-h1 {
+      font: 700 2rem/1.25 var(--font-primary);
+      letter-spacing: -0.03em;
+    }
+    .type-display-h2 {
+      font: 600 1.5rem/1.25 var(--font-primary);
+      letter-spacing: -0.03em;
+    }
+    .type-display-body {
+      font: 400 1rem/1.7 var(--font-secondary);
+    }
+    .type-display-caption {
+      font: 400 0.75rem/1.5 var(--font-secondary);
+    }
+
+    /* ================================================================
+       SPACING / MOTION / BREAKPOINTS (manual adaptado)
+       ================================================================ */
+    .spacing-stack,
+    .motion-list,
+    .breakpoints-list,
+    .icons-grid,
+    .guideline-list,
+    .chips-row,
+    .table-rows,
+    .footer-links {
+      display: grid;
+      gap: var(--spacing-3);
+    }
+
+    .spacing-item,
+    .motion-item,
+    .breakpoint-item {
+      display: grid;
+      grid-template-columns: auto auto 1fr;
+      gap: var(--spacing-4);
+      align-items: center;
+    }
+
+    .spacing-item strong,
+    .motion-item strong,
+    .breakpoint-item strong {
+      font-family: var(--font-display);
+      font-size: 12px;
+      letter-spacing: var(--tracking-label);
+    }
+
+    .spacing-bar {
+      height: 14px;
+      border-radius: 999px;
+      background: var(--gradient-gold);
+      min-width: 20px;
+    }
+
+    .motion-pill {
+      border-radius: 999px;
+      padding: var(--spacing-3) var(--spacing-4);
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid var(--color-cinza-claro);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-3);
+      width: fit-content;
+      font-size: 0.875rem;
+    }
+
+    .motion-pill i {
+      color: var(--color-ouro-acetinado);
+    }
+
+    /* ---- ICONS GRID ---- */
+    .icons-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .icon-card {
+      border-radius: var(--border-radius-sm);
+      border: 1px solid var(--color-cinza-claro);
+      background: rgba(255, 255, 255, 0.8);
+      padding: var(--spacing-4);
+      display: grid;
+      gap: var(--spacing-3);
+    }
+
+    .icon-card .icon-chip {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--border-radius-sm);
+      display: grid;
+      place-items: center;
+      background: var(--color-off-white);
+      color: var(--color-marrom-cafe);
+    }
+
+    /* ---- GUIDELINE LIST ---- */
+    .guideline-list li {
+      list-style: none;
+      display: flex;
+      gap: var(--spacing-3);
+      align-items: flex-start;
+      color: rgba(75, 58, 46, 0.84);
+      line-height: 1.7;
+    }
+
+    .guideline-list i {
+      color: var(--color-ouro-acetinado);
+      margin-top: var(--spacing-1);
+    }
+
+    /* ---- ALERT LIST (index) ---- */
+    .alert-list {
+      display: grid;
+    }
+
+    .alert-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-4);
+      padding: var(--spacing-4);
+      margin: 0 -4px;
+      border-radius: var(--border-radius-sm);
+      transition: all var(--duration-fast) var(--ease-in-out);
+    }
+
+    .alert-item + .alert-item {
+      border-top: 1px solid var(--color-cinza-claro);
+    }
+
+    .alert-item:hover {
+      background: var(--color-off-white);
+    }
+
+    .alert-item-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .alert-item-icon i,
+    .alert-item-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .alert-item-icon.danger { background: var(--color-danger-bg); color: var(--color-danger); }
+    .alert-item-icon.warning { background: var(--color-warning-bg); color: var(--color-warning); }
+    .alert-item-icon.success { background: var(--color-success-bg); color: var(--color-success); }
+    .alert-item-icon.info { background: var(--color-info-bg); color: var(--color-info); }
+
+    .alert-item-content {
+      flex: 1;
+    }
+
+    .alert-item-title {
+      font-family: var(--font-primary);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-marrom-cafe);
+    }
+
+    .alert-item-description {
+      font-family: var(--font-secondary);
+      font-size: 13px;
+      color: var(--color-taupe);
+      margin-top: 2px;
+    }
+
+    .alert-item-time {
+      font-family: var(--font-secondary);
+      font-size: 12px;
+      color: var(--color-cinza-medio);
+      white-space: nowrap;
+      padding-left: var(--spacing-3);
+    }
+
+    /* ================================================================
+       COMPONENTS GRID (manual)
+       ================================================================ */
+    .components-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--spacing-5);
+    }
+
+    .button-row,
+    .badges-row,
+    .toolbar-row,
+    .stats-grid,
+    .shell-grid,
+    .footer-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-3);
+    }
+
+    .badges-row {
+      gap: var(--spacing-3);
+    }
+
+    /* ---- INPUTS (index) ---- */
+    .input-field,
+    .select-field,
+    .search-bar {
+      width: 100%;
+      border-radius: var(--border-radius-sm);
+      border: 1px solid rgba(75, 58, 46, 0.08);
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--color-marrom-cafe);
+      padding: var(--spacing-4) var(--spacing-5);
+      font-family: var(--font-secondary);
+      transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap i,
+    .search-wrap .search-icon,
+    .search-wrap svg {
+      position: absolute;
+      left: var(--spacing-4);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-taupe);
+      width: var(--icon-size-md);
+      height: var(--icon-size-md);
+      pointer-events: none;
+    }
+
+    .search-bar {
+      padding-left: 42px;
+    }
+
+    .toolbar-row {
+      align-items: center;
+    }
+
+    .input-field:focus,
+    .select-field:focus,
+    .search-bar:focus {
+      outline: 0;
+      border-color: var(--color-ouro-acetinado);
+      box-shadow: 0 0 0 4px rgba(194, 153, 106, 0.15);
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: var(--spacing-3);
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+      color: var(--color-taupe);
+    }
+
+    /* ---- FILTER CHIPS (index) ---- */
+    .status-filter {
+      display: flex;
+      gap: var(--spacing-3);
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      padding: var(--spacing-3) var(--spacing-4);
+      border-radius: 999px;
+      border: 1px solid rgba(75, 58, 46, 0.08);
+      background: rgba(255, 255, 255, 0.76);
+      color: var(--color-marrom-cafe);
+      font-size: 0.875rem;
+      font-family: var(--font-display);
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+      font-size: 10px;
+      transition: all var(--duration-fast);
+    }
+
+    .filter-chip.active {
+      background: var(--gradient-gold);
+      border-color: transparent;
+      box-shadow: var(--shadow-sm);
+      font-weight: 700;
+    }
+
+    /* ---- STAT CARD (index) ---- */
+    .stat-card {
+      flex: 1 1 220px;
+      padding: var(--spacing-5);
+      position: relative;
+      overflow: hidden;
+      min-width: 220px;
+    }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--gradient-gold);
+    }
+
+    .stat-card strong {
+      display: block;
+      margin-top: var(--spacing-3);
+      font-family: var(--font-primary);
+      font-size: 1.5rem;
+    }
+
+    .stat-card span,
+    .stat-card p {
+      font-size: 0.875rem;
+      color: var(--color-taupe);
+    }
+
+    /* ================================================================
+       SHELL PREVIEW (index)
+       ================================================================ */
+    .shell-preview {
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-cinza-claro);
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: var(--shadow-md);
+    }
+
+    .shell-top {
+      padding: var(--spacing-4) var(--spacing-5);
+      border-bottom: 1px solid var(--color-cinza-claro);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-4);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      flex-wrap: wrap;
+      transition: background var(--duration-normal) var(--ease-in-out),
+                  backdrop-filter var(--duration-normal) var(--ease-in-out),
+                  border-color var(--duration-normal) var(--ease-in-out),
+                  box-shadow var(--duration-normal) var(--ease-in-out);
+    }
+
+    .shell-top.is-glass {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-color: rgba(222, 187, 164, 0.3);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .shell-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-4);
+    }
+
+    .shell-page-title {
+      font-family: var(--font-primary);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-marrom-cafe);
+      white-space: nowrap;
+    }
+
+    .shell-page-title span {
+      color: var(--color-taupe);
+      font-weight: 300;
+    }
+
+    .shell-search {
+      min-width: 260px;
+      max-width: 340px;
+      flex: 1 1 260px;
+    }
+
+    .shell-header-right {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-3);
+    }
+
+    .shell-user {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding-left: var(--spacing-3);
+      border-left: 1px solid var(--color-cinza-claro);
+    }
+
+    .shell-user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      color: var(--color-off-white);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-primary);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .shell-user-name {
+      font-family: var(--font-primary);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-marrom-cafe);
+    }
+
+    .shell-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 560px;
+      align-items: stretch;
+    }
+
+    .shell-sidebar {
+      padding: var(--spacing-5);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(248, 243, 239, 0.92));
+      border-right: 1px solid var(--color-cinza-claro);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-4);
+    }
+
+    .shell-sidebar-nav {
+      display: grid;
+      gap: var(--spacing-1);
+      flex: 1;
+    }
+
+    .shell-sidebar-footer {
+      padding-top: var(--spacing-4);
+      border-top: 1px solid var(--color-cinza-claro);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-3);
+    }
+
+    .shell-sidebar-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      color: var(--color-off-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-primary);
+      font-weight: 600;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .shell-sidebar-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .shell-sidebar-name {
+      font-family: var(--font-primary);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-marrom-cafe);
+    }
+
+    .shell-sidebar-role {
+      font-family: var(--font-secondary);
+      font-size: 11px;
+      color: var(--color-taupe);
+    }
+
+    .shell-sidebar-logout {
+      background: none;
+      border: 0;
+      cursor: pointer;
+      color: var(--color-taupe);
+      padding: var(--spacing-2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--duration-fast) var(--ease-spring);
+      flex-shrink: 0;
+    }
+
+    .shell-sidebar-logout:hover {
+      background: var(--color-off-white);
+      color: var(--color-marrom-cafe);
+      transform: rotate(45deg);
+    }
+
+    .shell-sidebar-logout i,
+    .shell-sidebar-logout svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .shell-content {
+      min-height: 560px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .shell-sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-3);
+      padding: 0 0 var(--spacing-4);
+      margin-bottom: var(--spacing-2);
+      border-bottom: 1px solid var(--color-cinza-claro);
+    }
+
+    .shell-sidebar-logo {
+      width: 36px;
+      height: 36px;
+      background: var(--cony-cream);
+      border: 1px solid rgba(112, 56, 36, 0.15);
+      border-radius: var(--border-radius-sm);
+      display: grid;
+      place-items: center;
+      padding: 5px;
+    }
+
+    .shell-sidebar-logo svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .shell-sidebar-copy strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-marrom-cafe);
+    }
+
+    .shell-sidebar-copy span {
+      display: block;
+      margin-top: 1px;
+      font-family: var(--font-display);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-terracota);
+    }
+
+    .shell-nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-3);
+      padding: var(--spacing-3) var(--spacing-4);
+      border-radius: var(--border-radius-sm);
+      color: var(--color-marrom-cafe);
+      font-family: var(--font-secondary);
+      font-size: 0.875rem;
+      transition: all var(--duration-fast);
+    }
+
+    .shell-nav-item.active {
+      background: var(--gradient-gold);
+      box-shadow: var(--shadow-sm);
+      font-weight: 600;
+    }
+
+    .shell-main {
+      padding: var(--spacing-5);
+      display: grid;
+      gap: var(--spacing-5);
+      background: linear-gradient(180deg, rgba(246, 243, 239, 0.42), rgba(255, 255, 255, 0.32));
+    }
+
+    .shell-content .shell-top {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    /* ================================================================
+       TABLE (index)
+       ================================================================ */
+    .table {
+      border-radius: var(--border-radius-sm);
+      overflow: hidden;
+      border: 1px solid var(--color-cinza-claro);
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .table-head,
+    .table-row {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 0.8fr 0.6fr;
+      gap: var(--spacing-4);
+      padding: var(--spacing-4) var(--spacing-5);
+    }
+
+    .table-head {
+      background: rgba(240, 233, 223, 0.52);
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+      color: var(--color-taupe);
+    }
+
+    .table-row + .table-row {
+      border-top: 1px solid var(--color-cinza-claro);
+    }
+
+    .table-cell {
+      font-size: 0.875rem;
+      color: var(--color-marrom-cafe);
+    }
+
+    .table-cell small {
+      display: block;
+      margin-top: var(--spacing-1);
+      color: var(--color-taupe);
+      font-size: 0.75rem;
+    }
+
+    /* ================================================================
+       FOOTER (manual + index)
+       ================================================================ */
+    .footer {
+      padding: var(--spacing-10) 0 var(--spacing-12);
+    }
+
+    .footer-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(248, 243, 239, 0.96));
+    }
+
+    .footer-grid {
+      align-items: start;
+      justify-content: space-between;
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-6);
+    }
+
+    .footer-brand {
+      max-width: 34ch;
+    }
+
+    .footer-brand p {
+      margin-top: var(--spacing-3);
+    }
+
+    .footer-links a:hover {
+      color: var(--color-marrom-cafe);
+    }
+
+    .muted {
+      color: var(--color-taupe);
+    }
+
+    .stack {
+      display: grid;
+      gap: var(--spacing-4);
+    }
+
+    /* ================================================================
+       RESPONSIVIDADE (mantida do manual, adaptada)
+       ================================================================ */
+    @media (max-width: 1100px) {
+      .hero-grid,
+      .grid-3,
+      .grid-2,
+      .components-grid,
+      .shell-layout,
+      .icons-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-panel {
+        position: static;
+      }
+
+      .palette-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .table-head,
+      .table-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar-inner,
+      .section,
+      .footer-inner {
+        width: min(calc(100% - var(--spacing-8)), 1280px);
+      }
+
+      .topbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero {
+        padding-top: var(--spacing-8);
+      }
+
+      .section {
+        padding: var(--spacing-12) 0;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .button-row,
+      .hero-actions,
+      .toolbar-row,
+      .status-filter,
+      .topnav {
+        width: 100%;
+      }
+
+      .button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .mini-stats,
+      .palette-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .spacing-item,
+      .motion-item,
+      .breakpoint-item,
+      .table-row,
+      .table-head {
+        grid-template-columns: 1fr;
+      }
+
+      .shell-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .shell-header-right,
+      .shell-search {
+        width: 100%;
+      }
+
+      .shell-user {
+        margin-left: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page-shell">
+
+  <!-- ============================================================
+       TOPBAR
+       ============================================================ -->
+  <header class="topbar">
+    <div class="topbar-inner fade-in">
+      <a class="brand" href="#inicio">
+        <span class="brand-mark">
+          <svg viewBox="0 0 60 90" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="6,20 54,10" fill="none" stroke="var(--cony-brown)" stroke-width="3" stroke-linecap="round"/>
+            <polyline points="6,32 54,58" fill="none" stroke="var(--cony-brown)" stroke-width="3" stroke-linecap="round"/>
+            <polyline points="54,32 6,58" fill="none" stroke="var(--cony-brown)" stroke-width="3" stroke-linecap="round"/>
+            <polyline points="6,70 54,80" fill="none" stroke="var(--cony-brown)" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <strong>CONY</strong>
+          <span>Interiores</span>
+        </span>
+      </a>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a href="#marca">Marca</a>
+        <a href="#tokens">Tokens</a>
+        <a href="#componentes">Componentes</a>
+        <a href="#shell">Shell</a>
+        <a href="#footer">Fechamento</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="inicio">
+
+    <!-- ============================================================
+         HERO
+         ============================================================ -->
+    <section class="section hero">
+      <div class="hero-grid">
+        <div class="slide-up">
+          <span class="eyebrow"><i data-lucide="sparkles"></i> Referencia oficial do dashboard</span>
+          <h1>Manual direto para manter o dashboard Cony consistente.</h1>
+          <p class="lead">
+            Este documento traduz o que esta em tela no prototipo: tokens, estrutura, componentes,
+            estados e textos de interface usados no dashboard operacional.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#tokens"><i data-lucide="palette"></i> Explorar tokens</a>
+            <a class="button button-secondary" href="#componentes"><i data-lucide="component"></i> Ver biblioteca</a>
+            <a class="button button-gold" href="#shell"><i data-lucide="layout-dashboard"></i> Abrir shell</a>
+          </div>
+          <p class="hero-note">Minimalista, sofisticada, acolhedora e contemporânea.</p>
+        </div>
+
+        <aside class="hero-panel spring-in">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Snapshot do DS</div>
+              <p class="panel-subtitle">Checklist visual e textual para manter novas telas alinhadas ao dashboard.</p>
+            </div>
+            <span class="version-badge"><i data-lucide="badge-check"></i> 2.0.0</span>
+          </div>
+
+          <ul class="principles-list">
+            <li><i data-lucide="check"></i><span>Brand first: toda interface deve refletir a identidade da Cony.</span></li>
+            <li><i data-lucide="check"></i><span>Uso exclusivo dos tokens oficiais para cor, tipografia, borda, sombra e motion.</span></li>
+            <li><i data-lucide="check"></i><span>Componentes consistentes, discretos e fáceis de reaplicar entre páginas.</span></li>
+            <li><i data-lucide="check"></i><span>Textos de interface curtos, objetivos e coerentes com os fluxos do dashboard.</span></li>
+          </ul>
+
+          <div class="mini-stats">
+            <div class="mini-stat">
+              <strong>4</strong>
+              <span>cards de estatistica base</span>
+            </div>
+            <div class="mini-stat">
+              <strong>3</strong>
+              <span>gradientes oficiais</span>
+            </div>
+            <div class="mini-stat">
+              <strong>2</strong>
+              <span>graficos principais</span>
+            </div>
+            <div class="mini-stat">
+              <strong>3</strong>
+              <span>blocos operacionais</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MARCA
+         ============================================================ -->
+    <section class="section" id="marca">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow"><i data-lucide="gem"></i> Marca</span>
+          <h2>Direção visual para interfaces que respiram elegância e conforto.</h2>
+        </div>
+        <p>
+          A interface combina menos ruído visual, mais respiro, materiais claros,
+          contrastes quentes e CTAs discretos para leitura rápida da operação.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <article class="glass-card stack">
+          <h3>Voz da marca</h3>
+          <p>Minimalista, sofisticada, acolhedora e contemporânea. A interface deve parecer curada, não genérica.</p>
+          <div class="badges-row">
+            <span class="badge badge-primary">Elegância</span>
+            <span class="badge badge-gold">Sofisticação</span>
+            <span class="badge badge-info">Conforto</span>
+          </div>
+        </article>
+
+        <article class="glass-card stack">
+          <h3>Diretrizes de UI</h3>
+          <ul class="guideline-list">
+            <li><i data-lucide="circle-check-big"></i><span>Superfícies claras com profundidade sutil e bordas suaves.</span></li>
+            <li><i data-lucide="circle-check-big"></i><span>Uso generoso de espaço em branco para valorizar conteúdo e hierarquia.</span></li>
+            <li><i data-lucide="circle-check-big"></i><span>Chamadas de ação presentes, mas sem agressividade cromática.</span></li>
+          </ul>
+        </article>
+
+        <article class="glass-card stack">
+          <h3>Imagética e atmosfera</h3>
+          <p>Ambientes amplos, luz natural e materiais orgânicos inspiram a escolha de tons quentes, superfícies off-white e gradientes discretos.</p>
+          <div class="motion-pill"><i data-lucide="sun-medium"></i> Luz natural e materiais naturais</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TOKENS
+         ============================================================ -->
+    <section class="section" id="tokens">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow"><i data-lucide="swatch-book"></i> Tokens</span>
+          <h2>Cor, tipografia, ritmo e motion usados no dashboard.</h2>
+        </div>
+        <p>
+          Estes tokens são os mesmos do protótipo: paleta quente, espaçamento previsível,
+          sombras leves, responsividade estável e motion funcional.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <!-- PALETA -->
+        <article class="token-card">
+          <div class="token-card-header">
+            <div>
+              <h3>Paleta central</h3>
+              <p>Tons base para identidade, suporte e destaque da Cony.</p>
+            </div>
+            <span class="badge badge-gold">cores oficiais</span>
+          </div>
+          <div class="palette-grid">
+            <div class="swatch light" style="background:#E8E3D9"><strong>Primary 50</strong><span>#E8E3D9</span></div>
+            <div class="swatch light" style="background:#DEBBA4"><strong>Secondary 400</strong><span>#DEBBA4</span></div>
+            <div class="swatch" style="background:#8C7568"><strong>Taupe 500</strong><span>#8C7568</span></div>
+            <div class="swatch" style="background:#C2996A"><strong>Gold 500</strong><span>#C2996A</span></div>
+            <div class="swatch" style="background:#703824"><strong>Primary 500</strong><span>#703824</span></div>
+            <div class="swatch light" style="background:#F8F5F0"><strong>Background</strong><span>#F8F5F0</span></div>
+            <div class="swatch light" style="background:#E8E3D9"><strong>Border</strong><span>#E8E3D9</span></div>
+            <div class="swatch" style="background:#7C8A6E"><strong>Sage 500</strong><span>#7C8A6E</span></div>
+            <div class="swatch" style="background:#903839"><strong>Terracota</strong><span>#903839</span></div>
+            <div class="swatch" style="background:#5C6B63"><strong>Slate 500</strong><span>#5C6B63</span></div>
+          </div>
+        </article>
+
+        <!-- TIPOGRAFIA -->
+        <article class="surface-card stack">
+          <h3>Tipografia</h3>
+          <p>Syncopate conduz rótulos e marca. Montserrat sustenta títulos e texto corrido no dashboard.</p>
+          <div class="typography-stack">
+            <div class="type-line">
+              <div class="type-meta">h1 · Montserrat bold · 36px</div>
+              <div class="type-display-h1">Elegância silenciosa em camadas claras.</div>
+            </div>
+            <div class="type-line">
+              <div class="type-meta">h2 · Montserrat semibold · 24px</div>
+              <div class="type-display-h2">Escala editorial para dashboards e narrativas.</div>
+            </div>
+            <div class="type-line">
+              <div class="type-meta">body1 · Montserrat regular · 16px</div>
+              <div class="type-display-body">Interfaces limpas, consistentes e acessíveis, com leitura confortável e ritmo previsível.</div>
+            </div>
+            <div class="type-line">
+              <div class="type-meta">caption · Montserrat regular · 12px</div>
+              <div class="type-display-caption">Metadados, apoios textuais e informações complementares.</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ESPAÇAMENTO -->
+        <article class="surface-card stack">
+          <h3>Espaçamento</h3>
+          <p>Escala baseada em múltiplos de 4px. Primeiro aplica-se a escala oficial; valores avulsos são exceção.</p>
+          <div class="spacing-stack">
+            <div class="spacing-item"><strong>4</strong><span>16px</span><div class="spacing-bar" style="width:16px"></div></div>
+            <div class="spacing-item"><strong>6</strong><span>24px</span><div class="spacing-bar" style="width:24px"></div></div>
+            <div class="spacing-item"><strong>8</strong><span>32px</span><div class="spacing-bar" style="width:32px"></div></div>
+            <div class="spacing-item"><strong>12</strong><span>48px</span><div class="spacing-bar" style="width:48px"></div></div>
+            <div class="spacing-item"><strong>16</strong><span>64px</span><div class="spacing-bar" style="width:64px"></div></div>
+          </div>
+        </article>
+
+        <!-- MOTION / SOMBRAS / BREAKPOINTS -->
+        <article class="surface-card stack">
+          <h3>Motion, sombras e breakpoints</h3>
+          <p>Microinterações sutis, profundidade moderada e comportamento previsível entre mobile, tablet e desktop.</p>
+          <div class="motion-list">
+            <div class="motion-item"><strong>default</strong><span>0.3s</span><div class="motion-pill"><i data-lucide="sparkle"></i> all 0.3s cubic-bezier(0.4, 0, 0.2, 1)</div></div>
+            <div class="motion-item"><strong>spring</strong><span>0.3s</span><div class="motion-pill"><i data-lucide="zap"></i> hover e entradas controladas</div></div>
+            <div class="motion-item"><strong>shadow</strong><span>cardHover</span><div class="motion-pill"><i data-lucide="layers-3"></i> 0 4px 16px rgba(112,56,36,0.08)</div></div>
+          </div>
+          <div class="breakpoints-list">
+            <div class="breakpoint-item"><strong>sm</strong><span>640px</span><div class="muted">mobile grande / tablet pequeno</div></div>
+            <div class="breakpoint-item"><strong>lg</strong><span>1024px</span><div class="muted">sidebar fixa e header deslocado</div></div>
+            <div class="breakpoint-item"><strong>xl</strong><span>1280px</span><div class="muted">desktop amplo e layouts mais arejados</div></div>
+          </div>
+        </article>
+      </div>
+
+      <!-- GRADIENTES E ÍCONES -->
+      <div class="grid-2" style="margin-top:32px;">
+        <article class="surface-card stack">
+          <h3>Gradientes oficiais</h3>
+          <p>Aplicação principal em CTAs, indicadores e destaques do painel.</p>
+          <div class="shell-grid">
+            <div class="mini-stat" style="background:linear-gradient(135deg, #C2996A 0%, #8C7568 50%, #703824 100%); color:#fff;"><strong>Primary</strong><span style="color:rgba(255,255,255,0.88)">assinatura visual</span></div>
+            <div class="mini-stat" style="background:linear-gradient(135deg, #DEBBA4 0%, #C2996A 100%);"><strong>Gold</strong><span>progressos e ativos</span></div>
+            <div class="mini-stat" style="background:linear-gradient(135deg, #703824 0%, #903839 100%); color:#fff;"><strong>Warm</strong><span style="color:rgba(255,255,255,0.88)">CTAs fortes</span></div>
+            <div class="mini-stat" style="background:linear-gradient(135deg, #7C8A6E 0%, #5C6B63 100%); color:#fff;"><strong>Sage</strong><span style="color:rgba(255,255,255,0.88)">seções analíticas</span></div>
+          </div>
+        </article>
+
+        <article class="surface-card stack">
+          <h3>Ícones oficiais</h3>
+          <p>Usar Lucide com semântica clara e repetição consistente entre menu, cards e alertas.</p>
+          <div class="icons-grid">
+            <div class="icon-card"><div class="icon-chip"><i data-lucide="layout-dashboard"></i></div><strong>Dashboard</strong><p>Visão geral</p></div>
+            <div class="icon-card"><div class="icon-chip"><i data-lucide="clipboard-list"></i></div><strong>Serviços</strong><p>Fluxos e listas</p></div>
+            <div class="icon-card"><div class="icon-chip"><i data-lucide="users"></i></div><strong>Costureiras</strong><p>Pessoas e alocação</p></div>
+            <div class="icon-card"><div class="icon-chip"><i data-lucide="dollar-sign"></i></div><strong>Financeiro</strong><p>KPIs e repasses</p></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         COMPONENTES
+         ============================================================ -->
+    <section class="section" id="componentes">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow"><i data-lucide="component"></i> Componentes</span>
+          <h2>Átomos, moléculas e organismos apresentados em contexto.</h2>
+        </div>
+        <p>
+          A vitrine abaixo replica os blocos que aparecem no dashboard: header, cards, visualização e alertas.
+        </p>
+      </div>
+
+      <div class="components-grid">
+        <!-- Buttons & Badges -->
+        <article class="component-card stack">
+          <h3>Buttons e badges</h3>
+          <p>CTAs discretos, contraste confortável e estados sem excesso ornamental.</p>
+          <div class="button-row">
+            <button class="button button-primary"><i data-lucide="plus"></i>Novo serviço</button>
+            <button class="button button-secondary">Relatórios</button>
+            <button class="button button-gold">Destaque</button>
+          </div>
+          <div class="badges-row">
+            <span class="badge badge-primary">Primary</span>
+            <span class="badge badge-gold">Gold</span>
+            <span class="badge badge-success">Sucesso</span>
+            <span class="badge badge-danger">Erro</span>
+            <span class="badge badge-neutral">Neutro</span>
+          </div>
+        </article>
+
+        <!-- Inputs -->
+        <article class="component-card stack">
+          <h3>Busca e ações do header</h3>
+          <p>Campo de busca com ícone interno e ações rápidas ao lado, como no topo do dashboard.</p>
+          <div class="search-wrap">
+            <i data-lucide="search" class="search-icon"></i>
+            <input class="search-bar" type="search" placeholder="Buscar serviços, costureiras..." />
+          </div>
+          <div class="toolbar-row">
+            <button class="icon-button" aria-label="Notificações"><i data-lucide="bell"></i></button>
+            <button class="icon-button" aria-label="Ajuda"><i data-lucide="help-circle"></i></button>
+            <button class="button button-primary">Novo Serviço</button>
+          </div>
+        </article>
+
+        <!-- Stats Cards -->
+        <article class="component-card stack">
+          <h3>Cards de estatística</h3>
+          <p>Mesmo padrão de hierarquia do dashboard: rótulo curto, valor principal e variação.</p>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span>Serviços Ativos</span>
+              <strong>12</strong>
+              <p>+3 novos esta semana</p>
+            </div>
+            <div class="stat-card">
+              <span>Costureiras</span>
+              <strong>4</strong>
+              <p>1 nova contratada</p>
+            </div>
+            <div class="stat-card">
+              <span>Pagamentos Pendentes</span>
+              <strong>3</strong>
+              <p>2 em atraso</p>
+            </div>
+            <div class="stat-card">
+              <span>Entregas Previstas</span>
+              <strong>8</strong>
+              <p>esta semana</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Alerts -->
+        <article class="component-card stack">
+          <h3>Alertas e avisos</h3>
+          <p>Ícone colorido por severidade, título, contexto e tempo alinhado à direita.</p>
+          <div class="alert-list">
+            <div class="alert-item">
+              <div class="alert-item-icon danger"><i data-lucide="clock"></i></div>
+              <div class="alert-item-content">
+                <div class="alert-item-title">Serviço em atraso</div>
+                <div class="alert-item-description">Cortina Ilhós - João Silva (Prazo: 25/06) • +2 dias</div>
+              </div>
+              <span class="alert-item-time">Hoje</span>
+            </div>
+            <div class="alert-item">
+              <div class="alert-item-icon warning"><i data-lucide="alert-circle"></i></div>
+              <div class="alert-item-content">
+                <div class="alert-item-title">Próximo do prazo</div>
+                <div class="alert-item-description">Almofadas - Maria Oliveira (Prazo: 28/06) • 3 dias</div>
+              </div>
+              <span class="alert-item-time">Hoje</span>
+            </div>
+            <div class="alert-item">
+              <div class="alert-item-icon success"><i data-lucide="check-circle"></i></div>
+              <div class="alert-item-content">
+                <div class="alert-item-title">Serviço concluído</div>
+                <div class="alert-item-description">Tapete - Ana Costa (Entregue em 20/06)</div>
+              </div>
+              <span class="alert-item-time">Ontem</span>
+            </div>
+            <div class="alert-item">
+              <div class="alert-item-icon info"><i data-lucide="pin"></i></div>
+              <div class="alert-item-content">
+                <div class="alert-item-title">Novo serviço aguardando aprovação</div>
+                <div class="alert-item-description">Cortina Romana - Pedro Santos</div>
+              </div>
+              <span class="alert-item-time">Ontem</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SHELL
+         ============================================================ -->
+    <section class="section" id="shell">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow"><i data-lucide="monitor-smartphone"></i> Shell</span>
+          <h2>Header, sidebar e conteúdo trabalhando como um organismo coeso.</h2>
+        </div>
+        <p>
+          O preview abaixo resume o comportamento da interface: sidebar fixa no desktop,
+          header sticky e área principal com blocos de leitura rápida.
+        </p>
+      </div>
+
+      <div class="shell-preview spring-in">
+        <div class="shell-layout">
+          <aside class="shell-sidebar">
+            <div class="shell-sidebar-header">
+              <span class="shell-sidebar-logo" aria-hidden="true">
+                <svg viewBox="0 0 60 90" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                  <polyline points="6,20 54,10" fill="none" stroke="var(--cony-brown)" stroke-width="3" stroke-linecap="round"/>
+                  <polyline points="6,32 54,58" fill="none" stroke="var(--cony-brown)" stroke-width="3" stroke-linecap="round"/>
+                  <polyline points="54,32 6,58" fill="none" stroke="var(--cony-brown)" stroke-width="3" stroke-linecap="round"/>
+                  <polyline points="6,70 54,80" fill="none" stroke="var(--cony-brown)" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <span class="shell-sidebar-copy">
+                <strong>Cony</strong>
+                <span>Interiores</span>
+              </span>
+            </div>
+
+            <div class="shell-sidebar-nav">
+              <div class="shell-nav-item active"><i data-lucide="layout-dashboard"></i>Dashboard</div>
+              <div class="shell-nav-item"><i data-lucide="clipboard-list"></i>Serviços</div>
+              <div class="shell-nav-item"><i data-lucide="users"></i>Costureiras</div>
+              <div class="shell-nav-item"><i data-lucide="gauge"></i>Capacidade</div>
+              <div class="shell-nav-item"><i data-lucide="dollar-sign"></i>Financeiro</div>
+              <div class="shell-nav-item"><i data-lucide="settings"></i>Preferências</div>
+            </div>
+
+            <div class="shell-sidebar-footer">
+              <div class="shell-sidebar-avatar">AM</div>
+              <div class="shell-sidebar-info">
+                <div class="shell-sidebar-name">Ana Matos</div>
+                <div class="shell-sidebar-role">UX Lead</div>
+              </div>
+              <button class="shell-sidebar-logout" aria-label="Sair"><i data-lucide="log-out"></i></button>
+            </div>
+          </aside>
+
+          <div class="shell-content">
+            <div class="shell-top">
+              <div class="shell-header-left">
+                <div class="shell-page-title">
+                  Dashboard <span>/ Visão Geral</span>
+                </div>
+              </div>
+
+              <div class="search-wrap shell-search">
+                  <i data-lucide="search" class="search-icon"></i>
+                  <input class="search-bar" type="search" placeholder="Buscar pedidos, clientes ou materiais" />
+              </div>
+
+              <div class="shell-header-right">
+                <button class="icon-button" aria-label="Notificações"><i data-lucide="bell"></i></button>
+                <button class="icon-button" aria-label="Ajuda"><i data-lucide="help-circle"></i></button>
+                <div class="shell-user">
+                  <div class="shell-user-avatar">AM</div>
+                  <span class="shell-user-name">Ana</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="shell-main">
+            <div class="section-heading" style="margin-bottom:0;">
+              <div>
+                <h2 style="font-size:1.5rem;">Visão geral da operação</h2>
+                <p>Resumo de indicadores, carga de trabalho, atividades e alertas.</p>
+              </div>
+              <span class="badge badge-gold">header sticky</span>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <span>Serviços Ativos</span>
+                <strong>12</strong>
+                <p>+3 novos esta semana</p>
+              </div>
+              <div class="stat-card">
+                <span>Costureiras</span>
+                <strong>4</strong>
+                <p>1 nova contratada</p>
+              </div>
+              <div class="stat-card">
+                <span>Pagamentos Pendentes</span>
+                <strong>3</strong>
+                <p>2 em atraso</p>
+              </div>
+              <div class="stat-card">
+                <span>Entregas Previstas</span>
+                <strong>8</strong>
+                <p>esta semana</p>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <article class="preview-panel stack">
+                <h3>Estrutura da página</h3>
+                <ul class="guideline-list">
+                  <li><i data-lucide="panel-left"></i><span>Sidebar fixa no desktop e oculta no mobile.</span></li>
+                  <li><i data-lucide="search"></i><span>Busca no header com largura adaptativa.</span></li>
+                  <li><i data-lucide="layout-grid"></i><span>Blocos principais em grid com cards reutilizáveis.</span></li>
+                </ul>
+              </article>
+
+              <article class="preview-panel stack">
+                <h3>Notas de implementação</h3>
+                <ul class="guideline-list">
+                  <li><i data-lucide="panel-left"></i><span>Mobile: sidebar em drawer e header com ação compacta.</span></li>
+                  <li><i data-lucide="laptop"></i><span>Desktop: sidebar fixa a partir de 1024px.</span></li>
+                  <li><i data-lucide="shield-check"></i><span>Foco visual apoiado por cores neutras e acentos dourados.</span></li>
+                </ul>
+              </article>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="footer" id="footer">
+    <div class="footer-inner">
+      <div class="footer-card">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <span class="eyebrow"><i data-lucide="book-open"></i> Encerramento</span>
+            <h3 style="margin-top:16px;">Base visual e textual para evolução do Design System Cony.</h3>
+            <p>
+              Este manual e o protótipo do dashboard definem o padrão de interface para as próximas entregas:
+              tokens, componentes, comportamento responsivo e linguagem de UI.
+            </p>
+          </div>
+
+          <div class="stack">
+            <h3>Núcleos do DS</h3>
+            <div class="footer-links">
+              <a href="#marca">Marca e voz visual</a>
+              <a href="#tokens">Tokens oficiais</a>
+              <a href="#componentes">Biblioteca de componentes</a>
+              <a href="#shell">Shell responsivo</a>
+            </div>
+          </div>
+
+          <div class="stack">
+            <h3>Recados de uso</h3>
+            <div class="footer-links">
+              <span>Usar tokens oficiais antes de criar variações.</span>
+              <span>Manter nomes e textos iguais aos componentes do dashboard.</span>
+              <span>Priorizar clareza, sofisticação e conforto visual.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Inicializa ícones Lucide
+    lucide.createIcons();
+
+    // Efeito glass aplicado quando a página rola
+    const topbarEl = document.querySelector('.topbar');
+    const shellHeaderEl = document.querySelector('.shell-top');
+
+    const updateGlassOnScroll = () => {
+      const hasScrolled = window.scrollY > 12;
+      if (topbarEl) topbarEl.classList.toggle('is-glass', hasScrolled);
+      if (shellHeaderEl) shellHeaderEl.classList.toggle('is-glass', hasScrolled);
+    };
+
+    updateGlassOnScroll();
+    window.addEventListener('scroll', updateGlassOnScroll, { passive: true });
+    window.addEventListener('resize', updateGlassOnScroll);
+
+    console.log('Cony manual carregado com sucesso.');
+  });
+</script>
+</body>
+</html>

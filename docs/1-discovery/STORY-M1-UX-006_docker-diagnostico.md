@@ -157,7 +157,7 @@ docker-compose logs -f
 docker-compose logs backend
 docker-compose logs frontend
 docker-compose logs storybook
-
+        
 # Rebuild
 docker-compose up -d --build
 

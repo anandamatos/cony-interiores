@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cony Interiores - Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 
     <!-- ============================================
        LUCIDE ICONS (CDN para desenvolvimento)
@@ -16,33 +16,42 @@
            TOKENS DE DESIGN - CONY INTERIORES
            ============================================ */
         :root {
-            /* Cores Principais */
-            --color-marrom-cafe: #4B3A2E;
-            --color-bege-areia: #D9C7B1;
-            --color-taupe: #A8968B;
-            --color-off-white: #F6F3EF;
+            /* ============================================
+               PALETA OFICIAL — Manual de Identidade Visual
+               Cony Interiores (seção 7. Padrão de Cores)
+               ============================================ */
+            --cony-cream: #E8E3D9; /* Pantone Cool Gray 1C | RGB 232,227,217 */
+            --cony-nude:  #DEBBA4; /* Pantone 4675 U       | RGB 222,187,164 */
+            --cony-wine:  #903839; /* Pantone 492 M        | RGB 144,56,57  */
+            --cony-brown: #703824; /* Pantone 478 C        | RGB 112,56,36  */
+
+            /* Cores Principais (aliases usados no protótipo) */
+            --color-marrom-cafe: var(--cony-brown);
+            --color-bege-areia: var(--cony-nude);
+            --color-taupe: #8C7568;
+            --color-off-white: #F8F5F0;
 
             /* Cores Secundárias */
-            --color-cinza-claro: #E6E2DD;
-            --color-cinza-medio: #BDB7AE;
-            --color-verde-sálvia: #8D9ABA;
-            --color-azul-ardósia: #465057;
+            --color-cinza-claro: var(--cony-cream);
+            --color-cinza-medio: #BFB3A6;
+            --color-verde-sálvia: #7C8A6E;
+            --color-azul-ardósia: #5C6B63;
 
             /* Cores de Acento */
-            --color-ouro-acetinado: #C9A86A;
-            --color-terracota: #B56A4A;
-            --color-bronze: #8A6A4F;
-            --color-preto-suave: #1A1A1A;
+            --color-ouro-acetinado: #C2996A;
+            --color-terracota: var(--cony-wine);
+            --color-bronze: #8B4A2E;
+            --color-preto-suave: #1A1412;
 
             /* Cores de Status */
-            --color-success: #4A7C59;
-            --color-success-bg: #E8F5E9;
-            --color-warning: #C9A86A;
-            --color-warning-bg: #FFF8E1;
-            --color-danger: #B56A4A;
-            --color-danger-bg: #FFF1F0;
-            --color-info: #8D9ABA;
-            --color-info-bg: #E8EEF5;
+            --color-success: #4B7A5B;
+            --color-success-bg: #EAF1E7;
+            --color-warning: #C2996A;
+            --color-warning-bg: #FBF3E7;
+            --color-danger: #903839;
+            --color-danger-bg: #F7EAEA;
+            --color-info: #7C7267;
+            --color-info-bg: #F0ECE7;
 
             /* ============================================
                TOKENS DE ANIMAÇÃO
@@ -63,9 +72,12 @@
             --transition-fast: all var(--duration-fast) var(--ease-out);
             --transition-spring: all var(--duration-normal) var(--ease-spring);
 
-            /* Tipografia */
-            --font-primary: 'Montserrat', sans-serif;
-            --font-secondary: 'Lato', sans-serif;
+            /* Tipografia oficial (seção 8. Tipografia do manual) */
+            --font-display: 'Syncopate', sans-serif;   /* logotipo, rótulos, botões */
+            --font-primary: 'Montserrat', sans-serif;  /* títulos e destaques */
+            --font-secondary: 'Montserrat', sans-serif;/* texto corrido */
+            --tracking-label: 0.15em;
+            --tracking-logo: 0.3em;
 
             /* Espaçamento */
             --spacing-1: 4px;
@@ -80,27 +92,30 @@
             --spacing-16: 64px;
 
             /* Sombras */
-            --shadow-sm: 0 1px 4px rgba(75, 58, 46, 0.06);
-            --shadow-md: 0 4px 16px rgba(75, 58, 46, 0.08);
-            --shadow-lg: 0 8px 32px rgba(75, 58, 46, 0.12);
-            --shadow-xl: 0 16px 48px rgba(75, 58, 46, 0.16);
+            --shadow-sm: 0 1px 4px rgba(112, 56, 36, 0.06);
+            --shadow-md: 0 4px 16px rgba(112, 56, 36, 0.08);
+            --shadow-lg: 0 8px 32px rgba(112, 56, 36, 0.12);
+            --shadow-xl: 0 16px 48px rgba(112, 56, 36, 0.16);
 
-            /* Gradientes */
-            --gradient-primary: linear-gradient(135deg, #C9A86A 0%, #A8968B 50%, #4B3A2E 100%);
-            --gradient-gold: linear-gradient(135deg, #D9C7B1 0%, #C9A86A 100%);
-            --gradient-warm: linear-gradient(135deg, #4B3A2E 0%, #B56A4A 100%);
+            /* Gradientes — construídos apenas com as cores institucionais */
+            --gradient-primary: linear-gradient(135deg, var(--cony-nude) 0%, var(--cony-wine) 55%, var(--cony-brown) 100%);
+            --gradient-gold: linear-gradient(135deg, var(--cony-cream) 0%, var(--cony-nude) 100%);
+            --gradient-warm: linear-gradient(135deg, var(--cony-brown) 0%, var(--cony-wine) 100%);
 
-            /* Bordas */
-            --border-radius-sm: 6px;
-            --border-radius-md: 10px;
-            --border-radius-lg: 16px;
-            --border-radius-xl: 24px;
+            /* Bordas — mais retas e arquitetônicas, alinhadas ao símbolo da marca */
+            --border-radius-sm: 3px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --border-radius-xl: 12px;
 
             /* Tamanho dos Ícones */
             --icon-size-sm: 16px;
             --icon-size-md: 20px;
             --icon-size-lg: 24px;
             --icon-size-xl: 32px;
+
+            /* Altura compartilhada entre o header e o topo da sidebar */
+            --topbar-height: 88px;
         }
 
         /* ============================================
@@ -147,8 +162,8 @@
         }
 
         @keyframes glow {
-            0%, 100% { box-shadow: 0 0 8px rgba(201, 168, 106, 0.15); }
-            50% { box-shadow: 0 0 24px rgba(201, 168, 106, 0.35); }
+            0%, 100% { box-shadow: 0 0 8px rgba(194, 153, 106, 0.15); }
+            50% { box-shadow: 0 0 24px rgba(194, 153, 106, 0.35); }
         }
 
         @keyframes countUp {
@@ -200,7 +215,7 @@
             height: 100vh;
             position: sticky;
             top: 0;
-            padding: var(--spacing-6) 0;
+            padding: 0 0 var(--spacing-4);
             transition: var(--transition-default);
         }
 
@@ -209,7 +224,9 @@
         }
 
         .sidebar-header {
-            padding: 0 var(--spacing-6) var(--spacing-6);
+            height: var(--topbar-height);
+            box-sizing: border-box;
+            padding: 0 var(--spacing-6);
             border-bottom: 1px solid var(--color-cinza-claro);
             display: flex;
             align-items: center;
@@ -221,12 +238,13 @@
         .sidebar-logo {
     width: 44px;
     height: 44px;
-    background: var(--color-marrom-cafe); /* Alterado para cor sólida */
-    border-radius: var(--border-radius-md);
+    background: var(--cony-cream); /* fundo claro, como no símbolo do manual */
+    border: 1px solid rgba(112, 56, 36, 0.15);
+    border-radius: var(--border-radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 8px; /* Adicionado um leve padding para o ícone não encostar nas bordas */
+    padding: 6px;
     transition: var(--transition-spring);
 }
 
@@ -243,22 +261,23 @@
         }
 
         .sidebar-title {
-            font-family: 'ITC Avant Garde', var(--font-primary);
-            font-weight: 700;
-            font-size: 20px;
+            font-family: var(--font-display);
+            font-weight: 400;
+            font-size: 19px;
             color: var(--color-marrom-cafe);
-            letter-spacing: 2px;
+            letter-spacing: var(--tracking-logo);
+            text-transform: uppercase;
         }
 
         .sidebar-subtitle {
-            font-family: var(--font-secondary);
-            font-size: 12px;
-            color: var(--color-taupe);
+            font-family: var(--font-display);
+            font-size: 10px;
+            color: var(--color-terracota);
             font-weight: 400;
-            letter-spacing: 3px;
+            letter-spacing: var(--tracking-label);
             text-transform: uppercase;
             display: block;
-            margin-top: -2px;
+            margin-top: 2px;
         }
 
         .sidebar-nav {
@@ -267,12 +286,12 @@
         }
 
         .sidebar-nav-label {
-            font-family: var(--font-secondary);
+            font-family: var(--font-display);
             font-size: 11px;
             font-weight: 700;
             color: var(--color-taupe);
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: var(--tracking-label);
             padding: var(--spacing-4) var(--spacing-3) var(--spacing-2);
         }
 
@@ -294,7 +313,7 @@
         }
 
         .sidebar-nav a:hover {
-            background: rgba(217, 199, 177, 0.25);
+            background: rgba(222, 187, 164, 0.25);
             opacity: 1;
             transform: translateX(4px);
         }
@@ -405,11 +424,14 @@
            HEADER
            ============================================ */
         .header {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: var(--spacing-4) var(--spacing-10);
-            border-bottom: 1px solid rgba(217, 199, 177, 0.3);
+            /* Estado padrão: mesmas propriedades "sólidas" da sidebar (sem glass) */
+            height: var(--topbar-height);
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            padding: 0 var(--spacing-10);
+            border-bottom: 1px solid var(--color-cinza-claro);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -417,6 +439,19 @@
             top: 0;
             z-index: 20;
             animation: slideUp var(--duration-slow) var(--ease-out);
+            transition: background var(--duration-normal) var(--ease-in-out),
+                        backdrop-filter var(--duration-normal) var(--ease-in-out),
+                        border-color var(--duration-normal) var(--ease-in-out),
+                        box-shadow var(--duration-normal) var(--ease-in-out);
+        }
+
+        /* Aplicado via JS somente quando a página tem conteúdo rolável */
+        .header.is-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom-color: rgba(222, 187, 164, 0.3);
+            box-shadow: var(--shadow-sm);
         }
 
         .header-left {
@@ -453,7 +488,7 @@
         .search-bar {
             background: var(--color-off-white);
             padding: var(--spacing-2) var(--spacing-5) var(--spacing-2) var(--spacing-10);
-            border-radius: 24px;
+            border-radius: var(--border-radius-md);
             border: 1px solid transparent;
             width: 280px;
             font-family: var(--font-secondary);
@@ -470,7 +505,7 @@
             outline: none;
             border-color: var(--color-ouro-acetinado);
             background: var(--color-off-white);
-            box-shadow: 0 0 0 4px rgba(201, 168, 106, 0.15);
+            box-shadow: 0 0 0 4px rgba(194, 153, 106, 0.15);
             transform: scale(1.01);
         }
 
@@ -606,11 +641,12 @@
         }
 
         .caption {
-            font-family: var(--font-secondary);
-            font-size: 12px;
+            font-family: var(--font-display);
+            font-size: 10px;
             font-weight: 400;
             color: var(--color-cinza-medio);
-            letter-spacing: 0.3px;
+            letter-spacing: var(--tracking-label);
+            text-transform: uppercase;
         }
 
         /* ============================================
@@ -646,9 +682,11 @@
         .btn {
             padding: var(--spacing-3) var(--spacing-6);
             border-radius: var(--border-radius-sm);
-            font-family: var(--font-primary);
-            font-weight: 600;
-            font-size: 14px;
+            font-family: var(--font-display);
+            font-weight: 400;
+            font-size: 12px;
+            letter-spacing: var(--tracking-label);
+            text-transform: uppercase;
             border: none;
             cursor: pointer;
             transition: var(--transition-spring);
@@ -793,11 +831,11 @@
         }
 
         .stat-card-title {
-            font-family: var(--font-secondary);
-            font-size: 13px;
+            font-family: var(--font-display);
+            font-size: 11px;
             color: var(--color-taupe);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: var(--tracking-label);
             font-weight: 400;
         }
 
@@ -1234,6 +1272,7 @@
             }
 
             .header {
+                height: auto;
                 padding: var(--spacing-4);
                 flex-wrap: wrap;
                 gap: var(--spacing-3);
@@ -1353,8 +1392,13 @@
     ============================================ -->
     <aside class="sidebar">
         <div class="sidebar-header">
-    <div class="sidebar-logo">
-        <img src="icony.png" alt="Cony Logo" style="width: 100%; height: 100%; object-fit: contain;">
+    <div class="sidebar-logo" aria-hidden="true">
+        <svg viewBox="0 0 60 90" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="6,20 54,10" fill="none" stroke="var(--cony-brown)" stroke-width="3" stroke-linecap="round"/>
+            <polyline points="6,32 54,58" fill="none" stroke="var(--cony-brown)" stroke-width="3" stroke-linecap="round"/>
+            <polyline points="54,32 6,58" fill="none" stroke="var(--cony-brown)" stroke-width="3" stroke-linecap="round"/>
+            <polyline points="6,70 54,80" fill="none" stroke="var(--cony-brown)" stroke-width="3" stroke-linecap="round"/>
+        </svg>
     </div>
     <div>
         <div class="sidebar-title">Cony</div>
@@ -1770,6 +1814,32 @@
             // 1. INICIALIZAR LUCIDE ICONS
             // ============================================
             lucide.createIcons();
+
+            // ============================================
+            // 1B. HEADER: GLASS SOMENTE QUANDO A PÁGINA ROLA
+            // ============================================
+            const headerEl = document.querySelector('.header');
+            if (headerEl) {
+                const updateHeaderGlass = () => {
+                    const isScrollable = document.documentElement.scrollHeight > window.innerHeight + 1;
+                    headerEl.classList.toggle('is-glass', isScrollable);
+                };
+
+                updateHeaderGlass();
+                // Reavalia após fontes/ícones/imagens assentarem o layout
+                window.addEventListener('load', updateHeaderGlass);
+                setTimeout(updateHeaderGlass, 300);
+
+                let resizeTimeout;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(updateHeaderGlass, 150);
+                });
+
+                if (window.ResizeObserver) {
+                    new ResizeObserver(updateHeaderGlass).observe(document.body);
+                }
+            }
 
             // ============================================
             // 2. ANIMAÇÃO PROGRESSIVA DAS BARRAS
