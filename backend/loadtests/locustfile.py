@@ -62,3 +62,11 @@ class FinancialApiUser(HttpUser):
             headers=self._auth_headers(),
             name='/api/internal/monitoring/dashboard/',
         )
+
+    @task(2)
+    def list_servicos(self):
+        # Query shape used by financial and planning screens.
+        self.client.get(
+            '/api/servicos/?ordering=-data_envio&search=urgente',
+            name='/api/servicos/?ordering=-data_envio&search=<term>',
+        )

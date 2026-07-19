@@ -46,7 +46,7 @@ class CostureiraViewSet(viewsets.ModelViewSet):
 # ==================== VIEWSET DO SERVIÇO ====================
 
 class ServicoViewSet(viewsets.ModelViewSet):
-    queryset = Servico.objects.all()
+    queryset = Servico.objects.select_related('cliente', 'costureira').prefetch_related('produto').all()
     serializer_class = ServicoSerializer
     permission_classes = [AllowAny]
     filterset_fields = ['cliente', 'costureira', 'data_envio', 'prazo_entrega']

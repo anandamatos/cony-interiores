@@ -19,9 +19,15 @@ class Costureira(models.Model):
         default=100,
         help_text="De 0 a 100, o quão livre ela está agora pra receber novos pedidos."
     )
- 
+
     def __str__(self):
         return self.nome
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["ativo"], name="idx_costureira_ativo"),
+            models.Index(fields=["tipo_servico_preferido"], name="idx_costureira_tipo"),
+        ]
 
 class Cliente(models.Model):
     nome = models.CharField(max_length=100)
@@ -37,7 +43,7 @@ class Produto(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField(blank=True)
     valor_base = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    
+
     # ---- CAMPO NOVO (cálculo de capacidade) ----
     TIPO_PRODUTO_CHOICES = [
         ("ILHO", "Cortina de Ilhó"),
@@ -52,7 +58,7 @@ class Produto(models.Model):
         blank=True,
         help_text="Categoria do produto, usada no cálculo de complexidade."
     )
- 
+
     def __str__(self):
         return self.nome
 
@@ -95,7 +101,16 @@ class Servico(models.Model):
         blank=True,
         help_text="Tamanho considerado pra todas as peças deste serviço (por enquanto)."
     )
- 
+
 
     def __str__(self):
         return f"Serviço para {self.cliente.nome} - {self.costureira.nome}"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["costureira", "data_envio"], name="idx_serv_cost_data"),
+            models.Index(fields=["cliente", "data_envio"], name="idx_serv_cli_data"),
+            models.Index(fields=["prazo_entrega"], name="idx_serv_prazo"),
+            models.Index(fields=["valor"], name="idx_serv_valor"),
+            models.Index(fields=["complexidade"], name="idx_serv_complex"),
+        ]

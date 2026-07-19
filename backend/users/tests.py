@@ -1,7 +1,9 @@
 from django.test import TestCase
 from django.test import Client
+from django.test.utils import CaptureQueriesContext
 from rest_framework.test import APIClient
 from django.db.utils import IntegrityError
+from django.db import connection
 from .models import Costureira, Servico, Cliente, Produto
 
 
@@ -18,7 +20,7 @@ class TestCostureira(TestCase):
         )
         costureira = Costureira.objects.get(nome="Alixw")
         self.assertEqual(costureira.observacoes, "")
-        
+
     def test_duplica_costureira(self):
         Costureira.objects.create(
             nome="Alice",
@@ -115,7 +117,7 @@ class ServicoAPITest(TestCase):
             nome="Costureira Teste"
         )
         self.produto = Produto.objects.create(
-            nome="Cortina", 
+            nome="Cortina",
             valor_base=150.00
         )
 
@@ -199,3 +201,41 @@ class ServicoAPITest(TestCase):
         response = self.client.delete(f'/api/servicos/{servico.id}/')
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Servico.objects.count(), 0)
+
+
+class ServicoQueryOptimizationTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.cliente = Cliente.objects.create(
+            nome="Cliente Performance",
+            contato="(71) 90000-0000",
+        )
+        self.costureira = Costureira.objects.create(
+            nome="Costureira Performance",
+            ativo=True,
+        )
+
+        produtos = [
+            Produto.objects.create(nome=f"Produto {idx}", valor_base=100 + idx)
+            for idx in range(1, 4)
+        ]
+
+        for idx in range(1, 16):
+            servico = Servico.objects.create(
+                cliente=self.cliente,
+                costureira=self.costureira,
+                quantidade=idx,
+                complexidade=(idx % 4) + 1,
+                data_envio=f"2026-07-{(idx % 28) + 1:02d}",
+                prazo_entrega=f"2026-08-{(idx % 28) + 1:02d}",
+                valor=100.00 + idx,
+            )
+            servico.produto.add(produtos[idx % len(produtos)])
+
+    def test_servicos_list_keeps_query_count_bounded(self):
+        with CaptureQueriesContext(connection) as queries:
+            response = self.client.get('/api/servicos/')
+
+        self.assertEqual(response.status_code, 200)
+        # select_related + prefetch_related should avoid query growth with payload size.
+        self.assertLessEqual(len(queries), 8)
