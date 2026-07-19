@@ -6,6 +6,7 @@ import uuid
 
 from django.conf import settings
 
+from .cache import invalidate_dashboard_snapshot_cache
 from .metrics import metrics_registry
 
 financial_logger = logging.getLogger('financial_api')
@@ -103,6 +104,9 @@ class FinancialApiObservabilityMiddleware:
             is_financial=is_financial,
             performance_alert=performance_alert,
         )
+
+        if is_financial and method in {'POST', 'PUT', 'PATCH', 'DELETE'}:
+            invalidate_dashboard_snapshot_cache()
 
         response['X-Request-ID'] = request_id
         return response

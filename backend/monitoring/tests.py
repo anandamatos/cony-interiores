@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.cache import caches
 from django.test import TestCase, override_settings
 from django.test.client import RequestFactory
 from unittest.mock import patch
@@ -71,6 +72,47 @@ class MonitoringApiTests(TestCase):
         self.assertEqual(swagger_response.status_code, 200)
         self.assertIn('openapi', openapi_response.json())
 
+    @override_settings(
+        FINANCIAL_DASHBOARD_CACHE_ENABLED=True,
+        FINANCIAL_DASHBOARD_CACHE_TTL_SECONDS=60,
+        FINANCIAL_DASHBOARD_CACHE_INVALIDATE_ON_WRITE=True,
+    )
+    def test_monitoring_dashboard_uses_cache_between_requests(self):
+        caches['financial_dashboard'].clear()
+
+        login = self.client.post(
+            '/api/auth/token/',
+            {'username': self.user.username, 'password': self.password},
+            content_type='application/json',
+        )
+        token = login.json()['access']
+
+        with patch('monitoring.views.metrics_registry.snapshot') as snapshot_mock:
+            snapshot_mock.return_value = {
+                'uptime_seconds': 1,
+                'requests_total': 10,
+                'financial_requests_total': 8,
+                'performance_alerts_total': 0,
+                'latency_average_ms': 20.0,
+                'latency_samples_window_size': 10,
+                'recent_performance_alerts': [],
+            }
+
+            first_response = self.client.get(
+                '/api/internal/monitoring/dashboard/',
+                HTTP_AUTHORIZATION=f'Bearer {token}',
+            )
+            second_response = self.client.get(
+                '/api/internal/monitoring/dashboard/',
+                HTTP_AUTHORIZATION=f'Bearer {token}',
+            )
+
+        self.assertEqual(first_response.status_code, 200)
+        self.assertEqual(second_response.status_code, 200)
+        self.assertEqual(snapshot_mock.call_count, 1)
+        self.assertEqual(first_response.json()['cache']['source'], 'miss')
+        self.assertEqual(second_response.json()['cache']['source'], 'hit')
+
 
 class MonitoringMiddlewareTests(TestCase):
     def setUp(self):
@@ -93,3 +135,20 @@ class MonitoringMiddlewareTests(TestCase):
         kwargs = observe_request.call_args.kwargs
         self.assertEqual(kwargs['status_code'], 500)
         self.assertTrue(kwargs['is_financial'])
+
+    @override_settings(FINANCIAL_DASHBOARD_CACHE_ENABLED=True, FINANCIAL_DASHBOARD_CACHE_INVALIDATE_ON_WRITE=True)
+    def test_middleware_invalidates_cache_on_financial_write(self):
+        request = self.factory.post('/api/financial/payments/simulate/')
+
+        def ok_response(_request):
+            class _Response(dict):
+                status_code = 200
+
+            return _Response()
+
+        middleware = FinancialApiObservabilityMiddleware(ok_response)
+
+        with patch('monitoring.middleware.invalidate_dashboard_snapshot_cache') as invalidate_cache:
+            middleware(request)
+
+        invalidate_cache.assert_called_once()
