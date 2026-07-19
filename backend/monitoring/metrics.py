@@ -22,10 +22,32 @@ class MonitoringMetrics:
         self._query_latency_samples_ms = deque(maxlen=max_samples)
         self._query_request_count = 0
         self._slow_query_count = 0
+        self._dashboard_load_samples_ms = deque(maxlen=max_samples)
+        self._chart_response_samples_ms = deque(maxlen=max_samples)
+        self._filter_apply_samples_ms = deque(maxlen=max_samples)
+        self._export_response_samples_ms = deque(maxlen=max_samples)
 
     @staticmethod
     def _is_query_kpi_path(path: str) -> bool:
         return path.startswith('/api/financial/') or path.startswith('/api/servicos/')
+
+    @staticmethod
+    def _is_dashboard_load_path(path: str) -> bool:
+        return path.startswith('/api/internal/monitoring/dashboard/')
+
+    @staticmethod
+    def _is_chart_response_path(path: str) -> bool:
+        return path.startswith('/api/financial/')
+
+    @staticmethod
+    def _is_filter_apply_path(path: str) -> bool:
+        if not path.startswith('/api/servicos/'):
+            return False
+        return any(token in path for token in ('search=', 'ordering=', 'cliente=', 'costureira='))
+
+    @staticmethod
+    def _is_export_path(path: str) -> bool:
+        return 'export' in path
 
     @staticmethod
     def _percentile(values: deque[float], p: float) -> float:
@@ -58,6 +80,18 @@ class MonitoringMetrics:
                 if duration_ms >= slow_threshold_ms:
                     self._slow_query_count += 1
 
+            if self._is_dashboard_load_path(path):
+                self._dashboard_load_samples_ms.append(duration_ms)
+
+            if self._is_chart_response_path(path):
+                self._chart_response_samples_ms.append(duration_ms)
+
+            if self._is_filter_apply_path(path):
+                self._filter_apply_samples_ms.append(duration_ms)
+
+            if self._is_export_path(path):
+                self._export_response_samples_ms.append(duration_ms)
+
             if performance_alert:
                 self._performance_alert_count += 1
                 self._last_alerts.appendleft(
@@ -87,6 +121,18 @@ class MonitoringMetrics:
             query_p95 = self._percentile(self._query_latency_samples_ms, 95)
             query_p99 = self._percentile(self._query_latency_samples_ms, 99)
 
+            dashboard_load_avg = sum(self._dashboard_load_samples_ms) / len(self._dashboard_load_samples_ms) if self._dashboard_load_samples_ms else 0.0
+            dashboard_load_p95 = self._percentile(self._dashboard_load_samples_ms, 95)
+
+            chart_response_avg = sum(self._chart_response_samples_ms) / len(self._chart_response_samples_ms) if self._chart_response_samples_ms else 0.0
+            chart_response_p95 = self._percentile(self._chart_response_samples_ms, 95)
+
+            filter_apply_avg = sum(self._filter_apply_samples_ms) / len(self._filter_apply_samples_ms) if self._filter_apply_samples_ms else 0.0
+            filter_apply_p95 = self._percentile(self._filter_apply_samples_ms, 95)
+
+            export_response_avg = sum(self._export_response_samples_ms) / len(self._export_response_samples_ms) if self._export_response_samples_ms else 0.0
+            export_response_p95 = self._percentile(self._export_response_samples_ms, 95)
+
             target_avg_ms = float(getattr(settings, 'FINANCIAL_QUERY_TARGET_AVG_MS', 150))
             target_slow_pct = float(getattr(settings, 'FINANCIAL_QUERY_TARGET_SLOW_PERCENT', 5))
             target_p95_ms = float(getattr(settings, 'FINANCIAL_QUERY_TARGET_P95_MS', 300))
@@ -96,6 +142,11 @@ class MonitoringMetrics:
             memory_mb = float(getattr(settings, 'FINANCIAL_QUERY_RESOURCE_MEMORY_MB', 0))
             target_cpu_pct = float(getattr(settings, 'FINANCIAL_QUERY_TARGET_CPU_PERCENT', 80))
             target_memory_mb = float(getattr(settings, 'FINANCIAL_QUERY_TARGET_MEMORY_MB', 1024))
+
+            dashboard_target_load_ms = float(getattr(settings, 'FINANCIAL_DASHBOARD_TARGET_LOAD_MS', 400))
+            dashboard_target_chart_ms = float(getattr(settings, 'FINANCIAL_DASHBOARD_TARGET_CHART_MS', 500))
+            dashboard_target_filter_ms = float(getattr(settings, 'FINANCIAL_DASHBOARD_TARGET_FILTER_MS', 350))
+            dashboard_target_export_ms = float(getattr(settings, 'FINANCIAL_DASHBOARD_TARGET_EXPORT_MS', 1200))
 
             kpi_alerts = [
                 {
@@ -136,6 +187,33 @@ class MonitoringMetrics:
                 },
             ]
 
+            dashboard_response_alerts = [
+                {
+                    'kpi': 'dashboard_load_ms',
+                    'current': round(dashboard_load_avg, 2),
+                    'target': dashboard_target_load_ms,
+                    'status': 'ok' if dashboard_load_avg <= dashboard_target_load_ms else 'breach',
+                },
+                {
+                    'kpi': 'chart_response_ms',
+                    'current': round(chart_response_avg, 2),
+                    'target': dashboard_target_chart_ms,
+                    'status': 'ok' if chart_response_avg <= dashboard_target_chart_ms else 'breach',
+                },
+                {
+                    'kpi': 'filter_apply_ms',
+                    'current': round(filter_apply_avg, 2),
+                    'target': dashboard_target_filter_ms,
+                    'status': 'ok' if filter_apply_avg <= dashboard_target_filter_ms else 'breach',
+                },
+                {
+                    'kpi': 'export_response_ms',
+                    'current': round(export_response_avg, 2),
+                    'target': dashboard_target_export_ms,
+                    'status': 'ok' if export_response_avg <= dashboard_target_export_ms else 'breach',
+                },
+            ]
+
             uptime_seconds = int(time() - self._started_at)
             return {
                 'uptime_seconds': uptime_seconds,
@@ -164,6 +242,23 @@ class MonitoringMetrics:
                         'resource_memory_mb': target_memory_mb,
                     },
                     'alerts': kpi_alerts,
+                },
+                'dashboard_response_kpis': {
+                    'dashboard_load_ms': round(dashboard_load_avg, 2),
+                    'dashboard_load_p95_ms': round(dashboard_load_p95, 2),
+                    'chart_response_ms': round(chart_response_avg, 2),
+                    'chart_response_p95_ms': round(chart_response_p95, 2),
+                    'filter_apply_ms': round(filter_apply_avg, 2),
+                    'filter_apply_p95_ms': round(filter_apply_p95, 2),
+                    'export_response_ms': round(export_response_avg, 2),
+                    'export_response_p95_ms': round(export_response_p95, 2),
+                    'targets': {
+                        'dashboard_load_ms': dashboard_target_load_ms,
+                        'chart_response_ms': dashboard_target_chart_ms,
+                        'filter_apply_ms': dashboard_target_filter_ms,
+                        'export_response_ms': dashboard_target_export_ms,
+                    },
+                    'alerts': dashboard_response_alerts,
                 },
             }
 

@@ -43,6 +43,41 @@ class MonitoringApiTests(TestCase):
         self.assertGreaterEqual(data['performance_alerts_total'], 1)
         self.assertIn('query_kpis', data)
         self.assertIn('alerts', data['query_kpis'])
+        self.assertIn('dashboard_response_kpis', data)
+        self.assertIn('alerts', data['dashboard_response_kpis'])
+
+    @override_settings(
+        FINANCIAL_DASHBOARD_TARGET_LOAD_MS=0,
+        FINANCIAL_DASHBOARD_TARGET_CHART_MS=0,
+        FINANCIAL_DASHBOARD_TARGET_FILTER_MS=0,
+        FINANCIAL_DASHBOARD_TARGET_EXPORT_MS=0,
+    )
+    def test_dashboard_exposes_response_time_kpi_alerts(self):
+        self.client.post(
+            '/api/financial/payments/simulate/?simulate_delay_ms=5',
+            {'amount': 100},
+            content_type='application/json',
+        )
+        self.client.get('/api/servicos/?ordering=-data_envio&search=urgente')
+
+        login = self.client.post(
+            '/api/auth/token/',
+            {'username': self.user.username, 'password': self.password},
+            content_type='application/json',
+        )
+        token = login.json()['access']
+
+        dashboard = self.client.get(
+            '/api/internal/monitoring/dashboard/',
+            HTTP_AUTHORIZATION=f'Bearer {token}',
+        )
+
+        self.assertEqual(dashboard.status_code, 200)
+        response_kpis = dashboard.json()['dashboard_response_kpis']
+        alerts = {item['kpi']: item['status'] for item in response_kpis['alerts']}
+        self.assertEqual(alerts['dashboard_load_ms'], 'breach')
+        self.assertEqual(alerts['chart_response_ms'], 'breach')
+        self.assertEqual(alerts['filter_apply_ms'], 'breach')
 
     @override_settings(
         FINANCIAL_QUERY_SLOW_THRESHOLD_MS=1,
@@ -150,6 +185,23 @@ class MonitoringApiTests(TestCase):
                         'index_usage_percent': 90,
                         'resource_cpu_percent': 80,
                         'resource_memory_mb': 1024,
+                    },
+                    'alerts': [],
+                },
+                'dashboard_response_kpis': {
+                    'dashboard_load_ms': 10.0,
+                    'dashboard_load_p95_ms': 15.0,
+                    'chart_response_ms': 12.0,
+                    'chart_response_p95_ms': 18.0,
+                    'filter_apply_ms': 9.0,
+                    'filter_apply_p95_ms': 13.0,
+                    'export_response_ms': 0.0,
+                    'export_response_p95_ms': 0.0,
+                    'targets': {
+                        'dashboard_load_ms': 400,
+                        'chart_response_ms': 500,
+                        'filter_apply_ms': 350,
+                        'export_response_ms': 1200,
                     },
                     'alerts': [],
                 },

@@ -97,6 +97,7 @@ Implementar o controle financeiro e planejamento de pagamentos, permitindo sumar
 | ID | Tarefa | Responsável | Status |
 |----|--------|-------------|--------|
 | MEASUREMENT-M2-FND-001 | Definir KPIs de performance de queries financeiras | @lobaque29 | ✅ Concluida |
+| MEASUREMENT-M2-FND-010 | Definir KPIs de tempo de resposta de dashboards financeiros | @lobaque29 | ✅ Concluida |
 | MEASUREMENT-M2-CORE-001 | Definir KPIs de precisão de cálculos financeiros | @karinakaduda19-cyber | ⏳ Pendente |
 | MEASUREMENT-M2-UX-001 | Definir KPIs de usabilidade do dashboard financeiro | @anandamatos | ⏳ Pendente |
 | MEASUREMENT-M2-UX-002 | Definir métricas de eficiência do planejamento | @anandamatos | ⏳ Pendente |

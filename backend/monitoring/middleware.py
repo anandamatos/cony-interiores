@@ -23,7 +23,7 @@ class FinancialApiObservabilityMiddleware:
         started_at = time.perf_counter()
         request_id = request.headers.get('X-Request-ID') or str(uuid.uuid4())
         request.request_id = request_id
-        path = request.path
+        path = request.get_full_path()
         method = request.method
         is_financial = path.startswith('/api/financial/')
         threshold_ms = getattr(settings, 'FINANCIAL_API_ALERT_THRESHOLD_MS', 800)
