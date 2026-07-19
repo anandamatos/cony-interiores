@@ -41,6 +41,43 @@ class MonitoringApiTests(TestCase):
         data = dashboard.json()
         self.assertGreaterEqual(data['financial_requests_total'], 1)
         self.assertGreaterEqual(data['performance_alerts_total'], 1)
+        self.assertIn('query_kpis', data)
+        self.assertIn('alerts', data['query_kpis'])
+
+    @override_settings(
+        FINANCIAL_QUERY_SLOW_THRESHOLD_MS=1,
+        FINANCIAL_QUERY_TARGET_SLOW_PERCENT=0,
+        FINANCIAL_QUERY_TARGET_AVG_MS=1,
+        FINANCIAL_QUERY_TARGET_P95_MS=1,
+    )
+    def test_dashboard_exposes_query_kpi_alert_status(self):
+        self.client.post(
+            '/api/financial/payments/simulate/?simulate_delay_ms=5',
+            {'amount': 100},
+            content_type='application/json',
+        )
+
+        login = self.client.post(
+            '/api/auth/token/',
+            {'username': self.user.username, 'password': self.password},
+            content_type='application/json',
+        )
+        token = login.json()['access']
+
+        dashboard = self.client.get(
+            '/api/internal/monitoring/dashboard/',
+            HTTP_AUTHORIZATION=f'Bearer {token}',
+        )
+
+        self.assertEqual(dashboard.status_code, 200)
+        payload = dashboard.json()
+        kpis = payload['query_kpis']
+        self.assertGreaterEqual(kpis['query_requests_total'], 1)
+        self.assertGreaterEqual(kpis['slow_queries_total'], 1)
+        self.assertGreater(kpis['slow_query_percent'], 0)
+
+        alert_statuses = {item['kpi']: item['status'] for item in kpis['alerts']}
+        self.assertEqual(alert_statuses['slow_query_percent'], 'breach')
 
     def test_dashboard_rejects_non_staff_user(self):
         non_staff = get_user_model().objects.create_user(
@@ -96,6 +133,26 @@ class MonitoringApiTests(TestCase):
                 'latency_average_ms': 20.0,
                 'latency_samples_window_size': 10,
                 'recent_performance_alerts': [],
+                'query_kpis': {
+                    'avg_response_ms': 12.0,
+                    'p95_response_ms': 18.0,
+                    'p99_response_ms': 25.0,
+                    'slow_query_percent': 0.0,
+                    'slow_queries_total': 0,
+                    'query_requests_total': 8,
+                    'index_usage_percent': 90.0,
+                    'resource_cpu_percent': 0.0,
+                    'resource_memory_mb': 0.0,
+                    'targets': {
+                        'avg_response_ms': 150,
+                        'slow_query_percent': 5,
+                        'p95_response_ms': 300,
+                        'index_usage_percent': 90,
+                        'resource_cpu_percent': 80,
+                        'resource_memory_mb': 1024,
+                    },
+                    'alerts': [],
+                },
             }
 
             first_response = self.client.get(
