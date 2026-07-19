@@ -85,6 +85,7 @@ Implementar o controle financeiro e planejamento de pagamentos, permitindo sumar
 |----|--------|-------------|--------|
 | DISCOVERY-M2-FND-001 | Validar arquitetura de cache para dashboards financeiros | @lobaque29 | ✅ Concluida |
 | DISCOVERY-M2-FND-002 | Definir estrategia de otimizacao de queries financeiras | @lobaque29 | ✅ Concluida |
+| DISCOVERY-M2-FND-003 | Configurar ambiente de testes de performance | @lobaque29 | ✅ Concluida |
 | DISCOVERY-M2-CORE-001 | Validar regras de cálculo de pagamentos | @karinakaduda19-cyber | ⏳ Pendente |
 | DISCOVERY-M2-UX-001 | Validar protótipos do dashboard financeiro com cliente | @anandamatos | ⏳ Pendente |
 | DISCOVERY-M2-UX-002 | Validar fluxo de planejamento financeiro | @anandamatos | ⏳ Pendente |
