@@ -68,8 +68,6 @@ class TestPagamentoModel(TestCase):
             data_vencimento="2026-08-01",
         )
         self.assertEqual(pagamento.status, "pendente")
-        self.assertEqual(pagamento.numero_parcela, 1)
-        self.assertEqual(pagamento.total_parcelas, 1)
         self.assertIsNone(pagamento.data_pagamento)
 
     def test_str_formata_corretamente(self):
@@ -77,11 +75,8 @@ class TestPagamentoModel(TestCase):
             servico=self.servico,
             valor=150.00,
             data_vencimento="2026-08-01",
-            numero_parcela=2,
-            total_parcelas=3,
         )
         texto = str(pagamento)
-        self.assertIn("2/3", texto)
         self.assertIn("150", texto)
         self.assertIn("pendente", texto)
 
@@ -146,24 +141,11 @@ class TestPagamentoSerializer(TestCase):
         self.assertFalse(serializer.is_valid())
         self.assertIn("valor", serializer.errors)
 
-    def test_rejeita_numero_parcela_maior_que_total(self):
-        dados = {
-            "servico": self.servico.id,
-            "valor": 100,
-            "data_vencimento": "2026-08-01",
-            "numero_parcela": 5,
-            "total_parcelas": 3,
-        }
-        serializer = PagamentoSerializer(data=dados)
-        self.assertFalse(serializer.is_valid())
-
     def test_aceita_dados_validos(self):
         dados = {
             "servico": self.servico.id,
             "valor": 100,
             "data_vencimento": "2026-08-01",
-            "numero_parcela": 1,
-            "total_parcelas": 3,
         }
         serializer = PagamentoSerializer(data=dados)
         self.assertTrue(serializer.is_valid(), serializer.errors)

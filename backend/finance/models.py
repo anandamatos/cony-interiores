@@ -7,10 +7,6 @@ class Pagamento(models.Model):
     """
     Representa o pagamento (ou parcela de pagamento) de um Servico.
 
-    LIMITAÇÃO/DECISÃO A CONFIRMAR COM O TIME: os campos numero_parcela e
-    total_parcelas foram incluídos como um "extra". Se o time decidir que não precisa de parcelamento
-    por enquanto, é só remover esses dois campos e rodar makemigrations
-    de novo — não afeta o resto do model.
     """
 
     STATUS_CHOICES = [
@@ -34,10 +30,6 @@ class Pagamento(models.Model):
         default="pendente",
     )
 
-    # Campos de parcelamento (a confirmar com o time)
-    numero_parcela = models.PositiveIntegerField(default=1)
-    total_parcelas = models.PositiveIntegerField(default=1)
-
     observacoes = models.TextField(blank=True)
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
@@ -53,7 +45,4 @@ class Pagamento(models.Model):
         ordering = ["data_vencimento"]
 
     def __str__(self):
-        return (
-            f"Pagamento {self.numero_parcela}/{self.total_parcelas} "
-            f"- {self.servico} - R$ {self.valor} ({self.status})"
-        )
+        return f"Pagamento - {self.servico} - R$ {self.valor} ({self.status})"
