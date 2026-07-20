@@ -8,10 +8,12 @@ router.register(r'costureiras', CostureiraViewSet, basename='costureira')
 router.register(r'servicos', ServicoViewSet, basename='servico')
 router.register(r'clientes', ClienteViewSet, basename='cliente')
 router.register(r'produtos', ProdutoViewSet, basename='produto')
+router.register(r'metricas', MetricaViewSet, basename='metrica') #novo
 
 urlpatterns = [
     path('hello/', hello),
     path('', home),
+    path('', include(router.urls)),
 ]
 
 # Incluir as rotas do router
