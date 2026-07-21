@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MoreVertical, Plus } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
@@ -11,6 +11,7 @@ import { deleteSeamstress, getSeamstresses, updateSeamstress } from '../../servi
 
 const Seamstresses = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [seamstresses, setSeamstresses] = useState([]);
@@ -44,7 +45,7 @@ const Seamstresses = () => {
       await loadSeamstresses();
     };
     fetchData();
-  }, []);
+  }, [location.key]);
 
   const normalizedSeamstresses = useMemo(() => {
     return seamstresses.map((item) => ({
