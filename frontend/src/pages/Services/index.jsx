@@ -71,30 +71,6 @@ const Services = () => {
 
   const toIsoDate = (date) => date.toISOString().split('T')[0];
 
-  const handleSetPending = async (serviceId) => {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    try {
-      await serviceService.update(serviceId, { prazo_entrega: toIsoDate(yesterday) });
-      await loadServices();
-    } catch (error) {
-      showError('Não foi possível atualizar o status do serviço.');
-    }
-  };
-
-  const handleSetActive = async (serviceId) => {
-    const nextWeek = new Date();
-    nextWeek.setDate(nextWeek.getDate() + 7);
-
-    try {
-      await serviceService.update(serviceId, { prazo_entrega: toIsoDate(nextWeek) });
-      await loadServices();
-    } catch (error) {
-      showError('Não foi possível atualizar o status do serviço.');
-    }
-  };
-
   const handleDelete = async (service) => {
     const confirmed = window.confirm(`Excluir serviço de ${service.client}?`);
     if (!confirmed) return;
