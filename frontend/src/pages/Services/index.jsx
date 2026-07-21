@@ -5,6 +5,7 @@ import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
+import Alert from '../../components/atoms/Alert';
 import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
 import { serviceService } from '../../services/serviceService';
@@ -17,6 +18,14 @@ const Services = () => {
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
+  const [feedback, setFeedback] = useState(null);
+
+  const showError = (message) => {
+    setFeedback({ type: 'error', message, title: 'Erro' });
+    setTimeout(() => setFeedback(null), 5000);
+  };
+
+  const clearFeedback = () => setFeedback(null);
 
   const deriveStatus = (service) => {
     if (!service?.prazo_entrega) return 'active';
@@ -70,7 +79,7 @@ const Services = () => {
       await serviceService.update(serviceId, { prazo_entrega: toIsoDate(yesterday) });
       await loadServices();
     } catch (error) {
-      alert('Não foi possível atualizar o status do serviço.');
+      showError('Não foi possível atualizar o status do serviço.');
     }
   };
 
@@ -82,7 +91,7 @@ const Services = () => {
       await serviceService.update(serviceId, { prazo_entrega: toIsoDate(nextWeek) });
       await loadServices();
     } catch (error) {
-      alert('Não foi possível atualizar o status do serviço.');
+      showError('Não foi possível atualizar o status do serviço.');
     }
   };
 
@@ -94,7 +103,7 @@ const Services = () => {
       await serviceService.delete(service.id);
       await loadServices();
     } catch (error) {
-      alert('Não foi possível excluir o serviço.');
+      showError('Não foi possível excluir o serviço.');
     }
   };
 
@@ -137,6 +146,16 @@ const Services = () => {
 
   return (
     <main className="flex-1 p-6 sm:p-8 lg:p-10">
+      {feedback && (
+        <Alert
+          type={feedback.type}
+          title={feedback.title}
+          message={feedback.message}
+          onClose={clearFeedback}
+          className="mb-6"
+        />
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>

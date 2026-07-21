@@ -5,6 +5,7 @@ import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
+import Alert from '../../components/atoms/Alert';
 import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
 import { deleteSeamstress, getSeamstresses, updateSeamstress } from '../../services/seamstressService';
@@ -17,6 +18,14 @@ const Seamstresses = () => {
   const [seamstresses, setSeamstresses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
+  const [feedback, setFeedback] = useState(null);
+
+  const showError = (message) => {
+    setFeedback({ type: 'error', message, title: 'Erro' });
+    setTimeout(() => setFeedback(null), 5000);
+  };
+
+  const clearFeedback = () => setFeedback(null);
 
   const filterOptions = [
     { value: 'all', label: 'Todos', variant: 'all' },
@@ -69,7 +78,7 @@ const Seamstresses = () => {
       await updateSeamstress(seamstress.id, { ativa: seamstress.status !== 'active' });
       await loadSeamstresses();
     } catch (error) {
-      alert(error?.message || 'Não foi possível atualizar o status.');
+      showError(error?.message || 'Não foi possível atualizar o status.');
     }
   };
 
@@ -81,7 +90,7 @@ const Seamstresses = () => {
       await deleteSeamstress(seamstress.id);
       await loadSeamstresses();
     } catch (error) {
-      alert('Não foi possível excluir a costureira.');
+      showError('Não foi possível excluir a costureira.');
     }
   };
 
@@ -95,6 +104,16 @@ const Seamstresses = () => {
 
   return (
     <main className="flex-1 p-6 sm:p-8 lg:p-10">
+      {feedback && (
+        <Alert
+          type={feedback.type}
+          title={feedback.title}
+          message={feedback.message}
+          onClose={clearFeedback}
+          className="mb-6"
+        />
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
