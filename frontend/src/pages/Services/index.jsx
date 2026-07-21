@@ -7,7 +7,7 @@ import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
 import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
-import { deleteService, getServices, updateService } from '../../services/serviceService';
+import { serviceService } from '../../services/serviceService';
 
 const Services = () => {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ const Services = () => {
     try {
       setIsLoading(true);
       setLoadError('');
-      const data = await getServices();
+      const data = await serviceService.getAll();
       setServices(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Erro ao carregar serviços:', error);
@@ -68,7 +68,7 @@ const Services = () => {
     yesterday.setDate(yesterday.getDate() - 1);
 
     try {
-      await updateService(serviceId, { prazo_entrega: toIsoDate(yesterday) });
+      await serviceService.update(serviceId, { prazo_entrega: toIsoDate(yesterday) });
       setActionMenuOpenId(null);
       await loadServices();
     } catch (error) {
@@ -81,7 +81,7 @@ const Services = () => {
     nextWeek.setDate(nextWeek.getDate() + 7);
 
     try {
-      await updateService(serviceId, { prazo_entrega: toIsoDate(nextWeek) });
+      await serviceService.update(serviceId, { prazo_entrega: toIsoDate(nextWeek) });
       setActionMenuOpenId(null);
       await loadServices();
     } catch (error) {
@@ -94,7 +94,7 @@ const Services = () => {
     if (!confirmed) return;
 
     try {
-      await deleteService(service.id);
+      await serviceService.delete(service.id);
       setActionMenuOpenId(null);
       await loadServices();
     } catch (error) {
