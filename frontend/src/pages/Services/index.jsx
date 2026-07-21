@@ -7,7 +7,7 @@ import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
 import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
-import { getServices } from '../../services/serviceService';
+import { deleteService, getServices, updateService } from '../../services/serviceService';
 
 const Services = () => {
   const navigate = useNavigate();
@@ -17,6 +17,7 @@ const Services = () => {
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
+  const [actionMenuOpenId, setActionMenuOpenId] = useState(null);
 
   const deriveStatus = (service) => {
     if (!service?.prazo_entrega) return 'active';
@@ -38,24 +39,68 @@ const Services = () => {
     return parsed.toLocaleDateString('pt-BR');
   };
 
-  useEffect(() => {
-    const loadServices = async () => {
-      try {
-        setIsLoading(true);
-        setLoadError('');
-        const data = await getServices();
-        setServices(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error('Erro ao carregar serviços:', error);
-        setLoadError('Não foi possível carregar os serviços.');
-        setServices([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const loadServices = async () => {
+    try {
+      setIsLoading(true);
+      setLoadError('');
+      const data = await getServices();
+      setServices(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Erro ao carregar serviços:', error);
+      setLoadError('Não foi possível carregar os serviços.');
+      setServices([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    loadServices();
+  useEffect(() => {
+    const fetchData = async () => {
+      await loadServices();
+    };
+    fetchData();
   }, [location.key]);
+
+  const toIsoDate = (date) => date.toISOString().split('T')[0];
+
+  const handleSetPending = async (serviceId) => {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    try {
+      await updateService(serviceId, { prazo_entrega: toIsoDate(yesterday) });
+      setActionMenuOpenId(null);
+      await loadServices();
+    } catch (error) {
+      alert('Não foi possível atualizar o status do serviço.');
+    }
+  };
+
+  const handleSetActive = async (serviceId) => {
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+
+    try {
+      await updateService(serviceId, { prazo_entrega: toIsoDate(nextWeek) });
+      setActionMenuOpenId(null);
+      await loadServices();
+    } catch (error) {
+      alert('Não foi possível atualizar o status do serviço.');
+    }
+  };
+
+  const handleDelete = async (service) => {
+    const confirmed = window.confirm(`Excluir serviço de ${service.client}?`);
+    if (!confirmed) return;
+
+    try {
+      await deleteService(service.id);
+      setActionMenuOpenId(null);
+      await loadServices();
+    } catch (error) {
+      alert('Não foi possível excluir o serviço.');
+    }
+  };
 
   const filterOptions = [
     { value: 'all', label: 'Todos', variant: 'all' },
@@ -171,9 +216,50 @@ const Services = () => {
                     <Typography variant="caption" className="text-gray-400">
                       {service.date}
                     </Typography>
-                    <Button variant="ghost" size="sm" className="!p-2">
+                    <div className="relative">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="!p-2"
+                        onClick={() =>
+                          setActionMenuOpenId((currentId) =>
+                            currentId === service.id ? null : service.id
+                          )
+                        }
+                        aria-label={`Abrir ações para serviço de ${service.client}`}
+                      >
                       <MoreVertical className="w-4 h-4" />
-                    </Button>
+                      </Button>
+
+                      {actionMenuOpenId === service.id && (
+                        <div className="absolute right-0 mt-2 w-44 rounded-md border border-gray/30 bg-white shadow-dropdown z-20">
+                          {service.status === 'active' ? (
+                            <button
+                              type="button"
+                              className="w-full text-left px-3 py-2 text-sm hover:bg-offWhite"
+                              onClick={() => handleSetPending(service.id)}
+                            >
+                              Marcar como pendente
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              className="w-full text-left px-3 py-2 text-sm hover:bg-offWhite"
+                              onClick={() => handleSetActive(service.id)}
+                            >
+                              Marcar como ativo
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            className="w-full text-left px-3 py-2 text-sm text-danger hover:bg-offWhite"
+                            onClick={() => handleDelete(service)}
+                          >
+                            Excluir serviço
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </Card>
