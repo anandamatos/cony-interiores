@@ -23,6 +23,37 @@ const apiProxyTarget = resolveApiProxyTarget()
 
 export default defineConfig({
   plugins: [react()],
+  build: {
+    target: 'es2020',
+    chunkSizeWarningLimit: 250,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) {
+            return undefined;
+          }
+
+          if (id.includes('chart.js') || id.includes('react-chartjs-2')) {
+            return 'charts-vendor';
+          }
+
+          if (
+            id.includes('react') ||
+            id.includes('react-dom') ||
+            id.includes('react-router-dom')
+          ) {
+            return 'react-vendor';
+          }
+
+          if (id.includes('lucide-react')) {
+            return 'ui-vendor';
+          }
+
+          return 'vendor';
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
