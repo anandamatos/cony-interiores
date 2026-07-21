@@ -10,7 +10,7 @@ export const fetchSeamstresses = async () => {
   try {
     const response = await api.get('/costureiras/');
     return response.data;
-  } catch (error) {
+  } catch {
     console.warn('API de costureiras não disponível, usando dados mockados');
     return mockSeamstresses;
   }
@@ -20,7 +20,7 @@ export const createSeamstress = async (data) => {
   try {
     const response = await api.post('/costureiras/', data);
     return response.data;
-  } catch (error) {
+  } catch {
     console.warn('API de costureiras não disponível, simulando criação');
     const newSeamstress = { id: Date.now(), ...data };
     mockSeamstresses.push(newSeamstress);
