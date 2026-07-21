@@ -1,25 +1,31 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
+import Alert from '../../components/atoms/Alert';
 import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
+import { deleteSeamstress, getSeamstresses, updateSeamstress } from '../../services/seamstressService';
 
 const Seamstresses = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [seamstresses, setSeamstresses] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const [feedback, setFeedback] = useState(null);
 
-  // Mock data
-  const mockSeamstresses = [
-    { id: 1, name: 'Sirlene', specialty: 'Costura Geral', status: 'active', orders: 4 },
-    { id: 2, name: 'Mariana', specialty: 'Bordado', status: 'active', orders: 3 },
-    { id: 3, name: 'Joana', specialty: 'Modelagem', status: 'inactive', orders: 2 },
-    { id: 4, name: 'Ana Paula', specialty: 'Acabamento', status: 'active', orders: 1 },
-  ];
+  const showError = (message) => {
+    setFeedback({ type: 'error', message, title: 'Erro' });
+    setTimeout(() => setFeedback(null), 5000);
+  };
+
+  const clearFeedback = () => setFeedback(null);
 
   const filterOptions = [
     { value: 'all', label: 'Todos', variant: 'all' },
@@ -27,12 +33,66 @@ const Seamstresses = () => {
     { value: 'inactive', label: 'Inativos', variant: 'inactive' },
   ];
 
-  const filteredSeamstresses = mockSeamstresses.filter((s) => {
+  const loadSeamstresses = async () => {
+    try {
+      setIsLoading(true);
+      setLoadError('');
+      const data = await getSeamstresses();
+      setSeamstresses(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Erro ao carregar costureiras:', error);
+      setLoadError('Não foi possível carregar as costureiras.');
+      setSeamstresses([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await loadSeamstresses();
+    };
+    fetchData();
+  }, [location.key]);
+
+  const normalizedSeamstresses = useMemo(() => {
+    return seamstresses.map((item) => ({
+      id: item.id,
+      name: item.nome,
+      specialty: item.especialidade || 'Especialidade não informada',
+      status: item.ativa ? 'active' : 'inactive',
+      orders: item.capacidadeBaseSemanal || 0,
+    }));
+  }, [seamstresses]);
+
+  const filteredSeamstresses = normalizedSeamstresses.filter((s) => {
     const matchesFilter = filter === 'all' || s.status === filter;
-    const matchesSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          s.specialty.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.specialty.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesFilter && matchesSearch;
   });
+
+  const handleToggleStatus = async (seamstress) => {
+    try {
+      await updateSeamstress(seamstress.id, { ativa: seamstress.status !== 'active' });
+      await loadSeamstresses();
+    } catch (error) {
+      showError(error?.message || 'Não foi possível atualizar o status.');
+    }
+  };
+
+  const handleDelete = async (seamstress) => {
+    const confirmed = window.confirm(`Excluir costureira ${seamstress.name}?`);
+    if (!confirmed) return;
+
+    try {
+      await deleteSeamstress(seamstress.id);
+      await loadSeamstresses();
+    } catch (error) {
+      showError('Não foi possível excluir a costureira.');
+    }
+  };
 
   const getStatusBadge = (status) => {
     const variants = {
@@ -44,6 +104,16 @@ const Seamstresses = () => {
 
   return (
     <main className="flex-1 p-6 sm:p-8 lg:p-10">
+      {feedback && (
+        <Alert
+          type={feedback.type}
+          title={feedback.title}
+          message={feedback.message}
+          onClose={clearFeedback}
+          className="mb-6"
+        />
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
@@ -74,7 +144,23 @@ const Seamstresses = () => {
       </div>
 
       {/* Seamstresses Grid */}
-      {filteredSeamstresses.length === 0 ? (
+      {isLoading && (
+        <Card className="p-12 text-center">
+          <Typography variant="body1" className="text-taupe">
+            Carregando costureiras...
+          </Typography>
+        </Card>
+      )}
+
+      {!isLoading && loadError && (
+        <Card className="p-12 text-center">
+          <Typography variant="body1" className="text-danger">
+            {loadError}
+          </Typography>
+        </Card>
+      )}
+
+      {!isLoading && !loadError && filteredSeamstresses.length === 0 ? (
         <Card className="p-12 text-center">
           <Typography variant="body1" className="text-taupe">
             Nenhuma costureira encontrada
@@ -83,7 +169,7 @@ const Seamstresses = () => {
             Tente ajustar os filtros ou adicione uma nova costureira.
           </Typography>
         </Card>
-      ) : (
+      ) : !isLoading && !loadError ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredSeamstresses.map((seamstress) => {
             const status = getStatusBadge(seamstress.status);
@@ -93,7 +179,17 @@ const Seamstresses = () => {
                   <div className="w-12 h-12 rounded-md bg-gradient-primary text-white flex items-center justify-center font-bold text-lg flex-shrink-0">
                     {seamstress.name.charAt(0)}
                   </div>
-                  <div className="flex-1 min-w-0">
+                  <div
+                    className="flex-1 min-w-0 cursor-pointer"
+                    onClick={() => navigate(`/seamstresses/${seamstress.id}/edit`)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        navigate(`/seamstresses/${seamstress.id}/edit`);
+                      }
+                    }}
+                  >
                     <Typography variant="h4" className="truncate">
                       {seamstress.name}
                     </Typography>
@@ -105,16 +201,48 @@ const Seamstresses = () => {
                         {status.label}
                       </Badge>
                       <Typography variant="caption" className="text-gray-400">
-                        {seamstress.orders} pedidos
+                        Capacidade: {seamstress.orders}
                       </Typography>
                     </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="!p-2"
+                      onClick={() => navigate(`/seamstresses/${seamstress.id}/edit`)}
+                      aria-label={`Editar ${seamstress.name}`}
+                      title="Editar"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="!p-2"
+                      onClick={() => handleToggleStatus(seamstress)}
+                      aria-label={`Alternar status de ${seamstress.name}`}
+                      title={seamstress.status === 'active' ? 'Desativar' : 'Ativar'}
+                    >
+                      {seamstress.status === 'active' ? '✓' : '◯'}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="!p-2 text-danger hover:text-danger/80"
+                      onClick={() => handleDelete(seamstress)}
+                      aria-label={`Deletar ${seamstress.name}`}
+                      title="Deletar"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
               </Card>
             );
           })}
         </div>
-      )}
+      ) : null}
     </main>
   );
 };
