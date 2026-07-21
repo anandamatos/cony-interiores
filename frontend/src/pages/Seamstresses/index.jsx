@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MoreVertical, Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
@@ -67,7 +67,6 @@ const Seamstresses = () => {
   const handleToggleStatus = async (seamstress) => {
     try {
       await updateSeamstress(seamstress.id, { ativa: seamstress.status !== 'active' });
-      setActionMenuOpenId(null);
       await loadSeamstresses();
     } catch (error) {
       alert(error?.message || 'Não foi possível atualizar o status.');
@@ -80,7 +79,6 @@ const Seamstresses = () => {
 
     try {
       await deleteSeamstress(seamstress.id);
-      setActionMenuOpenId(null);
       await loadSeamstresses();
     } catch (error) {
       alert('Não foi possível excluir a costureira.');
