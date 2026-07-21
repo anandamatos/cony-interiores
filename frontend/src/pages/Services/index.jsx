@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Plus, MoreVertical } from 'lucide-react';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
@@ -17,7 +17,6 @@ const Services = () => {
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
-  const [actionMenuOpenId, setActionMenuOpenId] = useState(null);
 
   const deriveStatus = (service) => {
     if (!service?.prazo_entrega) return 'active';
@@ -69,7 +68,6 @@ const Services = () => {
 
     try {
       await serviceService.update(serviceId, { prazo_entrega: toIsoDate(yesterday) });
-      setActionMenuOpenId(null);
       await loadServices();
     } catch (error) {
       alert('Não foi possível atualizar o status do serviço.');
@@ -82,7 +80,6 @@ const Services = () => {
 
     try {
       await serviceService.update(serviceId, { prazo_entrega: toIsoDate(nextWeek) });
-      setActionMenuOpenId(null);
       await loadServices();
     } catch (error) {
       alert('Não foi possível atualizar o status do serviço.');
@@ -95,7 +92,6 @@ const Services = () => {
 
     try {
       await serviceService.delete(service.id);
-      setActionMenuOpenId(null);
       await loadServices();
     } catch (error) {
       alert('Não foi possível excluir o serviço.');
@@ -216,49 +212,27 @@ const Services = () => {
                     <Typography variant="caption" className="text-gray-400">
                       {service.date}
                     </Typography>
-                    <div className="relative">
+                    <div className="flex gap-2">
                       <Button
                         variant="ghost"
                         size="sm"
                         className="!p-2"
-                        onClick={() =>
-                          setActionMenuOpenId((currentId) =>
-                            currentId === service.id ? null : service.id
-                          )
-                        }
-                        aria-label={`Abrir ações para serviço de ${service.client}`}
+                        onClick={() => navigate(`/services/${service.id}/edit`)}
+                        aria-label={`Editar serviço de ${service.client}`}
+                        title="Editar"
                       >
-                      <MoreVertical className="w-4 h-4" />
+                        <Edit2 className="w-4 h-4" />
                       </Button>
-
-                      {actionMenuOpenId === service.id && (
-                        <div className="absolute right-0 mt-2 w-44 rounded-md border border-gray/30 bg-white shadow-dropdown z-20">
-                          {service.status === 'active' ? (
-                            <button
-                              type="button"
-                              className="w-full text-left px-3 py-2 text-sm hover:bg-offWhite"
-                              onClick={() => handleSetPending(service.id)}
-                            >
-                              Marcar como pendente
-                            </button>
-                          ) : (
-                            <button
-                              type="button"
-                              className="w-full text-left px-3 py-2 text-sm hover:bg-offWhite"
-                              onClick={() => handleSetActive(service.id)}
-                            >
-                              Marcar como ativo
-                            </button>
-                          )}
-                          <button
-                            type="button"
-                            className="w-full text-left px-3 py-2 text-sm text-danger hover:bg-offWhite"
-                            onClick={() => handleDelete(service)}
-                          >
-                            Excluir serviço
-                          </button>
-                        </div>
-                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="!p-2 text-danger hover:text-danger/80"
+                        onClick={() => handleDelete(service)}
+                        aria-label={`Deletar serviço de ${service.client}`}
+                        title="Deletar"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
                   </div>
                 </div>
