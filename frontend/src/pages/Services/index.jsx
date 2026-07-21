@@ -69,8 +69,6 @@ const Services = () => {
     fetchData();
   }, [location.key]);
 
-  const toIsoDate = (date) => date.toISOString().split('T')[0];
-
   const handleDelete = async (service) => {
     const confirmed = window.confirm(`Excluir serviço de ${service.client}?`);
     if (!confirmed) return;
