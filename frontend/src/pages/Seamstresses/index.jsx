@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MoreVertical, Plus } from 'lucide-react';
+import { MoreVertical, Plus, Edit2, Trash2 } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
@@ -17,7 +17,6 @@ const Seamstresses = () => {
   const [seamstresses, setSeamstresses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
-  const [actionMenuOpenId, setActionMenuOpenId] = useState(null);
 
   const filterOptions = [
     { value: 'all', label: 'Todos', variant: 'all' },
@@ -189,46 +188,37 @@ const Seamstresses = () => {
                       </Typography>
                     </div>
                   </div>
-                  <div className="relative">
+                  <div className="flex gap-2">
                     <Button
                       variant="ghost"
                       size="sm"
                       className="!p-2"
-                      onClick={() =>
-                        setActionMenuOpenId((currentId) =>
-                          currentId === seamstress.id ? null : seamstress.id
-                        )
-                      }
-                      aria-label={`Abrir ações para ${seamstress.name}`}
+                      onClick={() => navigate(`/seamstresses/${seamstress.id}/edit`)}
+                      aria-label={`Editar ${seamstress.name}`}
+                      title="Editar"
                     >
-                      <MoreVertical className="w-4 h-4" />
+                      <Edit2 className="w-4 h-4" />
                     </Button>
-
-                    {actionMenuOpenId === seamstress.id && (
-                      <div className="absolute right-0 mt-2 w-44 rounded-md border border-gray/30 bg-white shadow-dropdown z-20">
-                        <button
-                          type="button"
-                          className="w-full text-left px-3 py-2 text-sm hover:bg-offWhite"
-                          onClick={() => navigate(`/seamstresses/${seamstress.id}/edit`)}
-                        >
-                          Editar costureira
-                        </button>
-                        <button
-                          type="button"
-                          className="w-full text-left px-3 py-2 text-sm hover:bg-offWhite"
-                          onClick={() => handleToggleStatus(seamstress)}
-                        >
-                          {seamstress.status === 'active' ? 'Marcar como inativa' : 'Marcar como ativa'}
-                        </button>
-                        <button
-                          type="button"
-                          className="w-full text-left px-3 py-2 text-sm text-danger hover:bg-offWhite"
-                          onClick={() => handleDelete(seamstress)}
-                        >
-                          Excluir costureira
-                        </button>
-                      </div>
-                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="!p-2"
+                      onClick={() => handleToggleStatus(seamstress)}
+                      aria-label={`Alternar status de ${seamstress.name}`}
+                      title={seamstress.status === 'active' ? 'Desativar' : 'Ativar'}
+                    >
+                      {seamstress.status === 'active' ? '✓' : '◯'}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="!p-2 text-danger hover:text-danger/80"
+                      onClick={() => handleDelete(seamstress)}
+                      aria-label={`Deletar ${seamstress.name}`}
+                      title="Deletar"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
               </Card>
