@@ -1,11 +1,13 @@
+import { lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import Dashboard from './pages/Dashboard';
-import Services from './pages/Services';
-import Seamstresses from './pages/Seamstresses';
-import NewService from './pages/NewService';
-import NewSeamstress from './pages/Seamstresses/NewSeamstress';
-import Capacity from './pages/Capacity';
+
+const Services = lazy(() => import('./pages/Services'));
+const Seamstresses = lazy(() => import('./pages/Seamstresses'));
+const NewService = lazy(() => import('./pages/NewService'));
+const NewSeamstress = lazy(() => import('./pages/Seamstresses/NewSeamstress'));
+const Capacity = lazy(() => import('./pages/Capacity'));
 
 function App() {
   return (
