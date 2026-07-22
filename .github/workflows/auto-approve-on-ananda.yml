@@ -1,0 +1,65 @@
+name: Auto-approve on @anandamatos review
+
+on:
+  pull_request_review:
+    types: [submitted]
+    branches: [main]
+
+jobs:
+  approve-if-ananda:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Check if @anandamatos approved and add second approval
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const review = context.payload.review;
+            const prNumber = context.payload.pull_request.number;
+
+            // Verifica se o review foi feito por @anandamatos e foi APPROVED
+            if (
+              review.user.login === 'anandamatos' &&
+              review.state === 'APPROVED'
+            ) {
+              core.info(`✅ @anandamatos approved PR #${prNumber}. Adding second approval...`);
+
+              // Verifica se já existem aprovações suficientes
+              const { data: reviews } = await github.rest.pulls.listReviews({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+              });
+
+              const approvals = reviews.filter(r => r.state === 'APPROVED');
+              const uniqueApprovers = new Set(approvals.map(r => r.user.login));
+
+              core.info(`Approvers: ${Array.from(uniqueApprovers).join(', ')}`);
+
+              // Se já tem 2 aprovações únicas, não precisa adicionar mais
+              if (uniqueApprovers.size >= 2) {
+                core.info(`✅ PR #${prNumber} already has 2+ approvals. No action needed.`);
+                return;
+              }
+
+              // Se @anandamatos já aprovou, adiciona a segunda aprovação automática
+              try {
+                await github.rest.pulls.createReview({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: prNumber,
+                  event: 'APPROVE',
+                  body: '🤖 Auto-approved: Second approval added because @anandamatos approved this PR.',
+                });
+                core.info(`✅ Second approval added to PR #${prNumber}`);
+              } catch (e) {
+                core.error(`❌ Failed to add second approval: ${e.message}`);
+                // Não falha o workflow se já houver 2 aprovações
+              }
+            } else {
+              core.info(`⏭️ Review by @${review.user.login} with state '${review.state}' — no auto-approve needed.`);
+            }

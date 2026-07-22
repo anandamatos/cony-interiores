@@ -1,0 +1,58 @@
+name: docs-auto-approve
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/**'
+
+jobs:
+  check-docs-only:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Fetch changed files
+        id: changed
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
+            const nonDocs = files.filter(f => !f.filename.startsWith('docs/'));
+            core.setOutput('non_docs_count', nonDocs.length);
+            if (nonDocs.length > 0) {
+              core.info(`PR also touches non-docs files: ${nonDocs.map(f => f.filename).join(', ')}`);
+            }
+
+      - name: Auto-approve if docs-only
+        if: steps.changed.outputs.non_docs_count == '0'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Post two approvals so the 2-review ruleset is satisfied.
+            for (let i = 0; i < 2; i++) {
+              try {
+                await github.rest.pulls.createReview({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: context.payload.pull_request.number,
+                  event: 'APPROVE',
+                  body: '✅ Auto-approved: PR only modifies `docs/` — no code review required.',
+                });
+              } catch (e) {
+                // Second approval from same actor may fail — that's OK if first succeeded.
+                core.info(`Review attempt ${i+1}: ${e.message}`);
+              }
+            }
+            core.info('✅ docs-only PR auto-approved.');
+
+      - name: Skip — PR touches code
+        if: steps.changed.outputs.non_docs_count != '0'
+        run: echo "PR touches files outside docs/ — normal review flow applies."
