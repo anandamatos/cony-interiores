@@ -96,6 +96,13 @@ class Servico(models.Model):
         help_text="Tamanho considerado pra todas as peças deste serviço (por enquanto)."
     )
  
-
+    complexidade_manual = models.BooleanField(
+        default=False,
+        help_text=(
+            "Se marcado, o sistema NAO recalcula a complexidade "
+            "automaticamente - fica sob controle da gestora."
+        ),
+    )
+ 
     def __str__(self):
         return f"Serviço para {self.cliente.nome} - {self.costureira.nome}"

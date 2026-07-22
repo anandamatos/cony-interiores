@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from .models import Costureira, Servico, Cliente, Produto
 from .serializers import CostureiraSerializer, ServicoSerializer, ClienteSerializer, ProdutoSerializer
+from apps.core.services.complexidade_manual import atualizar_complexidade_se_automatica
 import time
 
 
@@ -52,6 +53,14 @@ class ServicoViewSet(viewsets.ModelViewSet):
     filterset_fields = ['cliente', 'costureira', 'data_envio', 'prazo_entrega']
     search_fields = ['cliente__nome', 'observacoes']
     ordering_fields = ['data_envio', 'prazo_entrega', 'valor', 'complexidade']
+
+    def perform_create(self, serializer):
+        servico = serializer.save()
+        atualizar_complexidade_se_automatica(servico)
+
+    def perform_update(self, serializer):
+        servico = serializer.save()
+        atualizar_complexidade_se_automatica(servico)
 
 
 # ==================== VIEWSET DO CLIENTE ====================
