@@ -25,6 +25,10 @@ Infraestrutura
 - Git
 - Docker Desktop
 
+Opcional para execucao local do backend (sem Docker):
+
+- Python 3.13.x instalado no host
+
 Não é necessário instalar Python, Node.js ou PostgreSQL localmente.
 
 ---
@@ -93,6 +97,28 @@ Na raiz do projeto:
 
 ```bash
 docker compose up --build
+```
+
+---
+
+## Execucao local do backend (um unico venv)
+
+Use somente `backend/.venv`.
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
+
+Para evitar duplicidade de ambiente virtual, remova venvs antigos da raiz do projeto:
+
+```bash
+cd ..
+rm -rf .venv .venv-1
 ```
 
 ---

@@ -1,13 +1,18 @@
-FROM node:22
+FROM node:22-alpine
 
 WORKDIR /app
 
+# Copiar package.json e package-lock.json
 COPY package*.json ./
 
-RUN npm install
+# Instalar dependências com permissões para Alpine
+RUN npm install --legacy-peer-deps
 
+# Copiar o resto do código
 COPY . .
 
+# Expor a porta do frontend
 EXPOSE 5173
 
-CMD ["npm", "run", "dev", "--", "--host"]
+# Comando para rodar o frontend
+CMD ["npm", "run", "dev"]

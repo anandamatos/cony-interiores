@@ -1,43 +1,47 @@
-import { createContext, useContext, useState } from "react";
-import { costureirasMock } from "../mocks/costureiras";
+import { createContext, useContext, useState } from 'react';
+import { costureirasMock } from '../mocks/costureiras';
 
 const CostureiraContext = createContext();
 
 export function CostureiraProvider({ children }) {
   const [costureiras, setCostureiras] = useState(costureirasMock);
+  const [loading, setLoading] = useState(false);
 
-  function adicionarCostureira(novaCostureira) {
-    setCostureiras((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        ...novaCostureira,
-      },
-    ]);
-  }
+  const addCostureira = (novaCostureira) => {
+    setCostureiras((prev) => [...prev, { ...novaCostureira, id: Date.now() }]);
+  };
 
-  function editarCostureira(id, dadosAtualizados) {
+  const updateCostureira = (id, dadosAtualizados) => {
     setCostureiras((prev) =>
-      prev.map((c) => (c.id === Number(id) ? { ...c, ...dadosAtualizados } : c)),
+      prev.map((costureira) =>
+        costureira.id === Number(id)
+          ? { ...costureira, ...dadosAtualizados }
+          : costureira
+      )
     );
-  }
+  };
 
-  function excluirCostureira(id) {
-    setCostureiras((prev) => prev.filter((c) => c.id !== id));
-  }
+  const deleteCostureira = (id) => {
+    setCostureiras((prev) => prev.filter((costureira) => costureira.id !== Number(id)));
+  };
 
-  function buscarPorId(id) {
-    return costureiras.find((c) => c.id === Number(id));
-  }
+  const findCostureiraById = (id) => {
+    return costureiras.find((costureira) => costureira.id === Number(id));
+  };
 
   return (
     <CostureiraContext.Provider
       value={{
         costureiras,
-        adicionarCostureira,
-        editarCostureira,
-        excluirCostureira,
-        buscarPorId,
+        loading,
+        addCostureira,
+        updateCostureira,
+        deleteCostureira,
+        findCostureiraById,
+        adicionarCostureira: addCostureira,
+        editarCostureira: updateCostureira,
+        excluirCostureira: deleteCostureira,
+        buscarPorId: findCostureiraById,
       }}
     >
       {children}
@@ -45,6 +49,16 @@ export function CostureiraProvider({ children }) {
   );
 }
 
-export function useCostureiras() {
-  return useContext(CostureiraContext);
+export function useCostureira() {
+  const context = useContext(CostureiraContext);
+  if (!context) {
+    throw new Error('useCostureira must be used within a CostureiraProvider');
+  }
+  return context;
 }
+
+export function useCostureiras() {
+  return useCostureira();
+}
+
+export default CostureiraContext;

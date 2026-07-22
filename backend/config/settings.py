@@ -192,6 +192,60 @@ def _env_bool(name: str, default: bool) -> bool:
     return os.getenv(name, str(default)).lower() in ('1', 'true', 'yes', 'on')
 
 
+def _build_dashboard_cache_config() -> dict:
+    backend = os.getenv('FINANCIAL_DASHBOARD_CACHE_BACKEND', 'locmem').lower()
+
+    if backend == 'redis':
+        return {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': os.getenv('FINANCIAL_DASHBOARD_CACHE_LOCATION', 'redis://redis:6379/1'),
+            'TIMEOUT': int(os.getenv('FINANCIAL_DASHBOARD_CACHE_TTL_SECONDS', '30')),
+            'KEY_PREFIX': os.getenv('FINANCIAL_DASHBOARD_CACHE_KEY_PREFIX', 'cony:financial-dashboard'),
+        }
+
+    if backend == 'memcached':
+        return {
+            'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+            'LOCATION': os.getenv('FINANCIAL_DASHBOARD_CACHE_LOCATION', 'memcached:11211'),
+            'TIMEOUT': int(os.getenv('FINANCIAL_DASHBOARD_CACHE_TTL_SECONDS', '30')),
+            'KEY_PREFIX': os.getenv('FINANCIAL_DASHBOARD_CACHE_KEY_PREFIX', 'cony:financial-dashboard'),
+        }
+
+    return {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': os.getenv('FINANCIAL_DASHBOARD_CACHE_LOCATION', 'cony-financial-dashboard'),
+        'TIMEOUT': int(os.getenv('FINANCIAL_DASHBOARD_CACHE_TTL_SECONDS', '30')),
+        'KEY_PREFIX': os.getenv('FINANCIAL_DASHBOARD_CACHE_KEY_PREFIX', 'cony:financial-dashboard'),
+    }
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'default-cache',
+    },
+    'financial_dashboard': _build_dashboard_cache_config(),
+}
+
+
 FINANCIAL_API_ENABLE_SIMULATED_DELAY = _env_bool('FINANCIAL_API_ENABLE_SIMULATED_DELAY', True)
 FINANCIAL_API_MAX_SIMULATED_DELAY_MS = int(os.getenv('FINANCIAL_API_MAX_SIMULATED_DELAY_MS', '3000'))
 FINANCIAL_API_ALERT_THRESHOLD_MS = int(os.getenv('FINANCIAL_API_ALERT_THRESHOLD_MS', '800'))
+FINANCIAL_QUERY_SLOW_THRESHOLD_MS = int(os.getenv('FINANCIAL_QUERY_SLOW_THRESHOLD_MS', '120'))
+FINANCIAL_QUERY_TARGET_AVG_MS = int(os.getenv('FINANCIAL_QUERY_TARGET_AVG_MS', '150'))
+FINANCIAL_QUERY_TARGET_P95_MS = int(os.getenv('FINANCIAL_QUERY_TARGET_P95_MS', '300'))
+FINANCIAL_QUERY_TARGET_SLOW_PERCENT = float(os.getenv('FINANCIAL_QUERY_TARGET_SLOW_PERCENT', '5'))
+FINANCIAL_QUERY_INDEX_USAGE_PERCENT = float(os.getenv('FINANCIAL_QUERY_INDEX_USAGE_PERCENT', '90'))
+FINANCIAL_QUERY_TARGET_INDEX_USAGE_PERCENT = float(os.getenv('FINANCIAL_QUERY_TARGET_INDEX_USAGE_PERCENT', '90'))
+FINANCIAL_QUERY_RESOURCE_CPU_PERCENT = float(os.getenv('FINANCIAL_QUERY_RESOURCE_CPU_PERCENT', '0'))
+FINANCIAL_QUERY_TARGET_CPU_PERCENT = float(os.getenv('FINANCIAL_QUERY_TARGET_CPU_PERCENT', '80'))
+FINANCIAL_QUERY_RESOURCE_MEMORY_MB = float(os.getenv('FINANCIAL_QUERY_RESOURCE_MEMORY_MB', '0'))
+FINANCIAL_QUERY_TARGET_MEMORY_MB = float(os.getenv('FINANCIAL_QUERY_TARGET_MEMORY_MB', '1024'))
+FINANCIAL_DASHBOARD_TARGET_LOAD_MS = int(os.getenv('FINANCIAL_DASHBOARD_TARGET_LOAD_MS', '400'))
+FINANCIAL_DASHBOARD_TARGET_CHART_MS = int(os.getenv('FINANCIAL_DASHBOARD_TARGET_CHART_MS', '500'))
+FINANCIAL_DASHBOARD_TARGET_FILTER_MS = int(os.getenv('FINANCIAL_DASHBOARD_TARGET_FILTER_MS', '350'))
+FINANCIAL_DASHBOARD_TARGET_EXPORT_MS = int(os.getenv('FINANCIAL_DASHBOARD_TARGET_EXPORT_MS', '1200'))
+FINANCIAL_DASHBOARD_CACHE_ENABLED = _env_bool('FINANCIAL_DASHBOARD_CACHE_ENABLED', True)
+FINANCIAL_DASHBOARD_CACHE_TTL_SECONDS = int(os.getenv('FINANCIAL_DASHBOARD_CACHE_TTL_SECONDS', '30'))
+FINANCIAL_DASHBOARD_CACHE_INVALIDATE_ON_WRITE = _env_bool('FINANCIAL_DASHBOARD_CACHE_INVALIDATE_ON_WRITE', True)
+FINANCIAL_DASHBOARD_CACHE_KEY = os.getenv('FINANCIAL_DASHBOARD_CACHE_KEY', 'snapshot')

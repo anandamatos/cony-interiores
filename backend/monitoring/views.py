@@ -8,15 +8,29 @@ from rest_framework.response import Response
 
 from finance.openapi import build_openapi_schema
 
+from .cache import get_dashboard_snapshot_from_cache, set_dashboard_snapshot_cache
 from .metrics import metrics_registry
 
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def monitoring_dashboard(request):
-    snapshot = metrics_registry.snapshot()
+    snapshot = get_dashboard_snapshot_from_cache()
+    cache_source = 'hit'
+
+    if snapshot is None:
+        snapshot = metrics_registry.snapshot()
+        set_dashboard_snapshot_cache(snapshot)
+        cache_source = 'miss'
+
     snapshot['financial_alert_threshold_ms'] = settings.FINANCIAL_API_ALERT_THRESHOLD_MS
     snapshot['generated_for_user'] = request.user.get_username()
+    snapshot['cache'] = {
+        'enabled': settings.FINANCIAL_DASHBOARD_CACHE_ENABLED,
+        'ttl_seconds': settings.FINANCIAL_DASHBOARD_CACHE_TTL_SECONDS,
+        'source': cache_source,
+    }
+
     return Response(snapshot)
 
 

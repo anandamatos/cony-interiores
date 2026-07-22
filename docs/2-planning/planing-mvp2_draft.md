@@ -92,7 +92,9 @@ Com base na documentação e no status atual do MVP 1, vou criar um rascunho do 
 
 | Tarefa | Descrição | Responsável | Status |
 |--------|-----------|-------------|--------|
-| DISCOVERY-M2-FND-001 | Validar arquitetura de cache para dashboards financeiros | @lobaque29 | ⏳ Pendente |
+| DISCOVERY-M2-FND-001 | Validar arquitetura de cache para dashboards financeiros | @lobaque29 | ✅ Concluida |
+| DISCOVERY-M2-FND-002 | Definir estrategia de otimizacao de queries financeiras | @lobaque29 | ✅ Concluida |
+| DISCOVERY-M2-FND-003 | Configurar ambiente de testes de performance | @lobaque29 | ✅ Concluida |
 | DISCOVERY-M2-CORE-001 | Validar regras de cálculo de pagamentos | @karinakaduda19-cyber | ⏳ Pendente |
 | DISCOVERY-M2-UX-001 | Validar protótipos do dashboard financeiro com cliente | @anandamatos | ⏳ Pendente |
 | DISCOVERY-M2-UX-002 | Validar fluxo de planejamento financeiro | @anandamatos | ⏳ Pendente |
@@ -103,7 +105,8 @@ Com base na documentação e no status atual do MVP 1, vou criar um rascunho do 
 
 | Tarefa | Descrição | Responsável | Status |
 |--------|-----------|-------------|--------|
-| MEASUREMENT-M2-FND-001 | Definir KPIs de performance de queries financeiras | @lobaque29 | ⏳ Pendente |
+| MEASUREMENT-M2-FND-001 | Definir KPIs de performance de queries financeiras | @lobaque29 | ✅ Concluida |
+| MEASUREMENT-M2-FND-010 | Definir KPIs de tempo de resposta de dashboards financeiros | @lobaque29 | ✅ Concluida |
 | MEASUREMENT-M2-CORE-001 | Definir KPIs de precisão de cálculos financeiros | @karinakaduda19-cyber | ⏳ Pendente |
 | MEASUREMENT-M2-UX-001 | Definir KPIs de usabilidade do dashboard financeiro | @anandamatos | ⏳ Pendente |
 | MEASUREMENT-M2-UX-002 | Definir métricas de eficiência do planejamento | @anandamatos | ⏳ Pendente |

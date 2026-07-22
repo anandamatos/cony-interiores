@@ -1,4 +1,8 @@
 node_modules
-.vscode
 dist
 .git
+.github
+*.log
+.env
+.DS_Store
+package-lock.json

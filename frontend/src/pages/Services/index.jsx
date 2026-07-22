@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Plus, MoreVertical } from 'lucide-react';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
+import Alert from '../../components/atoms/Alert';
 import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
-import { getServices } from '../../services/serviceService';
+import { serviceService } from '../../services/serviceService';
 
 const Services = () => {
   const navigate = useNavigate();
@@ -17,6 +18,14 @@ const Services = () => {
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
+  const [feedback, setFeedback] = useState(null);
+
+  const showError = (message) => {
+    setFeedback({ type: 'error', message, title: 'Erro' });
+    setTimeout(() => setFeedback(null), 5000);
+  };
+
+  const clearFeedback = () => setFeedback(null);
 
   const deriveStatus = (service) => {
     if (!service?.prazo_entrega) return 'active';
@@ -38,24 +47,39 @@ const Services = () => {
     return parsed.toLocaleDateString('pt-BR');
   };
 
-  useEffect(() => {
-    const loadServices = async () => {
-      try {
-        setIsLoading(true);
-        setLoadError('');
-        const data = await getServices();
-        setServices(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error('Erro ao carregar serviços:', error);
-        setLoadError('Não foi possível carregar os serviços.');
-        setServices([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const loadServices = async () => {
+    try {
+      setIsLoading(true);
+      setLoadError('');
+      const data = await serviceService.getAll();
+      setServices(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Erro ao carregar serviços:', error);
+      setLoadError('Não foi possível carregar os serviços.');
+      setServices([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    loadServices();
+  useEffect(() => {
+    const fetchData = async () => {
+      await loadServices();
+    };
+    fetchData();
   }, [location.key]);
+
+  const handleDelete = async (service) => {
+    const confirmed = window.confirm(`Excluir serviço de ${service.client}?`);
+    if (!confirmed) return;
+
+    try {
+      await serviceService.delete(service.id);
+      await loadServices();
+    } catch (error) {
+      showError('Não foi possível excluir o serviço.');
+    }
+  };
 
   const filterOptions = [
     { value: 'all', label: 'Todos', variant: 'all' },
@@ -96,6 +120,16 @@ const Services = () => {
 
   return (
     <main className="flex-1 p-6 sm:p-8 lg:p-10">
+      {feedback && (
+        <Alert
+          type={feedback.type}
+          title={feedback.title}
+          message={feedback.message}
+          onClose={clearFeedback}
+          className="mb-6"
+        />
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
@@ -171,9 +205,28 @@ const Services = () => {
                     <Typography variant="caption" className="text-gray-400">
                       {service.date}
                     </Typography>
-                    <Button variant="ghost" size="sm" className="!p-2">
-                      <MoreVertical className="w-4 h-4" />
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="!p-2"
+                        onClick={() => navigate(`/services/${service.id}/edit`)}
+                        aria-label={`Editar serviço de ${service.client}`}
+                        title="Editar"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="!p-2 text-danger hover:text-danger/80"
+                        onClick={() => handleDelete(service)}
+                        aria-label={`Deletar serviço de ${service.client}`}
+                        title="Deletar"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </Card>

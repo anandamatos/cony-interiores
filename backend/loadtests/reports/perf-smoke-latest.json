@@ -1,0 +1,63 @@
+{
+  "generated_at": "2026-07-19T22:01:44.730960Z",
+  "settings_module": "config.settings_sqlite",
+  "iterations": 30,
+  "warmup": 5,
+  "scenarios": [
+    {
+      "name": "financial_health",
+      "requests": 30,
+      "success_rate": 100.0,
+      "avg_ms": 1.4092999999472038,
+      "p95_ms": 2.3627999999007443,
+      "p99_ms": 2.7317000003677094,
+      "max_ms": 2.7317000003677094,
+      "status_counts": {
+        "200": 30
+      }
+    },
+    {
+      "name": "simulate_payment",
+      "requests": 30,
+      "success_rate": 100.0,
+      "avg_ms": 1.944413333300569,
+      "p95_ms": 3.434900000684138,
+      "p99_ms": 4.286899999897287,
+      "max_ms": 4.286899999897287,
+      "status_counts": {
+        "200": 30
+      }
+    },
+    {
+      "name": "monitoring_dashboard",
+      "requests": 30,
+      "success_rate": 100.0,
+      "avg_ms": 3.0868133332357197,
+      "p95_ms": 4.39379999988887,
+      "p99_ms": 4.510400000071968,
+      "max_ms": 4.510400000071968,
+      "status_counts": {
+        "200": 30
+      }
+    },
+    {
+      "name": "list_servicos",
+      "requests": 30,
+      "success_rate": 100.0,
+      "avg_ms": 3.5671600000569015,
+      "p95_ms": 6.3200999993568985,
+      "p99_ms": 7.42660000014439,
+      "max_ms": 7.42660000014439,
+      "status_counts": {
+        "200": 30
+      }
+    }
+  ],
+  "summary": {
+    "total_requests": 120,
+    "overall_success_rate": 100.0,
+    "overall_avg_ms": 2.5019216666350985,
+    "overall_p95_ms": 4.39379999988887,
+    "overall_p99_ms": 6.3200999993568985
+  }
+}

@@ -26,7 +26,7 @@ const Typography = ({
   // Classes base por variante (refinadas)
   const variantClasses = {
     h1: classNames(
-      'font-primary text-[32px] font-bold',
+      'font-primary text-[30px] font-bold',
       'tracking-[-0.5px]',
       'leading-[1.2]',
       'text-[#4B3A2E]'

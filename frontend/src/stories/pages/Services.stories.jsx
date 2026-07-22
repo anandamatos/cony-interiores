@@ -1,4 +1,5 @@
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { CostureiraProvider } from '../../context/CostureiraContext';
 import MainLayout from '../../layouts/MainLayout';
 import Services from '../../pages/Services';
 
@@ -12,12 +13,14 @@ export default {
 
 export const Prototype = {
   render: () => (
-    <MemoryRouter initialEntries={['/services']}>
-      <Routes>
-        <Route element={<MainLayout />}>
-          <Route path="/services" element={<Services />} />
-        </Route>
-      </Routes>
-    </MemoryRouter>
+    <CostureiraProvider>
+      <MemoryRouter initialEntries={['/services']}>
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route path="/services" element={<Services />} />
+          </Route>
+        </Routes>
+      </MemoryRouter>
+    </CostureiraProvider>
   ),
 };

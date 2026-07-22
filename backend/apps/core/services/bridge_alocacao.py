@@ -3,13 +3,14 @@ Bridge da TASK-M1-CORE-014: conecta os models reais (Servico, Costureira)
 com a lógica pura de sugestão de alocação (alocacao.py).
 """
 
+from typing import Optional
 from users.models import Costureira
 
 from .alocacao import sugerir_costureira
 from .bridge import calcular_carga_servico, consultar_capacidade_costureira
 
 
-def sugerir_costureira_para_servico(servico) -> dict | None:
+def sugerir_costureira_para_servico(servico) -> Optional[dict]:
     """
     Dado um Servico (já salvo no banco, com produtos e tamanho definidos,
     mas ainda sem costureira "confirmada"), sugere qual costureira ativa

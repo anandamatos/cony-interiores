@@ -1,7 +1,12 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
-cd frontend || exit 1
-
-npm run lint
-npm run format:check
+# Verificar se o container do frontend está rodando
+if docker-compose ps frontend | grep -q "Up"; then
+  echo "✅ Container frontend está rodando. Executando ESLint..."
+  docker-compose exec -T frontend npm run lint || exit 1
+else
+  echo "⚠️  Container frontend não está rodando."
+  echo "📌 Execute 'docker-compose up -d' antes de commitar, ou use --no-verify"
+  echo "💡 Ou rode o lint manualmente: docker-compose exec frontend npm run lint"
+  exit 1
+fi

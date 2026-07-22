@@ -3,16 +3,13 @@ import '../src/index.css';
 
 export const parameters = {
   layout: 'fullscreen',
-  actions: { argTypesRegex: "^on[A-Z].*" },
+  actions: { argTypesRegex: '^on[A-Z].*' },
   controls: {
     matchers: {
       color: /(background|color)$/i,
       date: /Date$/,
     },
   },
-  // ============================================
-  // Acessibilidade: Configuração do addon a11y
-  // ============================================
   a11y: {
     config: {
       rules: [
@@ -38,7 +35,6 @@ export const parameters = {
       checks: {
         'color-contrast': {
           options: {
-            // WCAG 2.1 AA
             contrastLevel: 'AA',
           },
         },
