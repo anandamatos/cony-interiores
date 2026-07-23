@@ -34,7 +34,7 @@ export const fetchCapacityByPeriod = async (period) => {
   try {
     const response = await api.get('/capacidade/', { params: { periodo: period } });
     return response.data;
-  } catch (error) {
+  } catch {
     console.warn('API de capacidade não disponível, usando dados mockados para o período:', period);
     return mockCapacityData;
   }
@@ -47,7 +47,7 @@ export const fetchCapacityBySpecialty = async (specialty) => {
   try {
     const response = await api.get('/capacidade/', { params: { especialidade: specialty } });
     return response.data;
-  } catch (error) {
+  } catch {
     console.warn('API de capacidade não disponível, usando dados mockados para especialidade:', specialty);
     if (specialty !== 'todas') {
       return mockCapacityData.filter(item => item.especialidade === specialty);

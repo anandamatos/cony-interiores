@@ -4,8 +4,6 @@ import {
   LayoutDashboard, 
   ClipboardList, 
   Users, 
-  DollarSign, 
-  BarChart3,
   Settings,
   LogOut,
   Menu,

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCostureiras } from "../context/CostureiraContext";
+import { useCostureiras } from "../context/useCostureiras";
 
 import CostureiraTable from "../components/CostureiraTable";
 import SearchBar from "../components/SearchBar";

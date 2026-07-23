@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "perf:budget": "node scripts/performance-budget.mjs",
+    "perf:check": "npm run build && npm run perf:budget",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",

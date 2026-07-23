@@ -1,7 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { useState } from "react";
 import { costureirasMock } from "../mocks/costureiras";
-
-const CostureiraContext = createContext();
+import { CostureiraContext } from "./CostureiraContextInstance";
 
 export function CostureiraProvider({ children }) {
   const [costureiras, setCostureiras] = useState(costureirasMock);
@@ -51,8 +50,4 @@ export function CostureiraProvider({ children }) {
       {children}
     </CostureiraContext.Provider>
   );
-}
-
-export function useCostureiras() {
-  return useContext(CostureiraContext);
 }

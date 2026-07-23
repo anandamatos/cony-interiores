@@ -1,6 +1,6 @@
 import CostureiraForm from "../components/CostureiraForm";
 import { useParams } from "react-router-dom";
-import { useCostureiras } from "../context/CostureiraContext";
+import { useCostureiras } from "../context/useCostureiras";
 
 export default function CadastroCostureira() {
   const { id } = useParams();

@@ -1,21 +1,26 @@
-import { Suspense, lazy } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Costureiras from "../pages/Costureiras";
-import CadastroCostureira from "../pages/CadastroCostureiras";
+import { lazy } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import MainLayout from '../layouts/MainLayout';
+import Dashboard from '../pages/Dashboard';
 
-const Home = lazy(() => import("../pages/Home"));
+const Services = lazy(() => import('../pages/Services'));
+const Seamstresses = lazy(() => import('../pages/Seamstresses'));
+const NewService = lazy(() => import('../pages/NewService'));
+const NewSeamstress = lazy(() => import('../pages/Seamstresses/NewSeamstress'));
+const Capacity = lazy(() => import('../pages/Capacity'));
 
 export default function AppRoutes() {
   return (
-    <BrowserRouter>
-      <Suspense fallback={<main style={{ padding: "24px" }}>Carregando pagina...</main>}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/costureiras" element={<Costureiras />} />
-          <Route path="/costureiras/nova" element={<CadastroCostureira />} />
-          <Route path="/costureiras/:id/editar" element={<CadastroCostureira />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<MainLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="services" element={<Services />} />
+        <Route path="services/new" element={<NewService />} />
+        <Route path="seamstresses" element={<Seamstresses />} />
+        <Route path="seamstresses/new" element={<NewSeamstress />} />
+        <Route path="capacity" element={<Capacity />} />
+        <Route path="*" element={<div>Página não encontrada</div>} />
+      </Route>
+    </Routes>
   );
 }

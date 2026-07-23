@@ -88,12 +88,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'users',
+    'finance',
+    'monitoring',
     "corsheaders",
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'monitoring.middleware.FinancialApiObservabilityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -166,6 +170,13 @@ if IS_PRODUCTION:
     if not SECRET_KEY or SECRET_KEY.startswith('django-insecure-') or SECRET_KEY == 'django-insecure-local-dev-key-change-me':
         raise ImproperlyConfigured('DJANGO_SECRET_KEY invalida para producao.')
 
+    # HS256 signatures require at least 32 bytes of secret material.
+    if len(SECRET_KEY.encode('utf-8')) < 32:
+        raise ImproperlyConfigured('DJANGO_SECRET_KEY deve ter no minimo 32 bytes em producao.')
+
+    if SECRET_KEY.lower() in {'postgres', 'password', '123456', 'admin', 'secret'}:
+        raise ImproperlyConfigured('DJANGO_SECRET_KEY fraca para producao.')
+
     if not ALLOWED_HOSTS:
         raise ImproperlyConfigured('DJANGO_ALLOWED_HOSTS deve ser definido em producao.')
 
@@ -237,12 +248,58 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': os.getenv('DJANGO_THROTTLE_ANON_RATE', '120/minute'),
+        'user': os.getenv('DJANGO_THROTTLE_USER_RATE', '300/minute'),
+        'auth': os.getenv('DJANGO_AUTH_THROTTLE_RATE', '10/minute'),
+    },
 }
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': False,
+    'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+FINANCIAL_API_ALERT_THRESHOLD_MS = env_int('FINANCIAL_API_ALERT_THRESHOLD_MS', 800)
+FINANCIAL_API_ENABLE_SIMULATED_DELAY = env_bool('FINANCIAL_API_ENABLE_SIMULATED_DELAY', not IS_PRODUCTION)
+FINANCIAL_API_MAX_SIMULATED_DELAY_MS = env_int('FINANCIAL_API_MAX_SIMULATED_DELAY_MS', 1000)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'json': {
+            '()': 'monitoring.logging.JsonLogFormatter',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'json',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+    },
+    'loggers': {
+        'financial_api': {
+            'handlers': ['console'],
+            'level': os.getenv('FINANCIAL_API_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        'monitoring': {
+            'handlers': ['console'],
+            'level': os.getenv('MONITORING_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+    },
 }
