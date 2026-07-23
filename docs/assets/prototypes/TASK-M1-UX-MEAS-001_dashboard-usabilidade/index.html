@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cony Interiores - Dashboard de Usabilidade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* ============================================
+           TOKENS DE DESIGN - CONY INTERIORES
+           ============================================ */
+        :root {
+            /* Cores Principais */
+            --color-marrom-cafe: #4B3A2E;
+            --color-bege-areia: #D9C7B1;
+            --color-taupe: #A8968B;
+            --color-off-white: #F6F3EF;
+
+            /* Cores Secundárias */
+            --color-cinza-claro: #E6E2DD;
+            --color-cinza-medio: #BDB7AE;
+            --color-verde-salvia: #8D9ABA;
+            --color-azul-ardosia: #465057;
+
+            /* Cores de Acento */
+            --color-ouro: #C9A86A;
+            --color-terracota: #B56A4A;
+            --color-bronze: #8A6A4F;
+            --color-preto-suave: #1A1A1A;
+
+            /* Cores de Status */
+            --color-success: #4A7C59;
+            --color-success-bg: #E8F5E9;
+            --color-warning: #C9A86A;
+            --color-warning-bg: #FFF8E1;
+            --color-danger: #B56A4A;
+            --color-danger-bg: #FFF1F0;
+            --color-info: #8D9ABA;
+            --color-info-bg: #E8EEF5;
+
+            /* Tipografia */
+            --font-primary: 'Montserrat', sans-serif;
+            --font-secondary: 'Lato', sans-serif;
+
+            /* Espaçamento */
+            --spacing-1: 4px;
+            --spacing-2: 8px;
+            --spacing-3: 12px;
+            --spacing-4: 16px;
+            --spacing-5: 20px;
+            --spacing-6: 24px;
+            --spacing-8: 32px;
+            --spacing-10: 40px;
+            --spacing-12: 48px;
+            --spacing-16: 64px;
+
+            /* Sombras */
+            --shadow-sm: 0 1px 4px rgba(75, 58, 46, 0.04);
+            --shadow-md: 0 8px 16px rgba(75, 58, 46, 0.06);
+            --shadow-lg: 0 16px 32px rgba(75, 58, 46, 0.08);
+
+            /* Gradientes */
+            --gradient-primary: linear-gradient(135deg, #C9A86A 0%, #A8968B 50%, #4B3A2E 100%);
+            --gradient-gold: linear-gradient(135deg, #D9C7B1 0%, #C9A86A 100%);
+
+            /* Bordas */
+            --border-radius-sm: 6px;
+            --border-radius-md: 10px;
+            --border-radius-lg: 16px;
+            --border-radius-xl: 24px;
+
+            /* Tamanho dos Ícones */
+            --icon-size-sm: 16px;
+            --icon-size-md: 20px;
+            --icon-size-lg: 24px;
+            --icon-size-xl: 32px;
+        }
+
+        /* ============================================
+           RESET E BASE
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-secondary);
+            background: var(--color-off-white);
+            color: var(--color-marrom-cafe);
+            min-height: 100vh;
+            padding: var(--spacing-8);
+        }
+
+        /* ============================================
+           UTILITÁRIOS
+           ============================================ */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: var(--spacing-2); }
+        .gap-4 { gap: var(--spacing-4); }
+        .gap-6 { gap: var(--spacing-6); }
+        .gap-8 { gap: var(--spacing-8); }
+        .mt-1 { margin-top: var(--spacing-1); }
+        .mt-2 { margin-top: var(--spacing-2); }
+        .mt-4 { margin-top: var(--spacing-4); }
+        .mt-6 { margin-top: var(--spacing-6); }
+        .mt-8 { margin-top: var(--spacing-8); }
+        .mb-4 { margin-bottom: var(--spacing-4); }
+        .mb-6 { margin-bottom: var(--spacing-6); }
+        .mb-8 { margin-bottom: var(--spacing-8); }
+        .pt-4 { padding-top: var(--spacing-4); }
+        .p-4 { padding: var(--spacing-4); }
+        .p-6 { padding: var(--spacing-6); }
+        .p-8 { padding: var(--spacing-8); }
+        .block { display: block; }
+        .flex-wrap { flex-wrap: wrap; }
+        .border-t { border-top: 1px solid rgba(75, 58, 46, 0.06); }
+
+        .grid { display: grid; }
+        .grid-cols-1 { grid-template-columns: 1fr; }
+        .grid-cols-2 { grid-template-columns: 1fr 1fr; }
+        .grid-cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .grid-cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+        .grid-cols-7 { grid-template-columns: repeat(7, 1fr); }
+        .gap-4 { gap: var(--spacing-4); }
+        .gap-5 { gap: var(--spacing-5); }
+        .gap-6 { gap: var(--spacing-6); }
+
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .w-full { width: 100%; }
+
+        /* ============================================
+           TIPOGRAFIA
+           ============================================ */
+        .heading-1 {
+            font-family: var(--font-primary);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-marrom-cafe);
+            letter-spacing: -0.8px;
+            line-height: 1.2;
+        }
+
+        .heading-2 {
+            font-family: var(--font-primary);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-marrom-cafe);
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+        }
+
+        .heading-3 {
+            font-family: var(--font-primary);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-marrom-cafe);
+            letter-spacing: -0.3px;
+            line-height: 1.4;
+        }
+
+        .body-text {
+            font-family: var(--font-secondary);
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--color-marrom-cafe);
+            line-height: 1.7;
+            opacity: 0.85;
+        }
+
+        .body-text-small {
+            font-family: var(--font-secondary);
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--color-taupe);
+            line-height: 1.6;
+        }
+
+        .caption {
+            font-family: var(--font-secondary);
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--color-cinza-medio);
+            letter-spacing: 0.3px;
+        }
+
+        /* ============================================
+           CARDS GLASSMORPHISM
+           ============================================ */
+        .card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(75, 58, 46, 0.06);
+            border-radius: var(--border-radius-xl);
+            padding: var(--spacing-6);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .card-gold {
+            background: var(--gradient-gold);
+            border-color: rgba(201, 168, 106, 0.2);
+        }
+
+        /* Variante com contraste reforçado para AA */
+        .card-highlight {
+            background: linear-gradient(135deg, #efe4d1 0%, #dcc39b 100%);
+            border-color: rgba(75, 58, 46, 0.18);
+        }
+
+        .card-highlight .heading-3,
+        .card-highlight .body-text-small {
+            color: #2b2119;
+            opacity: 1;
+        }
+
+        /* ============================================
+           BADGES
+           ============================================ */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--spacing-1) var(--spacing-3);
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .badge-success {
+            background: var(--color-success-bg);
+            color: var(--color-success);
+        }
+
+        .badge-warning {
+            background: var(--color-warning-bg);
+            color: var(--color-warning);
+        }
+
+        .badge-danger {
+            background: var(--color-danger-bg);
+            color: var(--color-danger);
+        }
+
+        .badge-info {
+            background: var(--color-info-bg);
+            color: var(--color-info);
+        }
+
+        .badge-neutral {
+            background: var(--color-off-white);
+            color: var(--color-taupe);
+        }
+
+        /* ============================================
+           STAT CARDS (KPI)
+           ============================================ */
+        .stat-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: var(--spacing-5) var(--spacing-6);
+            border-radius: var(--border-radius-md);
+            border: 1px solid rgba(75, 58, 46, 0.06);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-ouro);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-gold);
+            border-radius: var(--border-radius-md) 0 0 var(--border-radius-md);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            width: 6px;
+        }
+
+        .stat-card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--border-radius-sm);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-taupe);
+            margin-bottom: var(--spacing-3);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover .stat-card-icon {
+            transform: scale(1.08) rotate(-4deg);
+            background: var(--color-bege-areia);
+            color: var(--color-marrom-cafe);
+        }
+
+        .stat-card-title {
+            font-family: var(--font-secondary);
+            font-size: 13px;
+            color: var(--color-taupe);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 400;
+        }
+
+        .stat-card-value {
+            font-family: var(--font-primary);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-marrom-cafe);
+            margin-top: var(--spacing-1);
+            letter-spacing: -0.5px;
+        }
+
+        .stat-card-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: var(--font-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: var(--spacing-2);
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+
+        .stat-card-change.up {
+            color: var(--color-success);
+            background: var(--color-success-bg);
+        }
+
+        .stat-card-change.down {
+            color: var(--color-danger);
+            background: var(--color-danger-bg);
+        }
+
+        /* ============================================
+           PROGRESS BAR
+           ============================================ */
+        .progress-bar {
+            background: var(--color-cinza-claro);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: var(--spacing-2);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: left;
+        }
+
+        .progress-bar-fill.gold {
+            background: var(--gradient-gold);
+        }
+        .progress-bar-fill.success {
+            background: var(--color-success);
+        }
+        .progress-bar-fill.warning {
+            background: var(--color-warning);
+        }
+        .progress-bar-fill.danger {
+            background: var(--color-danger);
+        }
+
+        /* ============================================
+           CHART BARS
+           ============================================ */
+        .chart-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            height: 160px;
+            gap: var(--spacing-2);
+            padding-top: var(--spacing-4);
+        }
+
+        .chart-bar-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .chart-bar {
+            width: 100%;
+            max-width: 40px;
+            border-radius: 4px 4px 0 0;
+            min-height: 8px;
+            transition: height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: bottom;
+            cursor: pointer;
+        }
+
+        .chart-bar:hover {
+            filter: brightness(1.1);
+            transform: scaleY(1.02);
+            transform-origin: bottom;
+        }
+
+        .chart-bar-label {
+            font-family: var(--font-secondary);
+            font-size: 11px;
+            color: var(--color-taupe);
+        }
+
+        .chart-bar-value {
+            font-family: var(--font-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--color-marrom-cafe);
+        }
+
+        /* ============================================
+           ALERTAS / ATIVIDADES
+           ============================================ */
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-4);
+            padding: var(--spacing-4) 0;
+            border-bottom: 1px solid rgba(75, 58, 46, 0.06);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+
+        .alert-item:hover {
+            background: var(--color-off-white);
+            transform: translateX(4px);
+        }
+
+        .alert-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .alert-item:hover .alert-icon {
+            transform: scale(1.08);
+        }
+
+        .alert-icon.danger {
+            background: var(--color-danger-bg);
+            color: var(--color-danger);
+        }
+        .alert-icon.warning {
+            background: var(--color-warning-bg);
+            color: var(--color-warning);
+        }
+        .alert-icon.success {
+            background: var(--color-success-bg);
+            color: var(--color-success);
+        }
+        .alert-icon.info {
+            background: var(--color-info-bg);
+            color: var(--color-info);
+        }
+
+        .alert-item-content {
+            flex: 1;
+        }
+
+        .alert-item-title {
+            font-family: var(--font-primary);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-marrom-cafe);
+        }
+
+        .alert-item-description {
+            font-family: var(--font-secondary);
+            font-size: 13px;
+            color: var(--color-taupe);
+            margin-top: 2px;
+        }
+
+        .alert-item-time {
+            font-family: var(--font-secondary);
+            font-size: 12px;
+            color: var(--color-cinza-medio);
+            white-space: nowrap;
+            padding-left: var(--spacing-3);
+        }
+
+        /* ============================================
+           TOAST
+           ============================================ */
+        .toast {
+            position: fixed;
+            right: var(--spacing-4);
+            bottom: var(--spacing-4);
+            background: rgba(26, 26, 26, 0.92);
+            color: #fff;
+            border-radius: var(--border-radius-sm);
+            padding: 10px 14px;
+            font-size: 13px;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+            transition: all 0.25s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           ANIMAÇÕES
+           ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+        /* ============================================
+           RESPONSIVIDADE
+           ============================================ */
+        @media (max-width: 1024px) {
+            .grid-cols-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: var(--spacing-4); }
+            .grid-cols-2, .grid-cols-3, .grid-cols-4, .grid-cols-7 {
+                grid-template-columns: 1fr;
+            }
+            .heading-1 { font-size: 28px; }
+            .heading-2 { font-size: 20px; }
+            .stat-card-value { font-size: 26px; }
+            .card { padding: var(--spacing-4); }
+            .alert-item { flex-wrap: wrap; }
+            .alert-item-time {
+                padding-left: 0;
+                width: 100%;
+                margin-top: var(--spacing-2);
+            }
+            .chart-container {
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .heading-1 { font-size: 24px; }
+            .heading-2 { font-size: 18px; }
+            .stat-card-value { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ============================================
+        HEADER
+        ============================================ -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="heading-1">Dashboard de Usabilidade</h1>
+                <p class="body-text mt-1">Monitoramento de metricas de eficiencia e satisfacao</p>
+            </div>
+            <div class="flex gap-4">
+                <span class="badge badge-info">MVP 1</span>
+                <span class="badge badge-success">Live</span>
+            </div>
+        </div>
+
+        <!-- ============================================
+        SEÇÃO 1: KPI GRID
+        ============================================ -->
+        <section class="mb-8">
+            <div class="grid grid-cols-4 gap-5">
+                <!-- Tempo Médio de Preenchimento -->
+                <div class="stat-card animate-fade-in-up delay-100">
+                    <div class="stat-card-icon">
+                        <i data-lucide="timer" class="icon-lg"></i>
+                    </div>
+                    <div class="stat-card-title">Tempo Medio de Preenchimento</div>
+                    <div class="stat-card-value">4.5 min</div>
+                    <div class="flex justify-between items-center mt-2">
+                        <span class="body-text-small">Meta: 5 min</span>
+                        <span class="badge badge-success">OK</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill gold" style="width:90%"></div>
+                    </div>
+                </div>
+
+                <!-- Taxa de Erro -->
+                <div class="stat-card animate-fade-in-up delay-200">
+                    <div class="stat-card-icon">
+                        <i data-lucide="octagon-alert" class="icon-lg"></i>
+                    </div>
+                    <div class="stat-card-title">Taxa de Erro</div>
+                    <div class="stat-card-value">8%</div>
+                    <div class="flex justify-between items-center mt-2">
+                        <span class="body-text-small">Meta: 10%</span>
+                        <span class="badge badge-success">OK</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill success" style="width:80%"></div>
+                    </div>
+                </div>
+
+                <!-- Taxa de Abandono -->
+                <div class="stat-card animate-fade-in-up delay-300">
+                    <div class="stat-card-icon">
+                        <i data-lucide="log-out" class="icon-lg"></i>
+                    </div>
+                    <div class="stat-card-title">Taxa de Abandono</div>
+                    <div class="stat-card-value">15%</div>
+                    <div class="flex justify-between items-center mt-2">
+                        <span class="body-text-small">Meta: 20%</span>
+                        <span class="badge badge-success">OK</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill warning" style="width:75%"></div>
+                    </div>
+                </div>
+
+                <!-- Satisfação do Usuário -->
+                <div class="stat-card animate-fade-in-up delay-400">
+                    <div class="stat-card-icon">
+                        <i data-lucide="heart-handshake" class="icon-lg"></i>
+                    </div>
+                    <div class="stat-card-title">Satisfacao do Usuario</div>
+                    <div class="stat-card-value">NPS 72</div>
+                    <div class="flex justify-between items-center mt-2">
+                        <span class="body-text-small">Meta: 70</span>
+                        <span class="badge badge-success">OK</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill gold" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+        SEÇÃO 2: DETALHAMENTO DOS KPIs
+        ============================================ -->
+        <section class="mb-8">
+            <h2 class="heading-2 mb-4">Detalhamento por Formulario</h2>
+
+            <div class="grid grid-cols-2 gap-6">
+                <!-- Cadastro de Serviço -->
+                <div class="card animate-fade-in-up delay-200">
+                    <h3 class="heading-3">Cadastro de Servico</h3>
+                    <div class="mt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="body-text-small">Tempo Medio</span>
+                            <span class="body-text-small"><strong>4.5 min</strong> (meta: 5 min)</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill gold" style="width:90%"></div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="body-text-small">Taxa de Erro</span>
+                            <span class="body-text-small"><strong>8%</strong> (meta: 10%)</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill success" style="width:80%"></div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="body-text-small">Taxa de Abandono</span>
+                            <span class="body-text-small"><strong>15%</strong> (meta: 20%)</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill warning" style="width:75%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cadastro de Costureira -->
+                <div class="card animate-fade-in-up delay-300">
+                    <h3 class="heading-3">Cadastro de Costureira</h3>
+                    <div class="mt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="body-text-small">Tempo Medio</span>
+                            <span class="body-text-small"><strong>2.8 min</strong> (meta: 3 min)</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill gold" style="width:93%"></div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="body-text-small">Taxa de Erro</span>
+                            <span class="body-text-small"><strong>4%</strong> (meta: 5%)</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill success" style="width:80%"></div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="body-text-small">Taxa de Abandono</span>
+                            <span class="body-text-small"><strong>8%</strong> (meta: 10%)</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill warning" style="width:80%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+        SEÇÃO 3: TENDÊNCIA SEMANAL (GRÁFICO FUNCIONAL)
+        ============================================ -->
+        <section class="mb-8">
+            <h2 class="heading-2 mb-4">Tendencia de Preenchimento</h2>
+            <p class="body-text-small mb-6">Evolucao do tempo medio de preenchimento do formulario de Servico</p>
+
+            <div class="card animate-fade-in-up delay-400">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="body-text-small">Ultimos 7 dias</span>
+                    <div class="flex gap-4">
+                        <span class="badge badge-neutral">Meta: 5 min</span>
+                    </div>
+                </div>
+
+                <div class="chart-container" id="chart-container">
+                    <div class="chart-bar-wrapper">
+                        <span class="chart-bar-value">3.2</span>
+                        <div class="chart-bar" style="height:45px; background: var(--gradient-gold);"></div>
+                        <span class="chart-bar-label">Seg</span>
+                    </div>
+                    <div class="chart-bar-wrapper">
+                        <span class="chart-bar-value">3.5</span>
+                        <div class="chart-bar" style="height:55px; background: var(--gradient-gold);"></div>
+                        <span class="chart-bar-label">Ter</span>
+                    </div>
+                    <div class="chart-bar-wrapper">
+                        <span class="chart-bar-value">3.8</span>
+                        <div class="chart-bar" style="height:65px; background: var(--gradient-gold);"></div>
+                        <span class="chart-bar-label">Qua</span>
+                    </div>
+                    <div class="chart-bar-wrapper">
+                        <span class="chart-bar-value">4.1</span>
+                        <div class="chart-bar" style="height:75px; background: var(--gradient-gold);"></div>
+                        <span class="chart-bar-label">Qui</span>
+                    </div>
+                    <div class="chart-bar-wrapper">
+                        <span class="chart-bar-value">4.6</span>
+                        <div class="chart-bar" style="height:85px; background: var(--gradient-gold);"></div>
+                        <span class="chart-bar-label">Sex</span>
+                    </div>
+                    <div class="chart-bar-wrapper">
+                        <span class="chart-bar-value">5.3</span>
+                        <div class="chart-bar" style="height:100px; background: var(--color-terracota);"></div>
+                        <span class="chart-bar-label">Sab</span>
+                    </div>
+                    <div class="chart-bar-wrapper">
+                        <span class="chart-bar-value">6.2</span>
+                        <div class="chart-bar" style="height:120px; background: var(--color-terracota);"></div>
+                        <span class="chart-bar-label">Dom</span>
+                    </div>
+                </div>
+
+                <!-- Linha da meta -->
+                <div class="mt-4 pt-4 border-t border-[rgba(75,58,46,0.06)]">
+                    <div class="flex justify-between items-center">
+                        <span class="body-text-small">Tendencia atual: <span class="text-[#B56A4A] font-semibold">+38%</span> acima da meta no domingo</span>
+                        <span class="badge badge-warning">Atencao</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+        SEÇÃO 4: ALERTAS E NOTIFICAÇÕES
+        ============================================ -->
+        <section class="mb-8">
+            <h2 class="heading-2 mb-4">Alertas e Notificacoes</h2>
+            <p class="body-text-small mb-6">Monitoramento automatico das metas de usabilidade</p>
+
+            <div class="card animate-fade-in-up delay-500">
+                <div class="alert-item">
+                    <div class="alert-icon warning">
+                        <i data-lucide="triangle-alert" class="icon-md"></i>
+                    </div>
+                    <div class="alert-item-content">
+                        <div class="alert-item-title">Tempo medio de Servico subiu para 6.2 min</div>
+                        <div class="alert-item-description">16% acima da meta de 5 min — acompanhar na proxima semana.</div>
+                    </div>
+                    <span class="alert-item-time">Hoje</span>
+                    <span class="badge badge-warning">Alerta</span>
+                </div>
+
+                <div class="alert-item">
+                    <div class="alert-icon success">
+                        <i data-lucide="check-circle" class="icon-md"></i>
+                    </div>
+                    <div class="alert-item-content">
+                        <div class="alert-item-title">Taxa de erro de Costureira esta dentro do esperado</div>
+                        <div class="alert-item-description">4% registrados, meta e de ate 5%.</div>
+                    </div>
+                    <span class="alert-item-time">Hoje</span>
+                    <span class="badge badge-success">OK</span>
+                </div>
+
+                <div class="alert-item">
+                    <div class="alert-icon danger">
+                        <i data-lucide="circle-x" class="icon-md"></i>
+                    </div>
+                    <div class="alert-item-content">
+                        <div class="alert-item-title">Taxa de abandono de Servico em 25%</div>
+                        <div class="alert-item-description">5 pontos acima da meta de 20% — acao recomendada.</div>
+                    </div>
+                    <span class="alert-item-time">Ontem</span>
+                    <span class="badge badge-danger">Critico</span>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ============================================
+    TOAST
+    ============================================ -->
+    <div class="toast" id="prototype-toast" role="status" aria-live="polite"></div>
+
+    <!-- ============================================
+    JAVASCRIPT
+    ============================================ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard de Usabilidade Cony Interiores carregado!');
+
+            // ============================================
+            // 1. INICIALIZAR LUCIDE ICONS
+            // ============================================
+            lucide.createIcons();
+
+            // ============================================
+            // 2. TOAST
+            // ============================================
+            const toast = document.getElementById('prototype-toast');
+
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                window.clearTimeout(showToast.timeoutId);
+                showToast.timeoutId = window.setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 1400);
+            }
+
+            // ============================================
+            // 3. INTERAÇÃO COM OS CARDS
+            // ============================================
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const title = this.querySelector('.stat-card-title')?.textContent || 'Card';
+                    console.log('KPI "' + title + '" clicado!');
+                    showToast('Visualizando detalhes de "' + title + '"');
+                });
+            });
+
+            // ============================================
+            // 4. ANIMAÇÃO DOS GRÁFICOS AO CARREGAR
+            // ============================================
+            const bars = document.querySelectorAll('.chart-bar');
+            const originalHeights = [];
+
+            bars.forEach(bar => {
+                originalHeights.push(bar.style.height);
+                bar.style.height = '0px';
+            });
+
+            setTimeout(function() {
+                bars.forEach(function(bar, index) {
+                    setTimeout(function() {
+                        bar.style.height = originalHeights[index];
+                        bar.style.transition = 'height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    }, index * 80);
+                });
+            }, 400);
+
+            // ============================================
+            // 5. INTERAÇÃO COM OS ALERTAS
+            // ============================================
+            const alertItems = document.querySelectorAll('.alert-item');
+            alertItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const title = this.querySelector('.alert-item-title')?.textContent || 'Alerta';
+                    console.log('Alerta "' + title + '" clicado!');
+                    showToast('Detalhes do alerta: ' + title);
+                });
+            });
+
+            // ============================================
+            // 6. REINICIALIZAR ÍCONES
+            // ============================================
+            setTimeout(function() {
+                lucide.createIcons();
+            }, 500);
+
+            console.log('Dashboard de Usabilidade pronto para validacao!');
+        });
+    </script>
+
+</body>
+</html>
