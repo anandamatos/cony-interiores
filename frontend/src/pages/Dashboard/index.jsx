@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
+import { fetchFinancialHealth } from '../../services/financialUxService';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
@@ -8,11 +9,21 @@ import { ClipboardList, Users, DollarSign } from 'lucide-react';
 
 const Dashboard = () => {
   const [message, setMessage] = useState('');
+  const [financialHealth, setFinancialHealth] = useState(null);
+  const [financialHealthError, setFinancialHealthError] = useState('');
 
   useEffect(() => {
     api.get('/hello/')
       .then(response => setMessage(response.data.message))
       .catch(error => console.error('Erro ao conectar:', error));
+  }, []);
+
+  useEffect(() => {
+    fetchFinancialHealth()
+      .then(setFinancialHealth)
+      .catch((error) => {
+        setFinancialHealthError(error.message || 'Falha ao validar API financeira.');
+      });
   }, []);
 
   const metrics = [
@@ -56,6 +67,21 @@ const Dashboard = () => {
           </Card>
         ))}
       </div>
+
+      <Card className="mb-6 p-4 sm:p-6">
+        <Typography variant="h3" className="mb-2 text-lg sm:text-xl">Integracao Financeira</Typography>
+        {!financialHealth && !financialHealthError && (
+          <p className="text-sm text-text-secondary">Validando API financeira...</p>
+        )}
+        {financialHealth && (
+          <p className="text-sm text-text-secondary">
+            {financialHealth.service}: {financialHealth.isHealthy ? 'operacional' : 'instavel'}
+          </p>
+        )}
+        {financialHealthError && (
+          <p className="text-sm text-error">{financialHealthError}</p>
+        )}
+      </Card>
 
       {/* Workload Section */}
       <Card className="mb-6 p-4 sm:p-6">
