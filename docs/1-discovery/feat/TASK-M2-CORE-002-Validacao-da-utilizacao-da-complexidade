@@ -1,0 +1,53 @@
+# TASK-M2-CORE-002 - Definição da complexidade dos serviços
+
+## Objetivo
+
+Validar como a empresa utiliza a complexidade dos serviços e de que forma essa informação será utilizada pelo sistema.
+
+---
+
+## Regras definidas
+
+### O que determina a complexidade
+
+A complexidade depende do tipo de produto.
+
+O tipo de tecido não influencia.
+
+---
+
+### Impacto no cálculo de pagamento
+
+Não há um peso multiplicador aplicado sobre um valor base. Cada produto complexo é cadastrado individualmente, já com um nome e um valor próprio definidos pela gestora — esse valor é usado diretamente no cálculo do pagamento do serviço.
+
+---
+
+### Distribuição dos serviços
+
+A distribuição dos serviços continuará sendo realizada manualmente pela equipe.
+
+O sistema deverá apenas fornecer clareza sobre quais serviços cada costureira possui.
+
+Não haverá cálculo automático de distribuição.
+
+---
+
+### Pesos de complexidade
+
+Não será utilizada uma tabela de pesos.
+
+A própria equipe fará a atribuição dos serviços conforme seu conhecimento operacional.
+
+---
+
+### Alteração manual
+
+A complexidade poderá ser alterada manualmente pela gestora sempre que necessário.
+
+---
+
+## Impactos no sistema
+
+- Não será necessário implementar algoritmo de distribuição automática.
+- A complexidade poderá ser editada manualmente.
+- O sistema deverá facilitar a visualização da carga atual de cada costureira.
