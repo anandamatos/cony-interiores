@@ -24,7 +24,30 @@ def build_openapi_schema() -> dict:
                 }
             }
         },
-        'paths': {
+        'paths': {'/api/metricas/otif/': { #NOVO
+                'get': {
+                    'summary': 'Consulta de Métricas OTIF',
+                    "parameters": [
+                    {
+                        "in": "query",
+                        "name": "q",
+                        "schema": {
+                        "type": "string"
+                        },
+                    "description": "Digite aqui o que deseja buscar"
+                    }
+                ],
+                    'responses': {
+                        '200': {
+                            'description': 'Métricas retornadas com sucesso'
+                        },
+                        '404': {
+                            'description': 'Chave não encontrada'
+                        }
+                    }
+                }
+            },
+# Até aqui
             '/api/financial/health/': {
                 'get': {
                     'tags': ['Financial'],
