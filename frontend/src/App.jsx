@@ -11,6 +11,7 @@ import Capacity from "./pages/Capacity";
 import Financial from "./pages/Financial";
 import Settings from "./pages/Settings";
 import Team from "./pages/Team";
+import Productivity from "./pages/Productivity";
 import { CostureiraProvider } from "./context/CostureiraContext";
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
             <Route path="seamstresses/:id/edit" element={<EditSeamstress />} />
             <Route path="capacity" element={<Capacity />} />
             <Route path="financial" element={<Financial />} />
+            <Route path="productivity" element={<Productivity />} />
             <Route path="settings" element={<Settings />} />
             <Route path="team" element={<Team />} />
             <Route path="*" element={<div>Página não encontrada</div>} />
