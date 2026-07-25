@@ -1,5 +1,5 @@
 # ==============================================================
-# CODEOWNERS — Cony Interiores
+# CODEOWNERS — Cony Interiores (ATUALIZADO)
 # Regra: a última linha que casa com o path vence.
 # ==============================================================
 
@@ -17,9 +17,7 @@ infra/                          @anandamatos @Marcus1423 @lobaque29
 # ------ Squad CORE (negócio — sobrescreve backend/ acima) ------
 backend/apps/core/              @anandamatos @Bianca2703 @Marcus1423
 backend/apps/finance/           @anandamatos @Bianca2703 @Marcus1423
-backend/apps/users/             @anandamatos @Bianca2703 @Marcus1423
-
-# ------ Squad UX (interface — sobrescreve frontend/ acima) ------
+backend/apps/users/             @anandamatos @Bianca2703 @Marcus1423# ------ Squad UX (interface — sobrescreve frontend/ acima) ------
 frontend/src/components/        @anandamatos @paulo
 frontend/src/pages/             @anandamatos @paulo
 frontend/src/stories/           @anandamatos @paulo
@@ -28,5 +26,5 @@ frontend/src/hooks/             @anandamatos @paulo
 frontend/src/context/           @anandamatos @paulo
 frontend/src/services/          @anandamatos @paulo @Marcus1423
 
-# ------ Docs — sem owner obrigatório, liberado via Action ------
+# ------ Docs — SEM OWNER (permite commit direto) ------
 docs/                           @anandamatos
