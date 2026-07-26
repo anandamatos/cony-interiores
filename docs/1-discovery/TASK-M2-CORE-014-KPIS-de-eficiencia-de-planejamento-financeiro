@@ -1,0 +1,8 @@
+## TASK-M2-CORE-014 — KPIs de Eficiência de Planejamento Financeiro
+
+| KPI                          | O que mede                                                              | Como calcular                                                           | Meta sugerida                                                   |
+| ---------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------- |
+| 1. Tempo de planejamento     | Quanto tempo leva para montar o planejamento financeiro completo        | Horas (ou dias) gastos do início ao fechamento do plano                 | Reduzir X% em relação ao processo atual (definir com a gestora) |
+| 2. Precisão de previsões     | O quanto o previsto ficou próximo do realizado                          | 100% − (\|Previsto − Realizado\| ÷ Previsto × 100)                      | ≥ 90% de acerto                                                 |
+| 3. Aderência ao planejamento | Quanto do que foi planejado foi efetivamente executado/seguido          | (Itens executados conforme planejado ÷ Total de itens planejados) × 100 | ≥ 85%                                                           |
+| 4. Feedback da gestora       | Grau de satisfação da gestora com o processo de planejamento financeiro | Média das notas atribuídas (escala de 1 a 5)                            | Média ≥ 4,5                                                     |
