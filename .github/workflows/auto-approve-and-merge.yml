@@ -19,7 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Busca todo histórico para operações de merge
+          fetch-depth: 0
 
       - name: Check if PR only touches docs/
         id: check
