@@ -15,11 +15,11 @@ jobs:
     if: github.event.review.state == 'approved' && github.event.review.user.login == 'anandamatos'
 
     steps:
-      # ⭐ ADICIONAR ESTE PASSO - Checkout do repositório
+      # ⭐ PASSO OBRIGATÓRIO: Checkout do repositório
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Busca todo histórico, necessário para operações de merge
+          fetch-depth: 0  # Busca todo histórico para operações de merge
 
       - name: Check if PR only touches docs/
         id: check
