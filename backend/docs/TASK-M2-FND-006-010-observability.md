@@ -58,3 +58,5 @@ locust -f loadtests/locustfile.py --host http://localhost:8000
 
 - As metricas estao em memoria de processo e reiniciam quando o backend reinicia.
 - O middleware adiciona `X-Request-ID` em todas as respostas para rastreabilidade.
+
+
