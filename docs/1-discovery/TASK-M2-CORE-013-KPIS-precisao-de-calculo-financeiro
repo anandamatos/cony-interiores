@@ -1,0 +1,17 @@
+# KPIs — Sistema de Gestão Cony
+
+## TASK-M2-CORE-013 — KPIs de Precisão de Cálculos Financeiros
+
+| KPI                              | O que mede                                                                                  | Como calcular                                                  | Meta sugerida               |
+| -------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | --------------------------- |
+| 1. Taxa de erro em cálculos      | Frequência de divergências entre o valor calculado pelo sistema e o valor correto           | (Nº de cálculos com erro ÷ Total de cálculos realizados) × 100 | < 1%                        |
+| 2. Precisão de sumarização       | Se os totais/resumos (ex: soma de custos por categoria) batem com o detalhado               | (Nº de sumarizações corretas ÷ Total de sumarizações) × 100    | 100%                        |
+| 3. Consistência de dados         | Se o mesmo dado aparece igual em diferentes telas/relatórios do sistema                     | Nº de inconsistências encontradas por auditoria/período        | 0 inconsistências por ciclo |
+| 4. Validação com valores manuais | Comparação de uma amostra dos cálculos do sistema com cálculo manual (planilha/calculadora) | % de amostras que batem com o cálculo manual                   | ≥ 99% de aderência          |
+
+**Monitoramento:**
+
+- Onde: [planilha / dashboard no sistema / relatório] — definir com a gestora
+- Frequência: mensal (a cada fechamento)
+- Responsável: [a definir]
+- Alerta: destacar quando taxa de erro > 1% ou inconsistências > 0

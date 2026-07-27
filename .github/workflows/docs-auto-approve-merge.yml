@@ -1,0 +1,53 @@
+name: docs-auto-approve-merge
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-and-auto-merge:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
+
+    steps:
+      - name: Fetch changed files
+        id: changed
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
+            const nonDocs = files.filter(f => !f.filename.startsWith('docs/'));
+            core.setOutput('non_docs_count', nonDocs.length);
+            if (nonDocs.length > 0) {
+              core.info(`PR also touches non-docs files: ${nonDocs.map(f => f.filename).join(', ')}`);
+            }
+
+      - name: Auto-approve and merge if docs-only
+        if: steps.changed.outputs.non_docs_count == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "📄 PR #$PR_NUMBER toca apenas docs/ — aprovando e fazendo merge..."
+
+          # Aprovar a PR
+          gh pr review $PR_NUMBER --approve --body "✅ Auto-approved: PR only modifies docs/"
+
+          # Fazer merge (squash)
+          gh pr merge $PR_NUMBER --squash --delete-branch
+
+          echo "✅ PR #$PR_NUMBER merged automaticamente!"
+
+      - name: Skip — PR touches code
+        if: steps.changed.outputs.non_docs_count != '0'
+        run: echo "PR touches files outside docs/ — normal review flow applies."
