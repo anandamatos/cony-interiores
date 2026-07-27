@@ -1,0 +1,15 @@
+.status-filter {
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.status-filter:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}

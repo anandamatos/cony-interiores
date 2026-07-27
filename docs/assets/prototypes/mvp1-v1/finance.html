@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cony Interiores · Financeiro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="finance">
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <img src="logo-cony.png" alt="Marca Cony" class="sidebar__brand-logo" />
+          <span class="sidebar__brand-name">Cony Interiores</span>
+        </div>
+
+        <div class="sidebar__section">
+          <p class="sidebar__section-title">Operação</p>
+          <nav class="sidebar__nav">
+            <a class="nav-item" href="index.html" data-page="dashboard"><span class="nav-item__icon" aria-hidden="true"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-4.5v-6h-7v6H4a1 1 0 0 1-1-1z"/></svg></span><span>Dashboard</span></a>
+            <a class="nav-item" href="services.html" data-page="services"><span class="nav-item__icon" aria-hidden="true"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M7 4h10l2 4v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8z"/><path d="M9 8h6"/><path d="M8 12h8"/></svg></span><span>Serviços</span></a>
+            <a class="nav-item" href="tailors.html" data-page="tailors"><span class="nav-item__icon" aria-hidden="true"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span><span>Costureiras</span></a>
+          </nav>
+        </div>
+
+        <div class="sidebar__section">
+          <p class="sidebar__section-title">Depois</p>
+          <nav class="sidebar__nav">
+            <a class="nav-item active disabled" href="#" data-page="finance" aria-disabled="true"><span class="nav-item__icon" aria-hidden="true"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M4 7h16"/><path d="M7 7V5h10v2"/><path d="M6 10h12v8H6z"/><path d="M9 13h6"/></svg></span><span>Financeiro</span></a>
+            <a class="nav-item disabled" href="#" data-page="reports" aria-disabled="true"><span class="nav-item__icon" aria-hidden="true"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M5 19V9"/><path d="M12 19V5"/><path d="M19 19v-7"/></svg></span><span>Relatórios</span></a>
+          </nav>
+        </div>
+
+        <div class="sidebar__footer">
+          <div class="sidebar-profile">
+            <div class="sidebar-profile__avatar">A</div>
+            <div class="sidebar-profile__meta">
+              <strong>Ana</strong>
+              <span>Gestora</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="main-content">
+        <header class="topbar">
+          <div class="topbar__brand"></div>
+          <div class="topbar__search-wrap">
+            <span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" class="icon-svg"><circle cx="11" cy="11" r="5.5"/><path d="m15 15 4 4"/></svg></span>
+            <input type="text" class="topbar__search" placeholder="buscar clientes, serviços, costureiras..." />
+          </div>
+          <div class="topbar__actions">
+            <button class="icon-button" aria-label="Alertas"><svg viewBox="0 0 24 24" class="icon-svg"><path d="M12 4a4 4 0 0 0-4 4v2.6c0 .6-.2 1.2-.6 1.7L6 13.5V15h12v-1.5l-1.4-1.2a2.5 2.5 0 0 1-.6-1.7V8a4 4 0 0 0-4-4Z"/><path d="M9.5 17a2.5 2.5 0 0 0 5 0"/></svg></button>
+            <div class="profile-pill" aria-label="Perfil de Ana">
+              <div class="profile-pill__avatar">A</div>
+            </div>
+          </div>
+        </header>
+
+        <main class="content">
+          <section class="placeholder-card">
+            <h3>Financeiro ainda não entra no escopo do MVP 1</h3>
+            <p>Esta página servirá como espaço para visão futura de pagamentos, valores e status financeiros.</p>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

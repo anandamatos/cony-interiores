@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fundamentos — Cony Design System</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-symbol">C</span>
+        <div>
+          <strong>Cony</strong>
+          <small>Design System</small>
+        </div>
+      </div>
+      <button class="menu-toggle" aria-expanded="false" aria-label="Abrir menu">☰</button>
+      <nav class="site-nav" aria-label="Navegação principal">
+        <a href="index.html">Início</a>
+        <a href="foundations.html" class="active">Fundamentos</a>
+        <a href="components.html">Componentes</a>
+        <a href="patterns.html">Padrões</a>
+        <a href="seamstress-cards.html">Costureiras</a>
+        <a href="dashboard-example.html">Dashboard</a>
+      </nav>
+    </header>
+
+    <main class="page-content">
+      <section class="hero hero-small">
+        <h1>Fundamentos</h1>
+        <p>Os tokens de estilo e as bases visuais que guiam o sistema.</p>
+      </section>
+
+      <section class="section">
+        <h2>Paleta de cores</h2>
+        <div class="swatches-grid">
+          <article class="swatch" style="--bg:#2C1A0E; color:#fff;">
+            <span>#2C1A0E</span>
+            <strong>Accent (Dark)</strong>
+          </article>
+          <article class="swatch" style="--bg:#7A5C45; color:#fff;">
+            <span>#7A5C45</span>
+            <strong>Primary</strong>
+          </article>
+          <article class="swatch" style="--bg:#C4A882; color:#2C1A0E;">
+            <span>#C4A882</span>
+            <strong>Highlight</strong>
+          </article>
+          <article class="swatch" style="--bg:#FAF6EE; color:#2C1A0E;">
+            <span>#FAF6EE</span>
+            <strong>Surface</strong>
+          </article>
+          <article class="swatch" style="--bg:#EDE5D8; color:#2C1A0E;">
+            <span>#EDE5D8</span>
+            <strong>Background</strong>
+          </article>
+          <article class="swatch" style="--bg:#7A6A5A; color:#fff;">
+            <span>#7A6A5A</span>
+            <strong>Muted</strong>
+          </article>
+          <article class="swatch" style="--bg:#6B7A3C; color:#fff;">
+            <span>#6B7A3C</span>
+            <strong>Workload: Safe</strong>
+          </article>
+          <article class="swatch" style="--bg:#C49A2A; color:#fff;">
+            <span>#C49A2A</span>
+            <strong>Workload: Alert</strong>
+          </article>
+          <article class="swatch" style="--bg:#A04535; color:#fff;">
+            <span>#A04535</span>
+            <strong>Workload: Urgent</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Tipografia</h2>
+        <div class="type-samples">
+          <div>
+            <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size:2.5rem; margin:0 0 0.5rem;">Playfair Display — Títulos</h1>
+            <p>Elegante e sofisticada, usada em títulos de página, KPI values e seções importantes.</p>
+          </div>
+          <div>
+            <h2 style="margin:1.5rem 0 0.5rem;">Inter — Heading 2 (600px)</h2>
+            <p>Subtítulos e seções. Mantém clareza e hierarquia visual em layouts.</p>
+          </div>
+          <div>
+            <h3 style="margin:1.5rem 0 0.5rem;">Inter — Heading 3 (500px)</h3>
+            <p>Textos informativos em cartões, formulários e legendas.</p>
+          </div>
+          <div>
+            <p style="font-size:0.95rem; color:var(--muted); margin:1.5rem 0 0.5rem;">Texto corpo padrão (Inter, 16px)</p>
+            <p>Parágrafo de descrição com altura de linha 1.6 para melhor legibilidade.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Tokens de espaçamento</h2>
+        <div class="token-grid">
+          <article class="token"><strong>xs</strong><span>0.25rem</span></article>
+          <article class="token"><strong>sm</strong><span>0.5rem</span></article>
+          <article class="token"><strong>md</strong><span>1rem</span></article>
+          <article class="token"><strong>lg</strong><span>1.5rem</span></article>
+          <article class="token"><strong>xl</strong><span>2rem</span></article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Elementos de interface</h2>
+        <div class="ui-overview">
+          <div class="ui-card">
+            <h3>Card com Sombra</h3>
+            <p>Fundo claro com borda suave (1px) e sombra sutil para profundidade visual.</p>
+            <small style="color:var(--muted);">Sombra: 0 18px 45px rgba(2, 12, 34, 0.06)</small>
+          </div>
+          <div class="ui-pills">
+            <span class="badge" style="background:#F5EAC8;color:#7A5A10;">Em produção</span>
+            <span class="badge" style="background:#DDE8C8;color:#3A4E18;">Pronto</span>
+            <span class="badge" style="background:#C8D5E8;color:#1A3458;">Entregue</span>
+            <span class="badge" style="background:#EDD4CC;color:#6B1F12;">Atrasado</span>
+          </div>
+          <div class="ui-text">
+            <label>Barra de busca com ícone</label>
+            <input type="text" placeholder="Buscar por cliente, produto ou ID..." style="padding-left:2.8rem; background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%237A6A5A%22><path d=%22M11 2a9 9 0 100 18 9 9 0 000-18zm0 16a7 7 0 110-14 7 7 0 010 14zm4.5-9.5l3.5 3.5%22/></svg>'); background-repeat:no-repeat; background-position:1rem center; background-size:1.2rem;" />
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+.cadastro-page {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 32px;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  font-weight: 600;
+}
+
+.cadastro-page h1 {
+  margin-bottom: 8px;
+  color: var(--color-text);
+  font-size: 2rem;
+}
+
+.cadastro-page p {
+  margin-bottom: 28px;
+  color: var(--color-text-light);
+}

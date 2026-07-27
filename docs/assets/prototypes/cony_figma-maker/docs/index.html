@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cony Design System</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-symbol">C</span>
+        <div>
+          <strong>Cony</strong>
+          <small>Design System</small>
+        </div>
+      </div>
+      <button class="menu-toggle" aria-expanded="false" aria-label="Abrir menu">☰</button>
+      <nav class="site-nav" aria-label="Navegação principal">
+        <a href="index.html" class="active">Início</a>
+        <a href="foundations.html">Fundamentos</a>
+        <a href="components.html">Componentes</a>
+        <a href="patterns.html">Padrões</a>
+        <a href="seamstress-cards.html">Costureiras</a>
+        <a href="dashboard-example.html">Dashboard</a>
+      </nav>
+    </header>
+
+    <main class="page-content">
+      <section class="hero">
+        <small>Protótipo Figma Maker</small>
+        <h1>Documentação do Design System</h1>
+        <p>
+          Esta documentação reflete o tema, a paleta e os componentes do protótipo criado no Figma Maker.
+          Use-a como referência de estilo e navegação para a réplica estática gerada em HTML/CSS/JS.
+        </p>
+        <p class="note">
+          A réplica local está em <strong>replica/index.html</strong> dentro da pasta do protótipo.
+        </p>
+      </section>
+
+      <section class="grid cards-grid">
+        <article class="card">
+          <h2>Fundamentos</h2>
+          <p>Paleta, tipografia, espaçamento e tokens de estilo para o sistema Cony.</p>
+          <a class="btn btn-secondary" href="foundations.html">Ver fundamentos</a>
+        </article>
+        <article class="card">
+          <h2>Componentes</h2>
+          <p>Exemplos de botões, cards, formulários e elementos reutilizáveis.</p>
+          <a class="btn btn-secondary" href="components.html">Ver componentes</a>
+        </article>
+        <article class="card">
+          <h2>Padrões</h2>
+          <p>Layouts, navegação e boas práticas de página para realizar uma interface consistente.</p>
+          <a class="btn btn-secondary" href="patterns.html">Ver padrões</a>
+        </article>
+        <article class="card">
+          <h2>Perfil de Costureira</h2>
+          <p>Cards de perfil, indicadores de carga de trabalho e histórico de serviços.</p>
+          <a class="btn btn-secondary" href="seamstress-cards.html">Ver perfis</a>
+        </article>
+      </section>
+
+      <section class="section section-highlight">
+        <h2>Como usar</h2>
+        <p>
+          Esta documentação serve como referência visual para o protótipo atual. Use as páginas de
+          componentes para validar estilos e os padrões para montar novas telas com consistência.
+        </p>
+        <p class="note">
+          O protótipo está reproduzido localmente em <strong>replica/index.html</strong> usando apenas HTML, CSS e JavaScript.
+        </p>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,115 @@
+Crie um protótipo de alta fidelidade para um sistema de gestão de produção chamado "Cony Interiores", focado em controlar a produção de costureiras terceirizadas.
+
+**Contexto do Sistema:**
+- Sistema web para gestão de produção de costureiras
+- Público-alvo: Gestora (Ana, 42 anos), Costureiras (Sirlene, 38 anos) e Auxiliar Administrativa (Carla, 29 anos)
+- Principal problema: Falta de visibilidade da produção e controle manual
+- Diferencial: Interface simples, visual e fácil de usar, com foco em dashboards e menu lateral
+
+**Estrutura de Navegação:**
+- Menu lateral fixo à esquerda (padrão Gemini/Discord/Notion)
+- Ícones + labels no menu
+- Item ativo destacado com cor primária
+- Submenus expansíveis para itens com múltiplas páginas
+- Breadcrumbs no topo do conteúdo para navegação secundária
+
+**Telas Prioritárias (MVP 1):**
+
+1. **Dashboard (Visão Geral)**
+   - Cards com indicadores: Serviços Ativos, Costureiras Ativas, Pagamentos Pendentes
+   - Gráfico de barras mostrando carga de trabalho de cada costureira (com cores: verde/amarelo/vermelho)
+   - Lista de alertas: serviços em atraso (com ícone de atenção)
+   - Menu lateral com item "Dashboard" ativo
+
+2. **Lista de Serviços (com filtros)**
+   - Tabela com colunas: Cliente, Produto, Costureira, Status, Prazo, Ações
+   - Filtros: por status (dropdown), por costureira, por período
+   - Botão "Novo Serviço" (primário) no canto superior direito
+   - Paginação na parte inferior
+   - Menu lateral com item "Serviços" ativo
+
+3. **Cadastro de Serviço (formulário)**
+   - Formulário com campos: Cliente, Produto (dropdown), Quantidade, Complexidade (Pequena/Média/Grande/Especial), Data de Envio, Prazo de Entrega, Valor, Costureira (dropdown com indicador de carga)
+   - Botões: "Cancelar" (secundário) e "Cadastrar" (primário)
+   - Breadcrumb: Home / Serviços / Novo Serviço
+   - Menu lateral com item "Serviços" ativo
+
+4. **Detalhes do Serviço**
+   - Informações completas do serviço (cliente, produto, quantidade, complexidade, datas, valor)
+   - Status atual com opção de atualização (dropdown)
+   - Histórico de atualizações de status
+   - Botões: "Editar" (secundário) e "Excluir" (danger)
+   - Botão "Voltar" para a lista
+   - Breadcrumb: Home / Serviços / #123 - [Nome do Serviço]
+
+5. **Perfil da Costureira (com carga de trabalho)**
+   - Informações da costureira: nome, contato, especialidade
+   - Cards mostrando: carga atual, serviços em andamento, serviços entregues no mês
+   - Gráfico de barras com histórico de produção
+   - Lista de serviços ativos da costureira
+   - Breadcrumb: Home / Costureiras / [Nome da Costureira]
+
+**Especificações de UI/UX:**
+
+**Design System:**
+- Cores: Primária #2E7D32 (verde), Secundária #F57C00 (laranja)
+- Fundo das telas: #FAFAFA
+- Cards e superfícies: #FFFFFF
+- Tipografia: Fonte Inter (títulos e corpo), tamanhos: H1=32px, H2=24px, Body=16px, Small=12px
+
+**Menu Lateral:**
+- Largura: 240px expandido, 60px recolhido
+- Itens: Dashboard (🏠), Serviços (📋), Costureiras (👩‍🔧), Financeiro (💰), Relatórios (📊), Configurações (⚙️)
+- Submenus: Serviços (Listar, Novo), Costureiras (Listar, Nova)
+- Perfil do usuário no rodapé do menu com avatar e nome
+
+**Cards do Dashboard:**
+- Sombra suave, cantos arredondados (8px)
+- Ícone representativo no canto superior direito
+- Valor em destaque (fonte grande)
+- Label descritiva abaixo
+
+**Tabela de Serviços:**
+- Cabeçalho com fundo mais claro (#F5F5F5)
+- Linhas com zebra (alternância de cores) para melhor legibilidade
+- Badges de status com cores: Em produção (#FFC107), Pronto (#4CAF50), Entregue (#2196F3), Atrasado (#F44336)
+- Ícones de ação (editar ✏️, excluir 🗑️)
+
+**Formulário de Cadastro:**
+- Campos com labels acima
+- Campos obrigatórios marcados com *
+- Validação em tempo real (ícones de ✅/❌)
+- Agrupamento lógico de campos relacionados
+
+**Interações e Feedback:**
+- Hover em itens do menu: destaque visual (background + text color)
+- Hover em botões: mudança de cor (escurecimento)
+- Click em botão de cadastro: modal de confirmação ou toast
+- Loading states: esqueletos (skeletons) para carregamento de dados
+- Feedback de ações: toasts (Snackbars) no canto inferior direito
+
+**Responsividade:**
+- Versão Desktop (1024px+): Menu expandido, grid de cards em 3 colunas
+- Versão Tablet (768-1024px): Menu recolhível, grid de cards em 2 colunas
+- Versão Mobile (<768px): Menu como overlay, grid de cards em 1 coluna
+
+**Tons e Estilo Visual:**
+- Tema clean, minimalista e profissional
+- Cores suaves e agradáveis (tons de verde e cinza)
+- Espaçamento generoso entre elementos (padding e margin)
+- Ícones consistentes (Lucide Icons) e bem visíveis
+
+**Entregáveis:**
+- 5 telas de alta fidelidade (Dashboard, Lista de Serviços, Cadastro de Serviço, Detalhes do Serviço, Perfil da Costureira)
+- Protótipo navegável com links entre as telas
+- Componentes reutilizáveis (cards, botões, tabelas, formulários, menu lateral)
+- Design System documentado (cores, tipografia, espaçamento)
+- Versões para Desktop, Tablet e Mobile
+
+**Expectativas:**
+- Interface que transmita confiança, organização e simplicidade
+- Navegação intuitiva com menu lateral de fácil acesso
+- Visualização clara da carga de trabalho das costureiras
+- Processo de cadastro de serviços ágil e sem fricção
+- Design consistente com o branding da Cony Interiores (cores naturais, acolhedoras)
+- Pronto para testes de usabilidade com usuários reais
