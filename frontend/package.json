@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
+    "perf:loading": "node scripts/loading-metrics-monitor.mjs",
     "perf:kpi": "npm run build && node scripts/performance-kpi.mjs",
-    "perf:check": "npm run perf:kpi",
+    "perf:check": "npm run perf:kpi && npm run perf:loading",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
