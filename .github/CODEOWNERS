@@ -1,12 +1,11 @@
 # ==============================================================
 # CODEOWNERS — Cony Interiores
-# Regra: a última linha que casa com o path vence.
 # ==============================================================
 
-# Fallback global — qualquer arquivo não mapeado abaixo
+# Fallback global
 *                               @anandamatos
 
-# ------ Squad FND (infra — back + front + root) ------
+# ------ Squad FND ------
 backend/                        @anandamatos @Marcus1423 @lobaque29
 frontend/                       @anandamatos @Marcus1423 @lobaque29
 docker-compose.yml              @anandamatos @Marcus1423 @lobaque29
@@ -14,19 +13,12 @@ scripts/                        @anandamatos @Marcus1423 @lobaque29
 .github/                        @anandamatos @Marcus1423 @lobaque29
 infra/                          @anandamatos @Marcus1423 @lobaque29
 
-# ------ Squad CORE (negócio — sobrescreve backend/ acima) ------
-backend/apps/core/              @anandamatos @Bianca2703 @Marcus1423
-backend/apps/finance/           @anandamatos @Bianca2703 @Marcus1423
-backend/apps/users/             @anandamatos @Bianca2703 @Marcus1423
+# ------ Squad CORE ------
+backend/              			@anandamatos @Bianca2703 @Marcus1423
 
-# ------ Squad UX (interface — sobrescreve frontend/ acima) ------
-frontend/src/components/        @anandamatos @paulo
-frontend/src/pages/             @anandamatos @paulo
-frontend/src/stories/           @anandamatos @paulo
-frontend/.storybook/            @anandamatos @paulo
-frontend/src/hooks/             @anandamatos @paulo
-frontend/src/context/           @anandamatos @paulo
-frontend/src/services/          @anandamatos @paulo @Marcus1423
+# ------ Squad UX ------
+frontend/				       @anandamatos
 
-# ------ Docs — sem owner obrigatório, liberado via Action ------
-docs/                           @anandamatos
+
+# ------ Docs — SEM CODE OWNER (NÃO exige revisão) ------
+docs/                           @anandamatos  # Apenas notificação, não bloqueia

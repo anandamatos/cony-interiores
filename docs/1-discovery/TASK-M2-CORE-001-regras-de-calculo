@@ -1,0 +1,169 @@
+# TASK-M2-CORE-001 - Validação das regras de cálculo de pagamentos
+
+## Objetivo
+
+Validar junto à gestora as regras de negócio utilizadas para calcular o pagamento das costureiras, garantindo que o sistema represente corretamente o processo utilizado pela empresa.
+
+---
+
+## Regras definidas
+
+### Forma de cálculo
+
+O pagamento será calculado principalmente **por metro produzido**, variando conforme o tipo de produto.
+
+Cada tipo de produto possuirá um **valor por metro previamente cadastrado**, porém esse valor poderá ser alterado sempre que necessário.
+
+Exemplo:
+
+- Cortina de ilhós → R$ XX,XX por metro
+- Cortina prega francesa → R$ XX,XX por metro
+- Forro blackout → R$ XX,XX por metro
+
+O sistema deverá permitir informar a largura (metros) do serviço para realizar o cálculo.
+
+---
+
+### Produtos com preço variável
+
+Alguns serviços não utilizam preço por metro.
+
+São eles:
+
+- Manutenção
+- Almofadas
+- Forro de mesa
+
+Nestes casos o valor será informado manualmente durante o cadastro do serviço.
+
+---
+
+### Frequência de pagamento
+
+O pagamento continua sendo controlado por serviço executado.
+
+Posteriormente vários serviços poderão compor um mesmo pagamento realizado à costureira.
+
+---
+
+### Complexidade
+
+A complexidade influencia o valor do pagamento.
+
+Entretanto, não existirá uma tabela de multiplicadores.
+
+O próprio cadastro do produto complexo possuirá um valor diferenciado.
+
+---
+
+### Bônus e descontos
+
+Não existem regras de bônus ou descontos aplicadas aos pagamentos.
+
+---
+
+### Retrabalho
+
+Quando o erro for da costureira:
+
+- não haverá pagamento adicional para correção.
+
+Quando o erro for da empresa:
+
+- será criado um serviço de manutenção, que será remunerado normalmente.
+
+---
+
+## Impactos no sistema
+
+- Cadastro de preço por metro para cada tipo de produto.
+- Campo para informar largura do serviço.
+- Possibilidade de alterar os valores cadastrados.
+- Serviços de manutenção devem aceitar valor manual.
+- Produtos de preço variável não utilizarão cálculo por metro.
+
+## Casos de Teste
+
+### Cálculo por metro
+
+- **Cálculo simples por metro**
+  Entrada: cortina de ilhós, largura 3,00m, valor/metro R$ 30,00
+  Esperado: pagamento = R$ 90,00
+
+- **Largura decimal**
+  Entrada: largura 2,75m, valor/metro R$ 30,00
+  Esperado: pagamento = R$ 82,50
+
+- **Largura não informada**
+  Entrada: serviço sem largura preenchida
+  Esperado: sistema não calcula; exibe erro de validação
+
+- **Largura igual a zero**
+  Entrada: largura = 0
+  Esperado: sistema não calcula; exibe erro de validação
+
+- **Produto sem valor/metro cadastrado**
+  Entrada: tipo de produto sem preço/metro definido
+  Esperado: sistema não calcula; exibe erro solicitando cadastro do valor
+
+### Alteração do valor por metro
+
+- **Alteração do valor cadastrado**
+  Entrada: valor/metro alterado de R$ 30,00 para R$ 35,00
+  Esperado: novos cálculos usam R$ 35,00
+
+- **Serviços já pagos após alteração**
+  Entrada: serviço pago com valor antigo (R$ 30,00); valor é alterado depois
+  Esperado: pagamento já realizado permanece com o valor antigo (R$ 30,00)
+
+### Produtos de preço variável (manutenção, almofada, forro de mesa)
+
+- **Manutenção com valor manual**
+  Entrada: valor informado manualmente = R$ 40,00
+  Esperado: pagamento = R$ 40,00, sem cálculo por metro
+
+- **Almofada com valor manual**
+  Entrada: valor informado manualmente = R$ 25,00
+  Esperado: pagamento = R$ 25,00
+
+- **Forro de mesa com valor manual**
+  Entrada: valor informado manualmente = R$ 60,00
+  Esperado: pagamento = R$ 60,00
+
+- **Produto de preço variável sem valor informado**
+  Entrada: manutenção cadastrada sem valor
+  Esperado: sistema não calcula; exibe erro de validação
+
+### Complexidade
+
+- **Produto complexo cadastrado**
+  Entrada: produto marcado como complexo, com valor diferenciado cadastrado
+  Esperado: sistema usa o valor cadastrado do produto complexo, ignorando o cálculo padrão por metro
+
+- **Alteração de complexidade pela gestora**
+  Entrada: gestora altera manualmente a complexidade de um serviço já cadastrado
+  Esperado: novo valor de pagamento reflete a alteração
+
+### Retrabalho
+
+- **Erro da costureira**
+  Entrada: serviço marcado como erro da costureira
+  Esperado: nenhum valor adicional é gerado para a correção
+
+- **Erro da empresa**
+  Entrada: serviço de manutenção criado por erro da empresa
+  Esperado: gera pagamento normal de manutenção
+
+### Agrupamento de pagamentos
+
+- **Múltiplos serviços da mesma costureira**
+  Entrada: costureira com 3 cortinas realizadas no período
+  Esperado: pagamento = soma dos valores das 3 cortinas
+
+- **Serviços de clientes diferentes, mesma costureira**
+  Entrada: 2 cortinas de clientes diferentes, mesma costureira, mesmo período
+  Esperado: pagamento agrupa os 2 valores normalmente
+
+- **Mais de uma costureira no mesmo serviço**
+  Entrada: serviço realizado por 2 costureiras
+  Esperado: cada costureira recebe o valor correspondente à sua parte do serviço (regra a confirmar com a gestora)
