@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CostureiraProvider } from "./context/CostureiraContext";
 import MainLayout from './layouts/MainLayout';
 import Dashboard from './pages/Dashboard';
+import Reports from './pages/Reports';
 
 const Services = lazy(() => import('./pages/Services'));
 const Seamstresses = lazy(() => import('./pages/Seamstresses'));
@@ -27,6 +28,7 @@ function App() {
             <Route path="seamstresses" element={<Seamstresses />} />
             <Route path="seamstresses/new" element={<NewSeamstress />} />
             <Route path="capacity" element={<Capacity />} />
+            <Route path="reports" element={<Reports />} />
             <Route path="*" element={<div>Página não encontrada</div>} />
           </Route>
         </Routes>

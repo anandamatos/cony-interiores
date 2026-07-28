@@ -247,7 +247,7 @@ const Dashboard = () => {
           </Typography>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" onClick={() => navigate('/reports')}>
             <BarChart3 className="w-4 h-4" />
             Relatórios
           </Button>
