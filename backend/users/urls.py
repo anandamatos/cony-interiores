@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import CostureiraViewSet, ServicoViewSet, ClienteViewSet, ProdutoViewSet, hello, home
+from .views import CostureiraViewSet, ServicoViewSet, ClienteViewSet, ProdutoViewSet, MetricaViewSet, hello, home
 
 # Configurar o router
 router = DefaultRouter()
