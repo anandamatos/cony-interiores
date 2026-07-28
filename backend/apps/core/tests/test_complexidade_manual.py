@@ -76,3 +76,24 @@ class TestComplexidadeManual(TestCase):
         mudou = atualizar_complexidade_se_automatica(servico)
         self.assertTrue(mudou)
         self.assertEqual(servico.complexidade, 10)
+
+    def test_arredondamento_half_up_em_media_fracionaria(self):
+        """
+        ILHO tamanho G = 3, FORRO tamanho G = 2 -> média = 2.5
+        round(2.5) nativo do Python daria 2 (arredonda pro par mais próximo).
+        O esperado é 3 (half up).
+        """
+        produto_ilho = Produto.objects.create(
+            nome="Ilhó Liso", valor_base=60, tipo_produto="ILHO"
+        )
+        produto_forro = Produto.objects.create(
+            nome="Forro Liso", valor_base=50, tipo_produto="FORRO"
+        )
+
+        servico = self._criar_servico(quantidade=1, tamanho="G")
+        servico.produto.clear()  # remove o BLACKOUT criado no setUp
+        servico.produto.add(produto_ilho, produto_forro)
+
+        valor = calcular_complexidade_automatica(servico)
+
+        self.assertEqual(valor, 3)

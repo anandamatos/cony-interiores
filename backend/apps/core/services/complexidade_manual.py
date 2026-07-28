@@ -14,6 +14,7 @@ não duplica a conta.
 """
 
 from .bridge import calcular_carga_servico
+import math
 
 
 def calcular_complexidade_automatica(servico) -> int:
@@ -21,10 +22,11 @@ def calcular_complexidade_automatica(servico) -> int:
     Calcula a complexidade "automática" de um serviço, reaproveitando a
     mesma conta de carga que já usamos pra capacidade (quantidade x
     complexidade média dos produtos vinculados). Arredonda pra inteiro,
-    já que o campo complexidade do Servico é um IntegerField.
+    já que o campo complexidade do Servico é um IntegerField. Usa arredondamento "half up" (0.5 sempre sobe) em vez do round()
+    nativo, que usa arredondamento bancário.
     """
     carga = calcular_carga_servico(servico)
-    return round(carga)
+    return math.floor(carga + 0.5)
 
 
 def atualizar_complexidade_se_automatica(servico) -> bool:

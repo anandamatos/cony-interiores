@@ -87,7 +87,7 @@ class TestCapacidadeIndependentePorCostureira(TestCase):
         self.assertEqual(self.maria.capacidade_base_semanal, 2)
         self.assertEqual(self.maria.disponibilidade_percentual, 50)
 
-    def test_endpoint_de_consulta_respeita_capacidade_individual(self):
+    def test_consulta_respeita_capacidade_individual(self):
         """
         Prova isso também no nível do endpoint completo (não só nos
         campos do banco), simulando o que a gestora veria na tela.
