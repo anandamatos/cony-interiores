@@ -203,11 +203,10 @@ class ServicoAPITest(TestCase):
 # ==================== TESTES DA METRICA (novo)====================
 
 class Test_Metrica(TestCase):
-    def set_up(self):
+    def setUp(self):
         self.cliente = Cliente.objects.create(
             nome="João Silva",
-            contato="(71) 99999-9999",
-            email="joao@email.com")
+            contato="(71) 99999-9999")
         self.costureira = Costureira.objects.create(
             nome="Maria Souza",
             contato="(71) 88888-8888",
@@ -239,16 +238,20 @@ class Test_Metrica(TestCase):
             costureira=self.costureira,
             quantidade=2,
             complexidade=3,
-            data_envio="2026-07-20",
-            prazo_entrega="2026-07-20",
+            data_envio="2026-07-28",
+            prazo_entrega="2026-07-28",
             valor=300.00,
             observacoes="Urgente")
-    def Test_otif(self):
-        Otif_obj = Servico.objects.all()
-        for servico in Otif_obj:
-          print(f"{servico.costureia.nome}")
-          if self.servico.data_envio >= self.servico.prazo_entrega:
-           today = date.today()
-           print(f'atrasado, o pedido foi enviado {today-self.servico.prazo_entrega} dias atrasado')
-          else:
-            print("Pedido ainda está dentro do periodo para entrega.")
+        
+    def test_otif(self):
+     servicos = Servico.objects.all()
+     atrasados = [s for s in servicos if s.data_envio > s.prazo_entrega]
+     no_prazo = [s for s in servicos if s.data_envio <= s.prazo_entrega]
+
+     self.assertEqual(len(servicos), 3, "Deveriam existir 3 serviços no total.")
+     self.assertEqual(
+        len(atrasados), 1, "Deveria haver exatamente 1 serviço atrasado."
+     )
+     self.assertEqual(
+        len(no_prazo), 2, "Deveriam haver exatamente 2 serviços no prazo."
+     )
