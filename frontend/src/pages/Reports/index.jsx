@@ -1,3 +1,6 @@
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { useEffect, useMemo, useState } from 'react';
 import { Download, FileText } from 'lucide-react';
 import Card from '../../components/atoms/Card';
@@ -108,6 +111,15 @@ const Reports = () => {
     });
   }, [mappedServices, searchTerm, statusFilter, startDate, endDate]);
 
+    const chartData = useMemo(() => {
+  const counts = filteredServices.reduce((acc, service) => {
+    const label = getStatusBadge(service.status).label;
+    acc[label] = (acc[label] || 0) + 1;
+    return acc;
+  }, {});
+  return Object.entries(counts).map(([status, total]) => ({ status, total }));
+}, [filteredServices]);
+
   const handleExport = () => {
     const headers = ['Cliente', 'Tipo', 'Status', 'Data'];
     const rows = filteredServices.map((s) => [s.client, s.type, s.status, s.date]);
@@ -125,6 +137,28 @@ const Reports = () => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
+    
+ const handleExportPdf = () => {
+  const doc = new jsPDF();
+
+  doc.setFontSize(16);
+  doc.text('Relatório de Serviços', 14, 16);
+  doc.setFontSize(10);
+  doc.text(`Gerado em ${new Date().toLocaleDateString('pt-BR')}`, 14, 22);
+
+  autoTable(doc, {
+    startY: 28,
+    head: [['Cliente', 'Tipo', 'Status', 'Data']],
+    body: filteredServices.map((s) => [
+      s.client,
+      s.type,
+      getStatusBadge(s.status).label,
+      s.date,
+    ]),
+  });
+
+  doc.save('relatorio-servicos.pdf');
+};
 
   const clearFilters = () => {
     setSearchTerm('');
@@ -142,10 +176,16 @@ const Reports = () => {
             Acompanhe e exporte os dados da sua operação.
           </Typography>
         </div>
-        <Button variant="primary" size="sm" onClick={handleExport} disabled={filteredServices.length === 0}>
-          <Download className="w-4 h-4" />
-          Exportar
-        </Button>
+       <div className="flex gap-2">
+  <Button variant="secondary" size="sm" onClick={handleExport} disabled={filteredServices.length === 0}>
+    <Download className="w-4 h-4" />
+    CSV
+  </Button>
+  <Button variant="primary" size="sm" onClick={handleExportPdf} disabled={filteredServices.length === 0}>
+    <Download className="w-4 h-4" />
+    PDF
+  </Button>
+</div>
       </div>
 
       <Card className="p-5 mb-6">
@@ -200,7 +240,21 @@ const Reports = () => {
             </Typography>
           </Card>
         )}
-
+        
+        {!isLoading && !loadError && filteredServices.length > 0 && (
+  <Card className="p-5 mb-6">
+    <Typography variant="h4" className="mb-4">Serviços por Status</Typography>
+    <ResponsiveContainer width="100%" height={250}>
+      <BarChart data={chartData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="status" />
+        <YAxis allowDecimals={false} />
+        <Tooltip />
+        <Bar dataKey="total" fill="#4B3A2E" radius={[4, 4, 0, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
+  </Card>
+)}
         {!isLoading && loadError && (
           <Alert type="error" title="Erro" message={loadError} />
         )}
