@@ -158,24 +158,26 @@ const Reports = () => {
             className="max-w-md"
           />
           <div className="flex flex-col sm:flex-row gap-4">
-            <div>
-              <label className="block text-xs font-medium text-taupe mb-1">De</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="px-3 py-2 rounded-md border border-border text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-taupe mb-1">Até</label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="px-3 py-2 rounded-md border border-border text-sm"
-              />
-            </div>
+           <div>
+             <label htmlFor="report-start-date" className="block text-xs font-medium text-taupe mb-1">De</label>
+             <input
+              id="report-start-date"
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="px-3 py-2 rounded-md border border-border text-sm"
+          />
+        </div>
+       <div>
+        <label htmlFor="report-end-date" className="block text-xs font-medium text-taupe mb-1">Até</label>
+        <input
+          id="report-end-date"
+         type="date"
+         value={endDate}
+         onChange={(e) => setEndDate(e.target.value)}
+         className="px-3 py-2 rounded-md border border-border text-sm"
+        />
+    </div>
           </div>
           <Button variant="ghost" size="sm" onClick={clearFilters}>
             Limpar filtros
