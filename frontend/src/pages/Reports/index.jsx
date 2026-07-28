@@ -11,7 +11,7 @@ import Alert from '../../components/atoms/Alert';
 import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
 import { serviceService } from '../../services/serviceService';
-
+import ROICards from '../../components/molecules/ROICards';
 
 const filterOptions = [
   { value: 'all', label: 'Todos', variant: 'all' },
@@ -45,7 +45,6 @@ const getStatusBadge = (status) => {
 };
 
 const Reports = () => {
-
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -111,14 +110,14 @@ const Reports = () => {
     });
   }, [mappedServices, searchTerm, statusFilter, startDate, endDate]);
 
-    const chartData = useMemo(() => {
-  const counts = filteredServices.reduce((acc, service) => {
-    const label = getStatusBadge(service.status).label;
-    acc[label] = (acc[label] || 0) + 1;
-    return acc;
-  }, {});
-  return Object.entries(counts).map(([status, total]) => ({ status, total }));
-}, [filteredServices]);
+  const chartData = useMemo(() => {
+    const counts = filteredServices.reduce((acc, service) => {
+      const label = getStatusBadge(service.status).label;
+      acc[label] = (acc[label] || 0) + 1;
+      return acc;
+    }, {});
+    return Object.entries(counts).map(([status, total]) => ({ status, total }));
+  }, [filteredServices]);
 
   const handleExport = () => {
     const headers = ['Cliente', 'Tipo', 'Status', 'Data'];
@@ -137,28 +136,28 @@ const Reports = () => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
-    
- const handleExportPdf = () => {
-  const doc = new jsPDF();
 
-  doc.setFontSize(16);
-  doc.text('Relatório de Serviços', 14, 16);
-  doc.setFontSize(10);
-  doc.text(`Gerado em ${new Date().toLocaleDateString('pt-BR')}`, 14, 22);
+  const handleExportPdf = () => {
+    const doc = new jsPDF();
 
-  autoTable(doc, {
-    startY: 28,
-    head: [['Cliente', 'Tipo', 'Status', 'Data']],
-    body: filteredServices.map((s) => [
-      s.client,
-      s.type,
-      getStatusBadge(s.status).label,
-      s.date,
-    ]),
-  });
+    doc.setFontSize(16);
+    doc.text('Relatório de Serviços', 14, 16);
+    doc.setFontSize(10);
+    doc.text(`Gerado em ${new Date().toLocaleDateString('pt-BR')}`, 14, 22);
 
-  doc.save('relatorio-servicos.pdf');
-};
+    autoTable(doc, {
+      startY: 28,
+      head: [['Cliente', 'Tipo', 'Status', 'Data']],
+      body: filteredServices.map((s) => [
+        s.client,
+        s.type,
+        getStatusBadge(s.status).label,
+        s.date,
+      ]),
+    });
+
+    doc.save('relatorio-servicos.pdf');
+  };
 
   const clearFilters = () => {
     setSearchTerm('');
@@ -176,20 +175,23 @@ const Reports = () => {
             Acompanhe e exporte os dados da sua operação.
           </Typography>
         </div>
-       <div className="flex gap-2">
-  <Button variant="secondary" size="sm" onClick={handleExport} disabled={filteredServices.length === 0}>
-    <Download className="w-4 h-4" />
-    CSV
-  </Button>
-  <Button variant="primary" size="sm" onClick={handleExportPdf} disabled={filteredServices.length === 0}>
-    <Download className="w-4 h-4" />
-    PDF
-  </Button>
-</div>
+        <div className="flex gap-2">
+          <Button variant="secondary" size="sm" onClick={handleExport} disabled={filteredServices.length === 0}>
+            <Download className="w-4 h-4" />
+            CSV
+          </Button>
+          <Button variant="primary" size="sm" onClick={handleExportPdf} disabled={filteredServices.length === 0}>
+            <Download className="w-4 h-4" />
+            PDF
+          </Button>
+        </div>
       </div>
+
+      <ROICards />
 
       <Card className="p-5 mb-6">
         <Typography variant="h4" className="mb-4">Filtros</Typography>
+
         <div className="flex flex-col lg:flex-row lg:items-end gap-4">
           <SearchBar
             placeholder="Buscar por cliente ou produto..."
@@ -197,27 +199,28 @@ const Reports = () => {
             onChange={setSearchTerm}
             className="max-w-md"
           />
+
           <div className="flex flex-col sm:flex-row gap-4">
-           <div>
-             <label htmlFor="report-start-date" className="block text-xs font-medium text-taupe mb-1">De</label>
-             <input
-              id="report-start-date"
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="px-3 py-2 rounded-md border border-border text-sm"
-          />
-        </div>
-       <div>
-        <label htmlFor="report-end-date" className="block text-xs font-medium text-taupe mb-1">Até</label>
-        <input
-          id="report-end-date"
-         type="date"
-         value={endDate}
-         onChange={(e) => setEndDate(e.target.value)}
-         className="px-3 py-2 rounded-md border border-border text-sm"
-        />
-    </div>
+            <div>
+              <label htmlFor="report-start-date" className="block text-xs font-medium text-taupe mb-1">De</label>
+              <input
+                id="report-start-date"
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="px-3 py-2 rounded-md border border-border text-sm"
+              />
+            </div>
+            <div>
+              <label htmlFor="report-end-date" className="block text-xs font-medium text-taupe mb-1">Até</label>
+              <input
+                id="report-end-date"
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="px-3 py-2 rounded-md border border-border text-sm"
+              />
+            </div>
           </div>
           <Button variant="ghost" size="sm" onClick={clearFilters}>
             Limpar filtros
@@ -240,21 +243,22 @@ const Reports = () => {
             </Typography>
           </Card>
         )}
-        
+
         {!isLoading && !loadError && filteredServices.length > 0 && (
-  <Card className="p-5 mb-6">
-    <Typography variant="h4" className="mb-4">Serviços por Status</Typography>
-    <ResponsiveContainer width="100%" height={250}>
-      <BarChart data={chartData}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="status" />
-        <YAxis allowDecimals={false} />
-        <Tooltip />
-        <Bar dataKey="total" fill="#4B3A2E" radius={[4, 4, 0, 0]} />
-      </BarChart>
-    </ResponsiveContainer>
-  </Card>
-)}
+          <Card className="p-5 mb-6">
+            <Typography variant="h4" className="mb-4">Serviços por Status</Typography>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="status" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Bar dataKey="total" fill="#4B3A2E" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+        )}
+
         {!isLoading && loadError && (
           <Alert type="error" title="Erro" message={loadError} />
         )}
