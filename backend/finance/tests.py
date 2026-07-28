@@ -65,7 +65,7 @@ class TestPagamentoModel(TestCase):
         pagamento = Pagamento.objects.create(
             servico=self.servico,
             valor=150.00,
-            data_vencimento="2026-08-01",
+            data_entrega="2026-08-01",
         )
         self.assertEqual(pagamento.status, "pendente")
         self.assertIsNone(pagamento.data_pagamento)
@@ -74,7 +74,7 @@ class TestPagamentoModel(TestCase):
         pagamento = Pagamento.objects.create(
             servico=self.servico,
             valor=150.00,
-            data_vencimento="2026-08-01",
+            data_entrega="2026-08-01",
         )
         texto = str(pagamento)
         self.assertIn("150", texto)
@@ -85,24 +85,24 @@ class TestPagamentoModel(TestCase):
             Pagamento.objects.create(
                 servico=None,
                 valor=150.00,
-                data_vencimento="2026-08-01",
+                data_entrega="2026-08-01",
             )
 
     def test_relacionamento_com_servico(self):
         Pagamento.objects.create(
-            servico=self.servico, valor=50.00, data_vencimento="2026-08-01"
+            servico=self.servico, valor=50.00, data_entrega="2026-08-01"
         )
         Pagamento.objects.create(
-            servico=self.servico, valor=50.00, data_vencimento="2026-09-01"
+            servico=self.servico, valor=50.00, data_entrega="2026-09-01"
         )
         self.assertEqual(self.servico.pagamentos.count(), 2)
 
-    def test_ordena_por_data_vencimento(self):
+    def test_ordena_por_data_entrega(self):
         p_depois = Pagamento.objects.create(
-            servico=self.servico, valor=50.00, data_vencimento="2026-12-01"
+            servico=self.servico, valor=50.00, data_entrega="2026-12-01"
         )
         p_antes = Pagamento.objects.create(
-            servico=self.servico, valor=50.00, data_vencimento="2026-08-01"
+            servico=self.servico, valor=50.00, data_entrega="2026-08-01"
         )
         pagamentos = list(Pagamento.objects.all())
         self.assertEqual(pagamentos[0], p_antes)
@@ -125,7 +125,7 @@ class TestPagamentoSerializer(TestCase):
 
     def test_serializa_pagamento_existente(self):
         pagamento = Pagamento.objects.create(
-            servico=self.servico, valor=150.00, data_vencimento="2026-08-01"
+            servico=self.servico, valor=150.00, data_entrega="2026-08-01"
         )
         serializer = PagamentoSerializer(pagamento)
         self.assertEqual(Decimal(serializer.data["valor"]), Decimal("150.00"))
@@ -145,7 +145,7 @@ class TestPagamentoSerializer(TestCase):
         dados = {
             "servico": self.servico.id,
             "valor": 100,
-            "data_vencimento": "2026-08-01",
+            "data_entrega": "2026-08-01",
         }
         serializer = PagamentoSerializer(data=dados)
         self.assertTrue(serializer.is_valid(), serializer.errors)
