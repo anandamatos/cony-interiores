@@ -15,6 +15,3 @@ urlpatterns = [
     path('', home),
     path('', include(router.urls)),
 ]
-
-# Incluir as rotas do router
-urlpatterns += router.urls

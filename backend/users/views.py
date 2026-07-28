@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from rest_framework.decorators import action, api_view, permission_classes
 from .models import Costureira, Servico, Cliente, Produto
 from .serializers import CostureiraSerializer, ServicoSerializer, ClienteSerializer, ProdutoSerializer
-from datetime import date
 import time
 from django.utils import timezone
 
@@ -81,7 +80,6 @@ class MetricaViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=["get"], url_path="otif")
     def OTIF(self, request):
-        hoje = date.today()
         OTIF_lista = []
         pesquisada = request.query_params.get('q', None) #New
 
@@ -95,8 +93,8 @@ class MetricaViewSet(viewsets.ViewSet):
             if nome_costureira == pesquisada:
                 break
             if servico.data_envio and servico.prazo_entrega:
-                if servico.data_envio >= servico.prazo_entrega:
-                    atraso = (hoje - servico.prazo_entrega).days
+                if servico.data_envio > servico.prazo_entrega:
+                    atraso = (servico.data_envio - servico.prazo_entrega).days
                     mensagem = (f"Atrasado: enviado {atraso} dias após o prazo.")
                     status = "Atrasado"
                 else:
