@@ -90,8 +90,6 @@ class MetricaViewSet(viewsets.ViewSet):
 
         for servico in servicos:
             nome_costureira = getattr(servico.costureira, "nome", "Sem nome")
-            if nome_costureira == pesquisada:
-                break
             if servico.data_envio and servico.prazo_entrega:
                 if servico.data_envio > servico.prazo_entrega:
                     atraso = (servico.data_envio - servico.prazo_entrega).days

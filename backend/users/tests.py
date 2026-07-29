@@ -215,7 +215,7 @@ class Test_Metrica(TestCase):
             nome="Cortina",
             descricao="Cortina de ilhós",
             valor_base=150.00)
-        self.servico = Servico.objects.create(
+        self.servico_no_prazo = Servico.objects.create(
             cliente=self.cliente,
             costureira=self.costureira,
             quantidade=5,
@@ -223,8 +223,10 @@ class Test_Metrica(TestCase):
             data_envio="2026-07-07",
             prazo_entrega="2026-07-22",
             valor=700.00,
-            observacoes="Urgente")
-        self.servico = Servico.objects.create(
+            observacoes="Urgente"
+        )
+
+        self.servico_atrasado = Servico.objects.create(
             cliente=self.cliente,
             costureira=self.costureira,
             quantidade=1,
@@ -232,8 +234,10 @@ class Test_Metrica(TestCase):
             data_envio="2026-07-23",
             prazo_entrega="2026-07-15",
             valor=70.00,
-            observacoes="Urgente")
-        self.servico = Servico.objects.create(
+            observacoes="Urgente"
+        )
+
+        self.servico_limite = Servico.objects.create(
             cliente=self.cliente,
             costureira=self.costureira,
             quantidade=2,
@@ -241,17 +245,26 @@ class Test_Metrica(TestCase):
             data_envio="2026-07-28",
             prazo_entrega="2026-07-28",
             valor=300.00,
-            observacoes="Urgente")
+            observacoes="Urgente"
+        )
         
     def test_otif(self):
-     servicos = Servico.objects.all()
-     atrasados = [s for s in servicos if s.data_envio > s.prazo_entrega]
-     no_prazo = [s for s in servicos if s.data_envio <= s.prazo_entrega]
+        servicos = Servico.objects.all()
 
-     self.assertEqual(len(servicos), 3, "Deveriam existir 3 serviços no total.")
-     self.assertEqual(
-        len(atrasados), 1, "Deveria haver exatamente 1 serviço atrasado."
-     )
-     self.assertEqual(
-        len(no_prazo), 2, "Deveriam haver exatamente 2 serviços no prazo."
-     )
+        atrasados = [
+            s for s in servicos
+            if s.data_envio > s.prazo_entrega
+        ]
+
+        no_prazo = [
+            s for s in servicos
+            if s.data_envio <= s.prazo_entrega
+        ]
+
+        self.assertEqual(servicos.count(), 3)
+
+        self.assertIn(self.servico_atrasado, atrasados)
+        self.assertIn(self.servico_no_prazo, no_prazo)
+        self.assertIn(self.servico_limite, no_prazo)
+
+        self.assertNotIn(self.servico_atrasado, no_prazo)
