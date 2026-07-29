@@ -191,3 +191,51 @@ class TestServicoViewSetRegistraAuditoria(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(LogAuditoria.objects.count(), 0)
+
+
+class TestServicoViewSetRecalculaComplexidadeAutomatica(TestCase):
+    """
+    Prova que atualizar um Servico via API, com complexidade_manual=False,
+    recalcula a complexidade automaticamente (comportamento esperado
+    da TASK-M1-CORE-003).
+    """
+
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        self.cliente = Cliente.objects.create(nome="Cliente Teste")
+        self.costureira = Costureira.objects.create(nome="Costureira Teste")
+        self.produto = Produto.objects.create(
+            nome="Cortina Blackout", valor_base=100, tipo_produto="BLACKOUT"
+        )
+        self.usuario = Usuario.objects.create_user(username="gestora", password="senha123")
+
+    def _criar_servico(self, quantidade=2, tamanho="G", complexidade=0):
+        servico = Servico.objects.create(
+            cliente=self.cliente,
+            costureira=self.costureira,
+            quantidade=quantidade,
+            tamanho=tamanho,
+            complexidade=complexidade,
+            complexidade_manual=False,
+            data_envio="2026-07-01",
+            prazo_entrega="10 dias",
+            valor=100.00,
+        )
+        servico.produto.add(self.produto)
+        return servico
+
+    def test_update_via_api_recalcula_complexidade_automaticamente(self):
+        # 2 peças de blackout tamanho G = 2 x 5 = 10 (mesmo cálculo do test_complexidade_manual.py)
+        servico = self._criar_servico(quantidade=2, complexidade=0)
+
+        view = ServicoViewSet.as_view({"patch": "partial_update"})
+        request = self.factory.patch(
+            f"/api/servicos/{servico.pk}/", {"quantidade": 2}, format="json"
+        )
+        force_authenticate(request, user=self.usuario)
+        response = view(request, pk=servico.pk)
+        response.render()
+
+        servico.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(servico.complexidade, 10)  # deve ter recalculado sozinho

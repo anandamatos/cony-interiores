@@ -66,6 +66,13 @@ class ServicoViewSet(viewsets.ModelViewSet):
                 valor_anterior=valor_anterior,
                 justificativa=self.request.data.get("justificativa_ajuste", ""),
             )
+        else:
+            atualizar_complexidade_se_automatica(instance)
+
+def perform_create(self, serializer):
+    instance = serializer.save()
+    if not instance.complexidade_manual:
+        atualizar_complexidade_se_automatica(instance)
 
 # ==================== VIEWSET DO CLIENTE ====================
 
