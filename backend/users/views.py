@@ -69,10 +69,10 @@ class ServicoViewSet(viewsets.ModelViewSet):
         else:
             atualizar_complexidade_se_automatica(instance)
 
-def perform_create(self, serializer):
-    instance = serializer.save()
-    if not instance.complexidade_manual:
-        atualizar_complexidade_se_automatica(instance)
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        if not instance.complexidade_manual:
+            atualizar_complexidade_se_automatica(instance)
 
 # ==================== VIEWSET DO CLIENTE ====================
 
