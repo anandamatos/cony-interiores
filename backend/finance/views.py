@@ -9,6 +9,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+from .services.planejamento_pagamentos import (
+    planejamento_semanal,
+    planejamento_mensal,
+    previsao_pagamentos,
+)
 
 business_logger = logging.getLogger('financial_api')
 
@@ -81,3 +86,26 @@ def simulate_payment(request):
     )
 
     return Response(result)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def planejamento_pagamentos_semanal(request):
+    return Response(
+        planejamento_semanal()
+    )
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def planejamento_pagamentos_mensal(request):
+    return Response(
+        planejamento_mensal()
+    )
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def previsao_pagamentos_endpoint(request):
+    return Response(
+        previsao_pagamentos()
+    )

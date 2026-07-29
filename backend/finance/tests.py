@@ -1,6 +1,5 @@
 from django.test import TestCase
 
-
 class FinancialApiTests(TestCase):
     def test_financial_health_endpoint_returns_ok(self):
         response = self.client.get('/api/financial/health/')
@@ -149,3 +148,76 @@ class TestPagamentoSerializer(TestCase):
         }
         serializer = PagamentoSerializer(data=dados)
         self.assertTrue(serializer.is_valid(), serializer.errors)
+
+from datetime import date
+
+from .models import Pagamento
+from users.models import Cliente, Costureira, Servico
+
+
+class TestPlanejamentoPagamentos(TestCase):
+
+    def setUp(self):
+
+        cliente = Cliente.objects.create(
+            nome="Cliente Planejamento"
+        )
+
+        costureira = Costureira.objects.create(
+            nome="Costureira Planejamento"
+        )
+
+        self.servico = Servico.objects.create(
+            cliente=cliente,
+            costureira=costureira,
+            quantidade=1,
+            data_envio="2026-07-01",
+            prazo_entrega="10 dias",
+            valor=200,
+        )
+
+
+    def test_planejamento_semanal(self):
+
+        Pagamento.objects.create(
+            servico=self.servico,
+            valor=100,
+            data_entrega=date(2026, 8, 1),
+        )
+
+        response = self.client.get(
+            "/api/financial/payments/planejamento/semanal/"
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(
+            response.json()[0]["valor_total"],
+            "100.00"
+        )
+
+
+    def test_previsao_considera_todos_status(self):
+
+        Pagamento.objects.create(
+            servico=self.servico,
+            valor=100,
+            data_entrega=date(2026, 8, 1),
+            status="cancelado",
+        )
+
+        response = self.client.get(
+            "/api/financial/payments/previsao/"
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(
+            len(response.json()),
+            1
+        )
+
+        self.assertEqual(
+            response.json()[0]["status"],
+            "cancelado"
+        )
