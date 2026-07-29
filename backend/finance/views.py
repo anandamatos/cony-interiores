@@ -81,3 +81,25 @@ def simulate_payment(request):
     )
 
     return Response(result)
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+
+from users.models import Costureira
+
+from .services.calculo_pagamento_costureira import listar_pagamento_todas_costureiras
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def listar_pagamentos_costureiras(request):
+    """
+    GET /api/financial/pagamentos-costureiras/
+
+    Retorna, para cada costureira ativa, quanto ela deve receber
+    (TASK-M2-CORE-004 e 005: cálculo automático + sumarização).
+    """
+    costureiras = Costureira.objects.filter(ativo=True)
+    dados = listar_pagamento_todas_costureiras(costureiras)
+    return Response(dados)
