@@ -120,3 +120,74 @@ class Servico(models.Model):
             models.Index(fields=["valor"], name="idx_serv_valor"),
             models.Index(fields=["complexidade"], name="idx_serv_complex"),
         ]
+
+from django.conf import settings
+from django.db.models import Q, F, CheckConstraint
+
+
+class PeriodoIndisponibilidade(models.Model):
+    class Tipo(models.TextChoices):
+        FERIAS = "FERIAS", "Férias"
+        AFASTAMENTO_MEDICO = "AFASTAMENTO_MEDICO", "Afastamento médico"
+        LICENCA = "LICENCA", "Licença"
+        OUTRO = "OUTRO", "Outro"
+
+    costureira = models.ForeignKey(
+        "users.Costureira",
+        on_delete=models.CASCADE,
+        related_name="periodos_indisponibilidade",
+    )
+    tipo = models.CharField(max_length=30, choices=Tipo.choices)
+    data_inicio = models.DateField()
+    data_fim = models.DateField()
+    observacao = models.TextField(blank=True)
+    criado_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            CheckConstraint(
+                check=Q(data_fim__gte=F("data_inicio")),
+                name="periodo_data_fim_apos_inicio",
+            )
+        ]
+        indexes = [
+            models.Index(fields=["costureira", "data_inicio", "data_fim"]),
+        ]
+        ordering = ["-data_inicio"]
+
+    def __str__(self):
+        return f"{self.costureira} — {self.get_tipo_display()} ({self.data_inicio} a {self.data_fim})"
+
+    def esta_ativo_em(self, data):
+        return self.data_inicio <= data <= self.data_fim
+
+    @classmethod
+    def costureira_indisponivel(cls, costureira, data):
+        return cls.objects.filter(
+            costureira=costureira,
+            data_inicio__lte=data,
+            data_fim__gte=data,
+        ).exists()
+
+
+class LogAuditoria(models.Model):
+    class Acao(models.TextChoices):
+        CRIACAO = "CRIACAO", "Criação"
+        ATUALIZACAO = "ATUALIZACAO", "Atualização"
+        EXCLUSAO = "EXCLUSAO", "Exclusão"
+
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    acao = models.CharField(max_length=20, choices=Acao.choices)
+    modelo = models.CharField(max_length=100)
+    objeto_id = models.CharField(max_length=50)
+    campo_alterado = models.CharField(max_length=100)
+    valor_anterior = models.TextField(null=True, blank=True)
+    valor_novo = models.TextField(null=True, blank=True)
+    justificativa = models.TextField(blank=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-criado_em"]
