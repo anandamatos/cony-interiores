@@ -5,6 +5,7 @@ from rest_framework.decorators import action, api_view, permission_classes
 from .models import Costureira, Servico, Cliente, Produto
 from .serializers import CostureiraSerializer, ServicoSerializer, ClienteSerializer, ProdutoSerializer
 from datetime import datetime
+from django.db import models
 import logging
 
 logger = logging.getLogger(__name__)
@@ -54,6 +55,20 @@ class ProdutoViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
 
 
+# ===== VIEWS DE TESTE =====
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def hello(request):
+    return Response({"message": "Hello Cony Interiores!"})
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def home(request):
+    return Response({"message": "Bem-vindo ao backend Cony Interiores!"})
+
+
 # ===== MÉTRICAS =====
 
 @api_view(['GET'])
@@ -101,7 +116,12 @@ def metrica_eficiencia(request):
     
     hoje = datetime.now().date()
     inicio_mes = hoje.replace(day=1)
-    fim_mes = (inicio_mes.replace(month=inicio_mes.month % 12 + 1, day=1) - timedelta(days=1)) if inicio_mes.month != 12 else inicio_mes.replace(month=12, day=31)
+    
+    # Calcular fim do mês
+    if inicio_mes.month == 12:
+        fim_mes = inicio_mes.replace(month=12, day=31)
+    else:
+        fim_mes = inicio_mes.replace(month=inicio_mes.month + 1, day=1) - timedelta(days=1)
 
     queryset = Servico.objects.filter(
         data_envio__gte=inicio_mes,
@@ -119,3 +139,21 @@ def metrica_eficiencia(request):
         "entregas_no_prazo": no_prazo,
         "taxa_eficiencia_porcentagem": f"{taxa:.1f}%"
     })
+
+
+class MetricaViewSet(viewsets.ViewSet):
+    """
+    ViewSet para métricas de produção.
+    Registrado em users/urls.py com o router.
+    """
+    permission_classes = [AllowAny]
+
+    @action(detail=False, methods=['get'], url_path='otif')
+    def otif(self, request):
+        """Endpoint: /api/metricas/otif/"""
+        return metrica_otif(request)
+
+    @action(detail=False, methods=['get'], url_path='eficiencia')
+    def eficiencia(self, request):
+        """Endpoint: /api/metricas/eficiencia/"""
+        return metrica_eficiencia(request)
