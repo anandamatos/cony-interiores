@@ -7,7 +7,9 @@ import Dashboard from './pages/Dashboard';
 const Services = lazy(() => import('./pages/Services'));
 const Seamstresses = lazy(() => import('./pages/Seamstresses'));
 const NewService = lazy(() => import('./pages/NewService'));
+const EditService = lazy(() => import('./pages/EditService'));
 const NewSeamstress = lazy(() => import('./pages/Seamstresses/NewSeamstress'));
+const EditSeamstress = lazy(() => import('./pages/Seamstresses/EditSeamstress')); // ⬅️ ADICIONAR
 const Capacity = lazy(() => import('./pages/Capacity'));
 
 function App() {
@@ -24,8 +26,10 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="services" element={<Services />} />
             <Route path="services/new" element={<NewService />} />
+            <Route path="services/edit/:id" element={<EditService />} />
             <Route path="seamstresses" element={<Seamstresses />} />
             <Route path="seamstresses/new" element={<NewSeamstress />} />
+            <Route path="seamstresses/edit/:id" element={<EditSeamstress />} /> {/* ⬅️ ADICIONAR */}
             <Route path="capacity" element={<Capacity />} />
             <Route path="*" element={<div>Página não encontrada</div>} />
           </Route>

@@ -181,7 +181,7 @@ const Seamstresses = () => {
                   </div>
                   <div
                     className="flex-1 min-w-0 cursor-pointer"
-                    onClick={() => navigate(`/seamstresses/${seamstress.id}/edit`)}
+                    onClick={() => navigate(`/seamstresses/edit/${seamstress.id}`)}
                     role="button"
                     tabIndex={0}
                     onKeyDown={(event) => {
@@ -210,7 +210,7 @@ const Seamstresses = () => {
                       variant="ghost"
                       size="sm"
                       className="!p-2"
-                      onClick={() => navigate(`/seamstresses/${seamstress.id}/edit`)}
+                      onClick={() => navigate(`/seamstresses/edit/${seamstress.id}`)}
                       aria-label={`Editar ${seamstress.name}`}
                       title="Editar"
                     >
