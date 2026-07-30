@@ -28,4 +28,9 @@ urlpatterns = [
         views.gerar_relatorio_mensal_view,
         name='gerar-relatorio-mensal',
     ),
+    path(
+        'relatorios/atrasos/',
+        views.listar_atrasos_view,
+        name='listar-atrasos',
+    ),
 ]

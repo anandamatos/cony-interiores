@@ -63,7 +63,7 @@ def sugerir_alocacao(request, servico_id):
 # TASK-M4-CORE-001
 
 from users.serializers import RelatorioSerializer
-from .services.relatorios import gerar_relatorio_mensal
+from .services.relatorios import gerar_relatorio_mensal, listar_atrasos
 
 
 @api_view(['POST'])
@@ -103,3 +103,17 @@ def listar_relatorios_mensais(request):
     relatorios = Relatorio.objects.filter(costureira__isnull=True)
     serializer = RelatorioSerializer(relatorios, many=True)
     return Response(serializer.data)
+
+
+# ==================== RELATÓRIO DE ATRASOS ====================
+# TASK-M4-CORE-002
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def listar_atrasos_view(request):
+    """
+    GET /api/core/relatorios/atrasos/
+    Lista todos os pagamentos atualmente em atraso, com o serviço,
+    cliente, costureira e produtos relacionados a cada um.
+    """
+    return Response(listar_atrasos())

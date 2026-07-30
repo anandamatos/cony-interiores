@@ -12,6 +12,9 @@ Pagamento associado para contar o que está em atraso ou ainda em aberto:
 Um Serviço pode ter mais de um Pagamento; cada Pagamento em atraso/aberto
 conta uma vez (é o pagamento que está atrasado ou em aberto, não o
 serviço em si).
+
+TASK-M4-CORE-002: relatório de atrasos - lista (não só conta) todos os
+pagamentos com status "atrasado" no momento, com o serviço relacionado.
 """
 
 import calendar
@@ -105,3 +108,40 @@ def gerar_relatorio_mensal(periodo):
         },
     )
     return relatorio
+
+
+def listar_atrasos():
+    """
+    Lista todos os pagamentos atualmente em atraso (status "atrasado"),
+    com os dados do serviço relacionado (cliente, costureira, produtos,
+    quantidade) e há quantos dias o pagamento está atrasado.
+
+    Ordenado do atraso mais antigo pro mais recente (o mais crítico primeiro).
+    """
+    hoje = date.today()
+
+    pagamentos_atrasados = Pagamento.objects.filter(
+        status="atrasado",
+    ).select_related(
+        "servico", "servico__cliente", "servico__costureira",
+    ).prefetch_related(
+        "servico__produto",
+    )
+
+    atrasos = []
+    for pagamento in pagamentos_atrasados:
+        servico = pagamento.servico
+        atrasos.append({
+            "pagamento_id": pagamento.id,
+            "servico_id": servico.id,
+            "cliente": servico.cliente.nome,
+            "costureira": servico.costureira.nome,
+            "produtos": [produto.nome for produto in servico.produto.all()],
+            "quantidade": servico.quantidade,
+            "valor": str(pagamento.valor),
+            "data_entrega": pagamento.data_entrega.isoformat(),
+            "dias_atraso": (hoje - pagamento.data_entrega).days,
+        })
+
+    atrasos.sort(key=lambda linha: -linha["dias_atraso"])
+    return atrasos
