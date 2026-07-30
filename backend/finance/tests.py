@@ -5,6 +5,9 @@ Testes do model Pagamento e do PagamentoSerializer
 Testes do cálculo de pagamento das costureiras
 (TASK-M2-CORE-004, 005 e 006).
 
+Testes do planejamento de pagamentos
+(TASK-M2-CORE-007, 008 e 009).
+
 Como rodar só esses:
     python manage.py test finance.tests.TestCalculoPagamentoCostureira
     python manage.py test finance.tests.TestEndpointListarPagamentosCostureiras
@@ -14,6 +17,7 @@ Como rodar tudo do finance:
 """
 
 from decimal import Decimal
+from datetime import date
 
 from django.db import IntegrityError
 from django.test import TestCase
@@ -33,7 +37,6 @@ from .services.calculo_pagamento_costureira import (
 class FinancialApiTests(TestCase):
     def test_financial_health_endpoint_returns_ok(self):
         response = self.client.get('/api/financial/health/')
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['status'], 'ok')
 
@@ -43,7 +46,6 @@ class FinancialApiTests(TestCase):
             {'amount': 100, 'fee_rate': 0.1, 'currency': 'BRL'},
             content_type='application/json',
         )
-
         self.assertEqual(response.status_code, 200)
         payload = response.json()
         self.assertEqual(payload['amount'], '100.00')
@@ -56,12 +58,10 @@ class FinancialApiTests(TestCase):
             {'amount': 0},
             content_type='application/json',
         )
-
         self.assertEqual(response.status_code, 400)
 
 
 class TestPagamentoModel(TestCase):
-
     def setUp(self):
         self.cliente = Cliente.objects.create(nome="Cliente Pagamento Teste")
         self.costureira = Costureira.objects.create(nome="Costureira Pagamento Teste")
@@ -123,7 +123,6 @@ class TestPagamentoModel(TestCase):
 
 
 class TestPagamentoSerializer(TestCase):
-
     def setUp(self):
         self.cliente = Cliente.objects.create(nome="Cliente Serializer Teste")
         self.costureira = Costureira.objects.create(nome="Costureira Serializer Teste")
@@ -164,15 +163,49 @@ class TestPagamentoSerializer(TestCase):
         self.assertTrue(serializer.is_valid(), serializer.errors)
 
 
+class TestPlanejamentoPagamentos(TestCase):
+    def setUp(self):
+        cliente = Cliente.objects.create(nome="Cliente Planejamento")
+        costureira = Costureira.objects.create(nome="Costureira Planejamento")
+        self.servico = Servico.objects.create(
+            cliente=cliente,
+            costureira=costureira,
+            quantidade=1,
+            data_envio="2026-07-01",
+            prazo_entrega="10 dias",
+            valor=200,
+        )
+
+    def test_planejamento_semanal(self):
+        Pagamento.objects.create(
+            servico=self.servico,
+            valor=100,
+            data_entrega=date(2026, 8, 1),
+        )
+        response = self.client.get("/api/financial/payments/planejamento/semanal/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()[0]["valor_total"], "100.00")
+
+    def test_previsao_considera_todos_status(self):
+        Pagamento.objects.create(
+            servico=self.servico,
+            valor=100,
+            data_entrega=date(2026, 8, 1),
+            status="cancelado",
+        )
+        response = self.client.get("/api/financial/payments/previsao/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]["status"], "cancelado")
+
+
 class ServicoFakeParaTeste:
-    """Objeto simples só com o campo .valor, pra testar a lógica pura
-    sem precisar criar Cliente/Costureira/Servico completos no banco."""
+    """Objeto simples só com o campo .valor, pra testar a lógica pura"""
     def __init__(self, valor):
         self.valor = Decimal(str(valor))
 
 
 class TestCalculoDePagamento(TestCase):
-
     def test_soma_e_aplica_percentual(self):
         servicos = [
             ServicoFakeParaTeste(100),
@@ -187,7 +220,6 @@ class TestCalculoDePagamento(TestCase):
         self.assertEqual(resultado, Decimal("0"))
 
     def test_aceita_percentual_como_float_sem_quebrar(self):
-        # Garante que não volta o bug de Decimal x float
         servicos = [ServicoFakeParaTeste(100)]
         resultado = calculo_de_pagamento(servicos, 0.60)
         self.assertEqual(resultado, Decimal("60.0"))
@@ -201,14 +233,8 @@ class TestCalculoDePagamento(TestCase):
 
 
 class TestConsultaEListaPagamentoCostureiras(TestCase):
-    """
-    Estes testes usam o banco de dados de verdade (Cliente, Costureira,
-    Servico), pra confirmar que a integração com os models reais funciona.
-    """
-
     def setUp(self):
         self.cliente = Cliente.objects.create(nome="Cliente Pagamento")
-
         self.maria = Costureira.objects.create(nome="Maria Pagamento", ativo=True)
         self.joana = Costureira.objects.create(nome="Joana Pagamento", ativo=True)
 
@@ -224,35 +250,29 @@ class TestConsultaEListaPagamentoCostureiras(TestCase):
             cliente=self.cliente, costureira=self.joana, quantidade=1,
             data_envio="2026-07-02", prazo_entrega="10 dias", valor=1000,
         )
-
-        # Costureira inativa, não deve aparecer nos resultados
         Costureira.objects.create(nome="Inativa Pagamento", ativo=False)
 
     def test_consulta_pagamento_de_uma_costureira(self):
         dados = consultar_pagamento_costureira(self.maria)
         self.assertEqual(dados["nome"], "Maria Pagamento")
-        # (100 + 250) * 0.60 = 210
         self.assertEqual(dados["valor_a_pagar"], Decimal("210.00"))
 
     def test_cada_costureira_calculada_separadamente(self):
         dados_maria = consultar_pagamento_costureira(self.maria)
         dados_joana = consultar_pagamento_costureira(self.joana)
-
         self.assertEqual(dados_maria["valor_a_pagar"], Decimal("210.00"))
-        self.assertEqual(dados_joana["valor_a_pagar"], Decimal("600.00"))  # 1000 * 0.60
+        self.assertEqual(dados_joana["valor_a_pagar"], Decimal("600.00"))
 
     def test_lista_todas_costureiras_ativas(self):
         costureiras_ativas = Costureira.objects.filter(ativo=True)
         dados = listar_pagamento_todas_costureiras(costureiras_ativas)
-
         nomes = [item["nome"] for item in dados]
         self.assertIn("Maria Pagamento", nomes)
         self.assertIn("Joana Pagamento", nomes)
-        self.assertEqual(len(dados), 2)  # não inclui a inativa
+        self.assertEqual(len(dados), 2)
 
 
 class TestEndpointListarPagamentosCostureiras(TestCase):
-
     def setUp(self):
         self.client = APIClient()
         self.cliente = Cliente.objects.create(nome="Cliente Endpoint")
@@ -269,4 +289,4 @@ class TestEndpointListarPagamentosCostureiras(TestCase):
     def test_endpoint_retorna_valor_calculado(self):
         response = self.client.get('/api/financial/pagamentos-costureiras/')
         item = next(i for i in response.data if i["nome"] == "Costureira Endpoint")
-        self.assertEqual(Decimal(str(item["valor_a_pagar"])), Decimal("300.00"))  # 500 * 0.60
+        self.assertEqual(Decimal(str(item["valor_a_pagar"])), Decimal("300.00"))
