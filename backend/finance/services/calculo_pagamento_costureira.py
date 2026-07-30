@@ -2,15 +2,11 @@
 TASK-M2-CORE-004: cálculo automático de valores a pagar às costureiras.
 TASK-M2-CORE-005: sumarização por costureira (lista com todas de uma vez).
 
-<<<<<<< HEAD
-# TODO: confirmar valor real com a gestora
-=======
 Fica em finance/services/ pra manter a mesma organização usada em
 apps/core/services/ (lógica separada da view, mais fácil de testar).
 
 TODO: o percentual (hoje 0.60 como exemplo) ainda precisa ser confirmado
 com a gestora - é só um valor de exemplo por enquanto.
->>>>>>> 7d946ee1a275fb0fefe490266e19e76c6e0c7807
 
 IMPORTANTE: Servico.valor é um DecimalField (não float). Por isso o
 percentual também precisa ser Decimal - Python não deixa multiplicar
@@ -36,21 +32,11 @@ def calculo_de_pagamento(servicos, percentual):
     if not isinstance(percentual, Decimal):
         percentual = Decimal(str(percentual))
 
-<<<<<<< HEAD
-    if percentual < 0:
-        raise ValueError("Percentual não pode ser negativo")
-
-=======
->>>>>>> 7d946ee1a275fb0fefe490266e19e76c6e0c7807
     total = Decimal("0")
     for servico in servicos:
         total = total + servico.valor
 
-<<<<<<< HEAD
-    valor_a_pagar = (total * percentual).quantize(Decimal("0.01"))
-=======
     valor_a_pagar = total * percentual
->>>>>>> 7d946ee1a275fb0fefe490266e19e76c6e0c7807
     return valor_a_pagar
 
 
