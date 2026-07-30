@@ -10,6 +10,15 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 
+from users.models import Costureira
+
+from .services.calculo_pagamento_costureira import listar_pagamento_todas_costureiras
+from .services.planejamento_pagamentos import (
+    planejamento_semanal,
+    planejamento_mensal,
+    previsao_pagamentos,
+)
+
 business_logger = logging.getLogger('financial_api')
 
 
@@ -52,7 +61,6 @@ def simulate_payment(request):
         simulate_delay_ms = min(simulate_delay_ms, max_delay_ms)
 
     if simulate_delay_ms > 0:
-        # Allows reproducible load/performance tests in lower environments.
         time.sleep(simulate_delay_ms / 1000)
 
     fee_amount = (amount * fee_rate).quantize(Decimal('0.01'))
@@ -81,3 +89,33 @@ def simulate_payment(request):
     )
 
     return Response(result)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def listar_pagamentos_costureiras(request):
+    """
+    GET /api/financial/pagamentos-costureiras/
+    Retorna, para cada costureira ativa, quanto ela deve receber.
+    """
+    costureiras = Costureira.objects.filter(ativo=True)
+    dados = listar_pagamento_todas_costureiras(costureiras)
+    return Response(dados)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def planejamento_pagamentos_semanal(request):
+    return Response(planejamento_semanal())
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def planejamento_pagamentos_mensal(request):
+    return Response(planejamento_mensal())
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def previsao_pagamentos_endpoint(request):
+    return Response(previsao_pagamentos())
