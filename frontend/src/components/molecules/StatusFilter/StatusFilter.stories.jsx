@@ -40,7 +40,7 @@ Default.args = {
 export const WithState = () => {
   const [value, setValue] = useState('all');
   return (
-    <div>
+    <div>   
       <StatusFilter
         options={options}
         value={value}
