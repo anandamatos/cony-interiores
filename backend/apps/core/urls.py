@@ -33,4 +33,9 @@ urlpatterns = [
         views.listar_atrasos_view,
         name='listar-atrasos',
     ),
+    path(
+    "relatorios/agendamento/",
+    views.executar_agendamento_view,
+    name="executar-agendamento",
+    ),
 ]

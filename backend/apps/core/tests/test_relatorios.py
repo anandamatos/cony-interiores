@@ -7,10 +7,14 @@ Como rodar (na raiz do projeto, onde fica o manage.py):
 
 from django.test import TestCase
 from rest_framework.test import APIClient
+from datetime import date
 
 from users.models import Cliente, Costureira, Produto, Servico, Relatorio
 from finance.models import Pagamento
 from apps.core.services.relatorios import gerar_relatorio_mensal, listar_atrasos
+from apps.core.services.agendamento import executar_relatorios_agendados
+from io import StringIO
+from django.core.management import call_command
 
 
 def _criar_servico(cliente, costureira, data_envio, valor, quantidade=1):
@@ -261,3 +265,61 @@ class TestEndpointListarAtrasos(TestCase):
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]["dias_atraso"], 4)
         self.assertEqual(response.data[0]["cliente"], "Cliente Endpoint")
+
+
+class TestCommandGerarRelatorios(TestCase):
+
+    def setUp(self):
+        self.cliente = Cliente.objects.create(nome="Cliente Teste")
+        self.costureira_a = Costureira.objects.create(nome="Costureira A")
+        self.costureira_b = Costureira.objects.create(nome="Costureira B")
+
+        # Dois serviços em julho/2026 (dentro do período)
+        self.servico_julho_1 = _criar_servico(
+            self.cliente, self.costureira_a, "2026-07-05", valor=100, quantidade=2
+        )
+        self.servico_julho_2 = _criar_servico(
+            self.cliente, self.costureira_b, "2026-07-20", valor=250, quantidade=3
+        )
+        # Um serviço em junho/2026 (fora do período) - não deve entrar na soma
+        self.servico_junho = _criar_servico(
+            self.cliente, self.costureira_a, "2026-06-15", valor=999, quantidade=9
+        )
+
+        # Pagamentos: um atrasado e um pendente dentro de julho
+        Pagamento.objects.create(
+            servico=self.servico_julho_1,
+            valor=100,
+            data_entrega="2026-07-10",
+            status="atrasado",
+        )
+        Pagamento.objects.create(
+            servico=self.servico_julho_2,
+            valor=250,
+            data_entrega="2026-07-25",
+            status="pendente",
+        )
+        # Pagamento pago não deve contar como atraso nem como aberto
+        Pagamento.objects.create(
+            servico=self.servico_julho_1,
+            valor=50,
+            data_entrega="2026-07-12",
+            data_pagamento="2026-07-11",
+            status="pago",
+        )
+        # Pagamento do serviço de junho não deve entrar no relatório de julho
+        Pagamento.objects.create(
+            servico=self.servico_junho,
+            valor=999,
+            data_entrega="2026-06-20",
+            status="atrasado",
+        )
+
+    def test_command_gera_relatorio(self):
+        periodo = date.today().strftime("%Y-%m")
+
+        call_command("gerar_relatorios_agendados")
+
+        self.assertTrue(
+            Relatorio.objects.filter(periodo=periodo).exists()
+        )

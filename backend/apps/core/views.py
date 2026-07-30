@@ -13,6 +13,7 @@ from .services.bridge import (
     consultar_capacidade_costureira,
     listar_capacidade_todas_costureiras,
 )
+from .services.agendamento import executar_relatorios_agendados
 
 
 @api_view(['GET'])
@@ -117,3 +118,22 @@ def listar_atrasos_view(request):
     cliente, costureira e produtos relacionados a cada um.
     """
     return Response(listar_atrasos())
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def executar_agendamento_view(request):
+    """
+    Executa os relatórios configurados para o agendamento.
+
+    Essa rota existe apenas para disparar manualmente a rotina.
+    Em produção ela pode ser chamada automaticamente por um scheduler.
+    """
+    relatorio = executar_relatorios_agendados()
+
+    serializer = RelatorioSerializer(relatorio)
+
+    return Response({
+        "message": "Relatórios executados com sucesso.",
+        "relatorio": serializer.data,
+    })
