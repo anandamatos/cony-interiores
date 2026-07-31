@@ -29,3 +29,16 @@ path(
     views.exportar_atrasos_pdf,
     name='exportar-atrasos-pdf',
 ),
+
+# ===== FILTROS AVANÇADOS =====
+# TASK-M4-CORE-006
+path(
+    'servicos/filtrados/',
+    views.listar_servicos_com_filtros,
+    name='listar-servicos-filtrados',
+),
+path(
+    'pagamentos/filtrados/',
+    views.listar_pagamentos_com_filtros,
+    name='listar-pagamentos-filtrados',
+),
