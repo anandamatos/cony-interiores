@@ -34,8 +34,8 @@ urlpatterns = [
         name='listar-atrasos',
     ),
     path(
-    "relatorios/agendamento/",
-    views.executar_agendamento_view,
-    name="executar-agendamento",
+        'relatorios/agendamento/',
+        views.executar_agendamento_view,
+        name='executar-agendamento',
     ),
 ]
