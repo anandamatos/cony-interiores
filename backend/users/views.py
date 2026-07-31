@@ -4,16 +4,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import action, api_view, permission_classes
 from .models import Costureira, Servico, Cliente, Produto
 from .serializers import CostureiraSerializer, ServicoSerializer, ClienteSerializer, ProdutoSerializer
-<<<<<<< HEAD
-import time
-from django.utils import timezone
-=======
 from datetime import datetime
 from django.db import models
+from django.utils import timezone
 import logging
+import time
 
 logger = logging.getLogger(__name__)
->>>>>>> 5cc7c664acf5526a65fd42dd45af26adb6b76b93
 
 
 class CostureiraViewSet(viewsets.ModelViewSet):
@@ -122,7 +119,6 @@ def metrica_eficiencia(request):
     hoje = datetime.now().date()
     inicio_mes = hoje.replace(day=1)
     
-    # Calcular fim do mês
     if inicio_mes.month == 12:
         fim_mes = inicio_mes.replace(month=12, day=31)
     else:
@@ -153,7 +149,6 @@ class MetricaViewSet(viewsets.ViewSet):
     """
     permission_classes = [AllowAny]
 
-<<<<<<< HEAD
     # NOTA --- O dispatch abaixo serve apenas para calcular o tempo de resposta.
     # Pode ser removido.
 
@@ -171,42 +166,11 @@ class MetricaViewSet(viewsets.ViewSet):
             print(f"Um registro foi atualizado e o processo levou {tempo_gasto:.4f}s.")
         return response
 
-
-# ==================== VIEWSET DO SERVIÇO ====================
-
-class ServicoViewSet(viewsets.ModelViewSet):
-    queryset = Servico.objects.all()
-    serializer_class = ServicoSerializer
-    permission_classes = [AllowAny]
-    filterset_fields = ['cliente', 'costureira', 'data_envio', 'prazo_entrega']
-    search_fields = ['cliente__nome', 'observacoes']
-    ordering_fields = ['data_envio', 'prazo_entrega', 'valor', 'complexidade']
-
-
-# ==================== VIEWSET DO CLIENTE ====================
-
-class ClienteViewSet(viewsets.ModelViewSet):
-    queryset = Cliente.objects.all()
-    serializer_class = ClienteSerializer
-    permission_classes = [AllowAny]
-
-
-# ==================== VIEWSET DO PRODUTO ====================
-
-class ProdutoViewSet(viewsets.ModelViewSet):
-    queryset = Produto.objects.all()
-    serializer_class = ProdutoSerializer
-    permission_classes = [AllowAny]
-
-# ==================== VIEWSET DA METRICA DE PRODUÇÃO =========
-
-class MetricaViewSet(viewsets.ViewSet):
-    permission_classes = [AllowAny]
-
     @action(detail=False, methods=["get"], url_path="otif")
     def OTIF(self, request):
+        """Endpoint: /api/metricas/otif/"""
         OTIF_lista = []
-        pesquisada = request.query_params.get('q', None) #New
+        pesquisada = request.query_params.get('q', None)
 
         if pesquisada:
             servicos = Servico.objects.filter(costureira__nome=pesquisada)
@@ -218,7 +182,7 @@ class MetricaViewSet(viewsets.ViewSet):
             if servico.data_envio and servico.prazo_entrega:
                 if servico.data_envio > servico.prazo_entrega:
                     atraso = (servico.data_envio - servico.prazo_entrega).days
-                    mensagem = (f"Atrasado: enviado {atraso} dias após o prazo.")
+                    mensagem = f"Atrasado: enviado {atraso} dias após o prazo."
                     status = "Atrasado"
                 else:
                     mensagem = "Pedido dentro do prazo de entrega."
@@ -226,45 +190,42 @@ class MetricaViewSet(viewsets.ViewSet):
             else:
                 mensagem = "Dados de envio ou prazo ausentes."
                 status = "Indefinido"
-            OTIF_lista.append(
-                {
-                    "costureira": nome_costureira,
-                    "status": status,
-                    "detalhe": mensagem,
-                    "prazo": servico.prazo_entrega,
-                    "data_envio": servico.data_envio,
-                }
-            )
-        return Response(
-            {"total_pedidos": len(OTIF_lista), "Cycle": OTIF_lista}
-        )
-    
+            OTIF_lista.append({
+                "costureira": nome_costureira,
+                "status": status,
+                "detalhe": mensagem,
+                "prazo": servico.prazo_entrega,
+                "data_envio": servico.data_envio,
+            })
+        return Response({
+            "total_pedidos": len(OTIF_lista),
+            "Cycle": OTIF_lista
+        })
 
     @action(detail=False, methods=["get"], url_path="eficiencia")
     def eficiencia(self, request):
-        pesquisada = request.query_params.get('q', None) #New
+        """Endpoint: /api/metricas/eficiencia/"""
+        pesquisada = request.query_params.get('q', None)
         if pesquisada:
-         servicos = Servico.objects.filter(costureira__nome=pesquisada)
+            servicos = Servico.objects.filter(costureira__nome=pesquisada)
         else:
-         servicos = Servico.objects.all()
+            servicos = Servico.objects.all()
         
         hoje = timezone.now()
         mes_atual_str = hoje.strftime("%Y-%m")
         total_mes = 0
         no_prazo_mes = 0
         for servico in servicos:
-            if servico.criacao:
-                mes_servico = servico.criacao.strftime("%Y-%m")
+            if servico.data_envio:
+                mes_servico = servico.data_envio.strftime("%Y-%m")
                 if mes_servico == mes_atual_str:
                     total_mes += 1
                     if servico.data_envio and servico.prazo_entrega:
-                        d_envio = (servico.data_envio.date()
-                            if hasattr(servico.data_envio, "date")
-                            else servico.data_envio)
-                        d_prazo = (servico.prazo_entrega.date()
-                            if hasattr(servico.prazo_entrega, "date")
-                            else servico.prazo_entrega)
-
+                        d_envio = servico.data_envio
+                        d_prazo = servico.prazo_entrega
+                        if isinstance(d_prazo, str):
+                            from datetime import datetime
+                            d_prazo = datetime.strptime(d_prazo, "%Y-%m-%d").date()
                         if d_envio <= d_prazo:
                             no_prazo_mes += 1
         if total_mes > 0:
@@ -272,23 +233,9 @@ class MetricaViewSet(viewsets.ViewSet):
         else:
             taxa_eficiencia = 0.0
 
-        return Response(
-            {
-                "mes_referencia": mes_atual_str,
-                "total_pedidos_mes": total_mes,
-                "entregas_no_prazo": no_prazo_mes,
-                "taxa_eficiencia_porcentagem": f"{taxa_eficiencia}%",
-            }
-        )
-  
-=======
-    @action(detail=False, methods=['get'], url_path='otif')
-    def otif(self, request):
-        """Endpoint: /api/metricas/otif/"""
-        return metrica_otif(request)
-
-    @action(detail=False, methods=['get'], url_path='eficiencia')
-    def eficiencia(self, request):
-        """Endpoint: /api/metricas/eficiencia/"""
-        return metrica_eficiencia(request)
->>>>>>> 5cc7c664acf5526a65fd42dd45af26adb6b76b93
+        return Response({
+            "mes_referencia": mes_atual_str,
+            "total_pedidos_mes": total_mes,
+            "entregas_no_prazo": no_prazo_mes,
+            "taxa_eficiencia_porcentagem": f"{taxa_eficiencia}%",
+        })
