@@ -1,5 +1,6 @@
 from django.db import models
-from django.db.models import Count, Sum, Avg, Q, F, ExpressionWrapper, Case, When, Value, Coalesce
+from django.db.models import Count, Sum, Avg, Q, F, Value, Case, When, ExpressionWrapper
+from django.db.models.functions import Coalesce
 from django.utils import timezone
 from datetime import timedelta
 
