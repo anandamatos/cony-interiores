@@ -64,15 +64,37 @@ class Produto(models.Model):
 
 
 class Relatorio(models.Model):
-    costureira = models.ForeignKey(Costureira, on_delete=models.CASCADE, related_name="relatorios")
-    periodo = models.CharField(max_length=50)
+    # costureira fica nulo quando o relatório é o resumo GERAL (todas as
+    # costureiras consolidadas) de um período - TASK-M4-CORE-001.
+    costureira = models.ForeignKey(
+        Costureira,
+        on_delete=models.CASCADE,
+        related_name="relatorios",
+        null=True,
+        blank=True,
+        help_text="Deixe em branco para o relatório geral consolidado do período.",
+    )
+    periodo = models.CharField(max_length=50, help_text="Formato AAAA-MM, ex: 2026-07")
     producao_total = models.DecimalField(max_digits=10, decimal_places=2)
     pecas_produzidas = models.IntegerField()
     servicos_atraso = models.IntegerField(default=0)
     servicos_aberto = models.IntegerField(default=0)
+    gerado_em = models.DateTimeField(auto_now=True)
+    detalhamento_por_costureira = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="Produção de cada costureira no período (id, nome, valor, peças, atrasos, abertos).",
+    )
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["periodo"], name="idx_relatorio_periodo"),
+        ]
+        ordering = ["-periodo"]
 
     def __str__(self):
-        return f"Relatório {self.costureira.nome} - {self.periodo}"
+        nome = self.costureira.nome if self.costureira else "Geral"
+        return f"Relatório {nome} - {self.periodo}"
 
 
 # ==================== MODELO PRINCIPAL DA STORY ====================

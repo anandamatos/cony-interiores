@@ -18,4 +18,24 @@ urlpatterns = [
         views.sugerir_alocacao,
         name='sugerir-alocacao',
     ),
+    path(
+        'relatorios/mensal/',
+        views.listar_relatorios_mensais,
+        name='listar-relatorios-mensais',
+    ),
+    path(
+        'relatorios/mensal/gerar/',
+        views.gerar_relatorio_mensal_view,
+        name='gerar-relatorio-mensal',
+    ),
+    path(
+        'relatorios/atrasos/',
+        views.listar_atrasos_view,
+        name='listar-atrasos',
+    ),
+    path(
+        'relatorios/agendamento/',
+        views.executar_agendamento_view,
+        name='executar-agendamento',
+    ),
 ]

@@ -13,6 +13,7 @@ from .services.bridge import (
     consultar_capacidade_costureira,
     listar_capacidade_todas_costureiras,
 )
+from .services.agendamento import executar_relatorios_agendados
 
 
 @api_view(['GET'])
@@ -38,7 +39,7 @@ def listar_cargas(request):
     dados = listar_capacidade_todas_costureiras(costureiras)
     return Response(dados)
 
-from users.models import Servico
+from users.models import Servico, Relatorio
 from .services.bridge_alocacao import sugerir_costureira_para_servico
 
 
@@ -58,3 +59,81 @@ def sugerir_alocacao(request, servico_id):
             status=200,
         )
     return Response(sugestao)
+
+# ==================== RELATÓRIO MENSAL DE PRODUÇÃO ====================
+# TASK-M4-CORE-001
+
+from users.serializers import RelatorioSerializer
+from .services.relatorios import gerar_relatorio_mensal, listar_atrasos
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def gerar_relatorio_mensal_view(request):
+    """
+    POST /api/core/relatorios/mensal/gerar/
+    Body: {"periodo": "2026-07"}
+    Gera (ou recalcula) o relatório geral de produção do mês informado.
+    """
+    periodo = request.data.get('periodo')
+    if not periodo:
+        return Response(
+            {"erro": "Informe 'periodo' no formato AAAA-MM, ex: '2026-07'."},
+            status=400,
+        )
+
+    try:
+        relatorio = gerar_relatorio_mensal(periodo)
+    except ValueError:
+        return Response(
+            {"erro": "Periodo inválido. Use o formato AAAA-MM, ex: '2026-07'."},
+            status=400,
+        )
+
+    serializer = RelatorioSerializer(relatorio)
+    return Response(serializer.data, status=200)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def listar_relatorios_mensais(request):
+    """
+    GET /api/core/relatorios/mensal/
+    Lista os relatórios gerais de produção já gerados (mais recentes primeiro).
+    """
+    relatorios = Relatorio.objects.filter(costureira__isnull=True)
+    serializer = RelatorioSerializer(relatorios, many=True)
+    return Response(serializer.data)
+
+
+# ==================== RELATÓRIO DE ATRASOS ====================
+# TASK-M4-CORE-002
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def listar_atrasos_view(request):
+    """
+    GET /api/core/relatorios/atrasos/
+    Lista todos os pagamentos atualmente em atraso, com o serviço,
+    cliente, costureira e produtos relacionados a cada um.
+    """
+    return Response(listar_atrasos())
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def executar_agendamento_view(request):
+    """
+    Executa os relatórios configurados para o agendamento.
+
+    Essa rota existe apenas para disparar manualmente a rotina.
+    Em produção ela pode ser chamada automaticamente por um scheduler.
+    """
+    relatorio = executar_relatorios_agendados()
+
+    serializer = RelatorioSerializer(relatorio)
+
+    return Response({
+        "message": "Relatórios executados com sucesso.",
+        "relatorio": serializer.data,
+    })
