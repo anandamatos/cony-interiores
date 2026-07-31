@@ -1,2 +1,24 @@
-* @anandamatos
-/docs/
+# ==============================================================
+# CODEOWNERS — Cony Interiores
+# ==============================================================
+
+# Fallback global
+*                               @anandamatos
+
+# ------ Squad FND ------
+backend/                        @anandamatos @Marcus1423 @lobaque29
+frontend/                       @anandamatos @Marcus1423 @lobaque29
+docker-compose.yml              @anandamatos @Marcus1423 @lobaque29
+scripts/                        @anandamatos @Marcus1423 @lobaque29
+.github/                        @anandamatos @Marcus1423 @lobaque29
+infra/                          @anandamatos @Marcus1423 @lobaque29
+
+# ------ Squad CORE ------
+backend/              			@anandamatos @Bianca2703 @Marcus1423
+
+# ------ Squad UX ------
+frontend/				       @anandamatos
+
+
+# ------ Docs — SEM CODE OWNER (NÃO exige revisão) ------
+docs/                           @anandamatos  # Apenas notificação, não bloqueia

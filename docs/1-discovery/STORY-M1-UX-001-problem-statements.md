@@ -3,8 +3,10 @@
 **Épico:** EPIC-M1-UX-001 - Interface e Jornada do Usuário  
 **Story:** STORY-M1-UX-001 - Layout Base e Design System  
 **Data de Criação:** 30/06/2026  
-**Versão:** 1.0  
-**Responsável:** @anandamatos
+**Versão:** 1.1  
+**Data de Atualização:** 21/07/2026  
+**Responsável:** @anandamatos  
+**Atualização:** Feedback do cliente incorporado - respostas às dúvidas D1-D5
 
 ---
 
@@ -24,24 +26,35 @@ Este documento define os problemas centrais que o sistema da Cony Interiores pre
 | C3 | As costureiras não sabem sua carga de trabalho | Relato das costureiras |
 | C4 | O controle de pagamentos é feito manualmente | Análise do processo |
 | C5 | A comunicação entre gestora e costureiras é por WhatsApp | Entrevista |
+| C6 | A carga de trabalho deve ser atualizada diariamente | Feedback do cliente (D1) |
+| C7 | As costureiras não necessitam de notificações do sistema | Feedback do cliente (D2) |
+| C8 | O gráfico de colunas é o formato mais útil para visualizar carga | Feedback do cliente (D3) |
+| C9 | Relatórios semanais são suficientes (se implementados) | Feedback do cliente (D4) |
+| C10 | As costureiras têm acesso a smartphone, mas não vão usar o sistema | Feedback do cliente (D5) |
 
 ### Suposições (S) - O que acreditamos ser verdade
-| # | Suposição | Impacto se estiver errada |
-|---|-----------|---------------------------|
-| S1 | A gestora quer uma visão consolidada da produção | Interface pode não atender à necessidade |
-| S2 | As costureiras querem visualizar sua carga de trabalho | Funcionalidade pode ser subutilizada |
-| S3 | O sistema deve funcionar bem no celular | Costureiras podem não usar no celular |
-| S4 | A interface deve priorizar as informações mais importantes | Usuárias podem se sentir perdidas |
-| S5 | As costureiras estão dispostas a usar o sistema | Adoção pode ser baixa |
+| # | Suposição | Impacto se estiver errada | Status |
+|---|-----------|---------------------------|--------|
+| S1 | A gestora quer uma visão consolidada da produção | Interface pode não atender à necessidade | ✅ Confirmada |
+| S2 | A gestora quer visualizar informações em tempo real | Funcionalidade pode não estar alinhada | ✅ Confirmada (atualização diária) |
+| S4 | A interface deve priorizar as informações mais importantes | Usuárias podem se sentir perdidas | ✅ Confirmada |
+| S6 | O dashboard com gráficos de coluna é intuitivo | Adoção pode ser baixa se formato for inadequado | ✅ Confirmada (D3) |
+
+**Suposições revisadas:**
+- ~~S3~~ Removida: O sistema deve funcionar bem no celular → Confirmado que costureiras não vão usar o app
+- ~~S5~~ Removida: As costureiras estão dispostas a usar o sistema → Costureiras não acessarão o sistema (C10)
 
 ### Dúvidas (D) - O que precisamos validar
-| # | Dúvida | Como validar |
-|---|--------|--------------|
-| D1 | Qual a frequência ideal de atualização da carga de trabalho? | Entrevista com gestora |
-| D2 | As costureiras querem notificações de novos serviços? | Pesquisa com costureiras |
-| D3 | Qual o formato mais útil para visualizar a carga de trabalho? | Protótipo e teste de usabilidade |
-| D4 | A gestora quer relatórios semanais ou mensais? | Entrevista com gestora |
-| D5 | As costureiras têm acesso a smartphone para usar o sistema? | Pesquisa com costureiras |
+
+**✅ Todas as dúvidas foram respondidas pelo cliente!**
+
+| # | Dúvida | Como validar | Resposta do Cliente |
+|---|--------|--------------|-------------------|
+| ✅ D1 | Qual a frequência ideal de atualização da carga de trabalho? | Entrevista com gestora | **DIÁRIA** |
+| ✅ D2 | As costureiras querem notificações de novos serviços? | Pesquisa com costureiras | **NÃO** - Elas não precisam acessar o sistema |
+| ✅ D3 | Qual o formato mais útil para visualizar a carga de trabalho? | Protótipo e teste de usabilidade | **GRÁFICO DE COLUNAS** |
+| ✅ D4 | A gestora quer relatórios semanais ou mensais? | Entrevista com gestora | **SEMANAL** (se implementados) / Não é essencial |
+| ✅ D5 | As costureiras têm acesso a smartphone para usar o sistema? | Pesquisa com costureiras | **SIM**, mas elas não vão usar o app |
 
 ---
 
@@ -284,12 +297,20 @@ quadrantChart
 
 ## ✅ Próximos Passos
 
-| Ordem | Atividade | Responsável | Data |
-|-------|-----------|-------------|------|
-| 1 | Validar Problem Statements com o cliente (Cony Interiores) | @anandamatos | 30/06 |
-| 2 | Refinar com base no feedback | @anandamatos | 01/07 |
-| 3 | Criar Mapa da Jornada do Usuário | @anandamatos | 02/07 |
-| 4 | Iniciar prototipação | @anandamatos | 03/07 |
+| Ordem | Atividade | Responsável | Status |
+|-------|-----------|-------------|--------|
+| 1 | ✅ Validar Problem Statements com o cliente | @anandamatos | **CONCLUÍDO** - Feedback incorporado |
+| 2 | 🔄 Refinar personas com base nas respostas (sem mobile para costureiras) | @anandamatos | **EM PROGRESSO** |
+| 3 | 🔄 Criar jornada de usuário focada na gestora (interface desktop) | @anandamatos | **EM PROGRESSO** |
+| 4 | ⏳ Prototipar Dashboard com gráfico de colunas para carga de trabalho | @anandamatos | **PRÓXIMO** |
+| 5 | ⏳ Definir frequência de atualização (diária) nos requisitos técnicos | Squad | **PRÓXIMO** |
+| 6 | ⏳ Revisar requisitos de notificações (remover ou marcar como futura) | Squad | **PRÓXIMO** |
+
+**Implicações do feedback:**
+- 🎯 Foco deve ser na interface web para a gestora (desktop/tablet)
+- 📊 Dashboard deve incluir gráfico de colunas como formato principal
+- 🔄 Atualização de dados deve ser diária, não real-time
+- 📱 Prioridade baixa para interface mobile (costureiras não acessarão)
 
 ---
 
@@ -301,16 +322,19 @@ quadrantChart
 
 ---
 
-**Status:** Aguardando validação com o cliente  
-**Próxima Reunião:** 30/06/2026 - 14h
+**Status:** ✅ Validado com o cliente - Todas as dúvidas respondidas  
+**Próxima Atividade:** Refinar personas e criar jornada de usuário focada na gestora  
+**Data da Próxima Reunião:** A confirmar
 
 ---
 
 ## 🎯 Resumo Executivo
 
-| Problema | Impacto | Solução Proposta | Prioridade |
-|----------|---------|------------------|------------|
-| **Falta de Visibilidade da Produção** | Decisões baseadas em achismo, sobrecarga de costureiras | Dashboard com indicadores-chave | 🔴 Crítico |
-| **Controle Manual** | Retrabalho, erros, perda de informação | Cadastro digital integrado | 🔴 Crítico |
-| **Falta de Transparência nos Pagamentos** | Incerteza financeira, desgaste no relacionamento | Visualização de valores a receber | 🟡 Importante |
-| **Falta de Rastreabilidade** | Dificuldade de análise e planejamento | Histórico completo de serviços | 🔵 Oportunidade |
+| Problema | Impacto | Solução Proposta | Prioridade | Nota do Cliente |
+|----------|---------|------------------|------------|-----------------|
+| **Falta de Visibilidade da Produção** | Decisões baseadas em achismo, sobrecarga de costureiras | Dashboard com gráfico de colunas | 🔴 Crítico | Atualização diária |
+| **Controle Manual** | Retrabalho, erros, perda de informação | Cadastro digital integrado | 🔴 Crítico | - |
+| **Falta de Transparência nos Pagamentos** | Incerteza financeira, desgaste no relacionamento | Visualização de valores a receber | 🟡 Importante | Sem notificações |
+| **Falta de Rastreabilidade** | Dificuldade de análise e planejamento | Histórico completo de serviços | 🔵 Oportunidade | - |
+
+**Decisão Importante:** A interface será otimizada para a gestora (web/desktop). As costureiras não acessarão o sistema diretamente (comunicação via WhatsApp).

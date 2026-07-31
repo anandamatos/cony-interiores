@@ -85,7 +85,7 @@ const CostureiraForm = ({ initialData = {}, onSubmit, onCancel, isEditing = fals
             name="ativa"
             checked={formData.ativa}
             onChange={handleChange}
-            className="w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500"
+            className="w-4 h-4 text-success rounded border-gray-300 focus:ring-success"
           />
           <Typography component="label" size="small" className="text-gray-700">
             Ativa

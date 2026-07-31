@@ -203,10 +203,18 @@ class ServicoAPITest(TestCase):
 # ==================== TESTES DA METRICA (novo)====================
 
 class Test_Metrica(TestCase):
+<<<<<<< HEAD
     def setUp(self):
         self.cliente = Cliente.objects.create(
             nome="João Silva",
             contato="(71) 99999-9999")
+=======
+    def set_up(self):
+        self.cliente = Cliente.objects.create(
+            nome="João Silva",
+            contato="(71) 99999-9999",
+            email="joao@email.com")
+>>>>>>> 5cc7c664acf5526a65fd42dd45af26adb6b76b93
         self.costureira = Costureira.objects.create(
             nome="Maria Souza",
             contato="(71) 88888-8888",
@@ -215,7 +223,11 @@ class Test_Metrica(TestCase):
             nome="Cortina",
             descricao="Cortina de ilhós",
             valor_base=150.00)
+<<<<<<< HEAD
         self.servico_no_prazo = Servico.objects.create(
+=======
+        self.servico = Servico.objects.create(
+>>>>>>> 5cc7c664acf5526a65fd42dd45af26adb6b76b93
             cliente=self.cliente,
             costureira=self.costureira,
             quantidade=5,
@@ -223,10 +235,15 @@ class Test_Metrica(TestCase):
             data_envio="2026-07-07",
             prazo_entrega="2026-07-22",
             valor=700.00,
+<<<<<<< HEAD
             observacoes="Urgente"
         )
 
         self.servico_atrasado = Servico.objects.create(
+=======
+            observacoes="Urgente")
+        self.servico = Servico.objects.create(
+>>>>>>> 5cc7c664acf5526a65fd42dd45af26adb6b76b93
             cliente=self.cliente,
             costureira=self.costureira,
             quantidade=1,
@@ -234,14 +251,20 @@ class Test_Metrica(TestCase):
             data_envio="2026-07-23",
             prazo_entrega="2026-07-15",
             valor=70.00,
+<<<<<<< HEAD
             observacoes="Urgente"
         )
 
         self.servico_limite = Servico.objects.create(
+=======
+            observacoes="Urgente")
+        self.servico = Servico.objects.create(
+>>>>>>> 5cc7c664acf5526a65fd42dd45af26adb6b76b93
             cliente=self.cliente,
             costureira=self.costureira,
             quantidade=2,
             complexidade=3,
+<<<<<<< HEAD
             data_envio="2026-07-28",
             prazo_entrega="2026-07-28",
             valor=300.00,
@@ -268,3 +291,18 @@ class Test_Metrica(TestCase):
         self.assertIn(self.servico_limite, no_prazo)
 
         self.assertNotIn(self.servico_atrasado, no_prazo)
+=======
+            data_envio="2026-07-20",
+            prazo_entrega="2026-07-20",
+            valor=300.00,
+            observacoes="Urgente")
+    def Test_otif(self):
+        Otif_obj = Servico.objects.all()
+        for servico in Otif_obj:
+          print(f"{servico.costureia.nome}")
+          if self.servico.data_envio >= self.servico.prazo_entrega:
+           today = date.today()
+           print(f'atrasado, o pedido foi enviado {today-self.servico.prazo_entrega} dias atrasado')
+          else:
+            print("Pedido ainda está dentro do periodo para entrega.")
+>>>>>>> 5cc7c664acf5526a65fd42dd45af26adb6b76b93
