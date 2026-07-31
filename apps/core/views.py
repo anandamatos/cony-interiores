@@ -96,3 +96,51 @@ def exportar_atrasos_csv(request):
             {"erro": f"Erro ao gerar CSV: {str(e)}"},
             status=500
         )    
+# ==================== EXPORTAÇÃO PDF ====================
+# TASK-M4-CORE-005
+
+from .services.exportacao_pdf import (
+    exportar_pdf_relatorio_mensal,
+    exportar_pdf_atrasos
+)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def exportar_relatorio_mensal_pdf(request):
+    """
+    GET /api/core/relatorios/mensal/exportar/pdf/?periodo=2026-07
+    
+    Exporta o relatório mensal de produção em formato PDF.
+    """
+    periodo = request.query_params.get('periodo')
+    if not periodo:
+        return Response(
+            {"erro": "Informe 'periodo' no formato AAAA-MM, ex: '2026-07'."},
+            status=400
+        )
+    
+    try:
+        return exportar_pdf_relatorio_mensal(periodo)
+    except Exception as e:
+        return Response(
+            {"erro": f"Erro ao gerar PDF: {str(e)}"},
+            status=500
+        )
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def exportar_atrasos_pdf(request):
+    """
+    GET /api/core/relatorios/atrasos/exportar/pdf/
+    
+    Exporta o relatório de atrasos em formato PDF.
+    """
+    try:
+        return exportar_pdf_atrasos()
+    except Exception as e:
+        return Response(
+            {"erro": f"Erro ao gerar PDF: {str(e)}"},
+            status=500
+        )    

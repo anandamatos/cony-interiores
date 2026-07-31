@@ -17,3 +17,15 @@ urlpatterns = [
         name='exportar-atrasos-csv',
     ),
 ]
+# ===== EXPORTAÇÃO PDF =====
+# TASK-M4-CORE-005
+path(
+    'relatorios/mensal/exportar/pdf/',
+    views.exportar_relatorio_mensal_pdf,
+    name='exportar-relatorio-mensal-pdf',
+),
+path(
+    'relatorios/atrasos/exportar/pdf/',
+    views.exportar_atrasos_pdf,
+    name='exportar-atrasos-pdf',
+),
