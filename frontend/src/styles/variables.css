@@ -1,24 +1,101 @@
+/* ============================================
+   TOKENS DE DESIGN - CONY INTERIORES
+   ============================================ */
+
+/* ============================================
+   PALETA OFICIAL — Manual de Identidade Visual
+   ============================================ */
 :root {
-  --color-primary: #803300;
-  --color-primary-hover: #612701;
+  /* Cores Institucionais */
+  --cony-cream: #E8E3D9;
+  --cony-nude: #DEBBA4;
+  --cony-wine: #903839;
+  --cony-brown: #703824;
 
-  --color-secondary: #6b7280;
-  --color-secondary-hover: #4b5563;
+  /* Cores Principais */
+  --color-marrom-cafe: var(--cony-brown);
+  --color-bege-areia: var(--cony-nude);
+  --color-taupe: #8C7568;
+  --color-off-white: #F8F5F0;
 
-  --color-background: #f8fafc;
-  --color-surface: #ffffff;
+  /* Cores Secundárias */
+  --color-cinza-claro: var(--cony-cream);
+  --color-cinza-medio: #BFB3A6;
+  --color-verde-sálvia: #7C8A6E;
+  --color-azul-ardósia: #5C6B63;
 
-  --color-text: #111827;
-  --color-text-light: #6b7280;
+  /* Cores de Acento */
+  --color-ouro-acetinado: #C2996A;
+  --color-terracota: var(--cony-wine);
+  --color-bronze: #8B4A2E;
+  --color-preto-suave: #1A1412;
 
-  --color-border: #d1d5db;
+  /* Cores de Status */
+  --color-success: #4B7A5B;
+  --color-success-bg: #EAF1E7;
+  --color-warning: #C2996A;
+  --color-warning-bg: #FBF3E7;
+  --color-danger: #903839;
+  --color-danger-bg: #F7EAEA;
+  --color-info: #7C7267;
+  --color-info-bg: #F0ECE7;
 
-  --color-success: #16a34a;
-  --color-warning: #f59e0b;
-  --color-danger: #dc2626;
+  /* ============================================
+     TIPOGRAFIA
+     ============================================ */
+  --font-display: 'Syncopate', sans-serif;
+  --font-primary: 'Montserrat', sans-serif;
+  --font-secondary: 'Montserrat', sans-serif;
+  --tracking-label: 0.15em;
+  --tracking-logo: 0.3em;
 
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.05);
+  /* ============================================
+     ESPAÇAMENTO
+     ============================================ */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
 
-  --radius: 8px;
-  --transition: 0.2s ease;
+  /* ============================================
+     SOMBRAS
+     ============================================ */
+  --shadow-sm: 0 1px 4px rgba(112, 56, 36, 0.06);
+  --shadow-md: 0 4px 16px rgba(112, 56, 36, 0.08);
+  --shadow-lg: 0 8px 32px rgba(112, 56, 36, 0.12);
+  --shadow-xl: 0 16px 48px rgba(112, 56, 36, 0.16);
+
+  /* ============================================
+     GRADIENTES
+     ============================================ */
+  --gradient-primary: linear-gradient(135deg, var(--cony-nude) 0%, var(--cony-wine) 55%, var(--cony-brown) 100%);
+  --gradient-gold: linear-gradient(135deg, var(--cony-cream) 0%, var(--cony-nude) 100%);
+  --gradient-warm: linear-gradient(135deg, var(--cony-brown) 0%, var(--cony-wine) 100%);
+
+  /* ============================================
+     BORDAS
+     ============================================ */
+  --border-radius-sm: 3px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+  --border-radius-xl: 12px;
+
+  /* ============================================
+     ANIMAÇÃO
+     ============================================ */
+  --duration-instant: 0.1s;
+  --duration-fast: 0.2s;
+  --duration-normal: 0.3s;
+  --duration-slow: 0.5s;
+  --duration-slower: 0.8s;
+
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
