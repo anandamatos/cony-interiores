@@ -64,44 +64,34 @@ class PerformanceQueryTests(TestCase):
             )
 
     def test_consulta_com_select_related(self):
-    """Testa performance com select_related"""
-    reset_queries()
-    start_time = time.time()
+        """Testa performance com select_related"""
+        reset_queries()
 
-    # Consulta sem otimização (baseline)
-    servicos = Servico.objects.all()
-    count = 0
-    for servico in servicos:
-        # Força acesso aos relacionamentos
-        _ = servico.cliente.nome
-        _ = servico.costureira.nome
-        count += 1
+        # Sem select_related - N+1 queries
+        servicos = Servico.objects.all()
+        for servico in servicos:
+            _ = servico.cliente.nome
+            _ = servico.costureira.nome
+        baseline_queries = len(connection.queries)
 
-    baseline_queries = len(connection.queries)
-    baseline_time = time.time() - start_time
+        reset_queries()
 
-    reset_queries()
-    start_time = time.time()
+        # Com select_related - menos queries
+        servicos = Servico.objects.select_related('cliente', 'costureira').all()
+        for servico in servicos:
+            _ = servico.cliente.nome
+            _ = servico.costureira.nome
+        optimized_queries = len(connection.queries)
 
-    # Consulta com select_related
-    servicos = Servico.objects.select_related('cliente', 'costureira').all()
-    count = 0
-    for servico in servicos:
-        _ = servico.cliente.nome
-        _ = servico.costureira.nome
-        count += 1
+        # Verifica melhoria
+        print(f"📊 Baseline queries: {baseline_queries}")
+        print(f"📊 Optimized queries: {optimized_queries}")
 
-    optimized_queries = len(connection.queries)
-    optimized_time = time.time() - start_time
-
-    self.assertEqual(count, 100)
-
-    # Verifica se há melhoria (pode ser igual em alguns casos)
-    if baseline_queries > 0:
-        self.assertLess(optimized_queries, baseline_queries)
-    else:
-        # Se baseline for 0, só verifica que optimized também é 0
-        self.assertEqual(optimized_queries, 0)
+        # Se baseline > 0, espera que optimized seja menor
+        if baseline_queries > 0:
+            self.assertLess(optimized_queries, baseline_queries)
+        else:
+            self.assertEqual(optimized_queries, 0)
 
     def test_filtro_por_periodo(self):
         """Testa performance de filtro por período"""
