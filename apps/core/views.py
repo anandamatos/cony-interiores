@@ -1,10 +1,6 @@
 # ==================== EXPORTAÇÃO CSV ====================
 # TASK-M4-CORE-004
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-
 from .services.exportacao import (
     exportar_csv_relatorio_mensal,
     exportar_csv_atrasos
@@ -29,6 +25,23 @@ def exportar_relatorio_mensal_csv(request):
     
     try:
         return exportar_csv_relatorio_mensal(periodo)
+    except Exception as e:
+        return Response(
+            {"erro": f"Erro ao gerar CSV: {str(e)}"},
+            status=500
+        )
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def exportar_atrasos_csv(request):
+    """
+    GET /api/core/relatorios/atrasos/exportar/csv/
+    
+    Exporta o relatório de atrasos em formato CSV.
+    """
+    try:
+        return exportar_csv_atrasos()
     except Exception as e:
         return Response(
             {"erro": f"Erro ao gerar CSV: {str(e)}"},
