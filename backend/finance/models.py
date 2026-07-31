@@ -1,13 +1,12 @@
 from django.db.models import Q
 from django.db import models
-
+from .querysets import ServicoQuerySet, PagamentoQuerySet
 from users.models import Servico
 
 
 class Pagamento(models.Model):
     """
     Representa o pagamento (ou parcela de pagamento) de um Servico.
-
     """
 
     STATUS_CHOICES = [
@@ -17,8 +16,6 @@ class Pagamento(models.Model):
         ("cancelado", "Cancelado"),
     ]
 
-    # Atualizado de CASCADE para PROTECT para evitar que um pagamento seja deletado se o serviço for deletado
-    # data_vencimento atualizada para data_entrega, criado_em para enviado_em, observacoes e atualizado_em removidos
     servico = models.ForeignKey(
         Servico,
         on_delete=models.PROTECT,
@@ -32,16 +29,19 @@ class Pagamento(models.Model):
         choices=STATUS_CHOICES,
         default="pendente",
     )
-
     enviado_em = models.DateTimeField(auto_now_add=True)
 
+    # Usar o QuerySet customizado
+    objects = PagamentoQuerySet.as_manager()
+
     class Meta:
-        # TASK-M2-CORE-003: índices para as consultas mais comuns
-        # (filtrar por status, e listar pagamentos vencendo em uma data)
+        # Índices otimizados para consultas financeiras
         indexes = [
             models.Index(fields=["status"]),
             models.Index(fields=["data_entrega"]),
             models.Index(fields=["servico", "status"]),
+            # Índices adicionais para consultas comuns
+            models.Index(fields=["data_entrega", "status"]),
         ]
         ordering = ["data_entrega"]
 
@@ -51,7 +51,6 @@ class Pagamento(models.Model):
                 name="pagamento_valor_maior_que_zero",
             ),
         ]
-
 
     def __str__(self):
         return f"Pagamento - {self.servico} - R$ {self.valor} ({self.status})"
