@@ -5,9 +5,12 @@ TASK-M2-CORE-005: sumarização por costureira (lista com todas de uma vez).
 Fica em finance/services/ pra manter a mesma organização usada em
 apps/core/services/ (lógica separada da view, mais fácil de testar).
 
+<<<<<<< HEAD
 TODO: o percentual (hoje 0.60 como exemplo) ainda precisa ser confirmado
 com a gestora - é só um valor de exemplo por enquanto.
 
+=======
+>>>>>>> 169bf3d97eef6535485622b664a38df88b7eb06d
 IMPORTANTE: Servico.valor é um DecimalField (não float). Por isso o
 percentual também precisa ser Decimal - Python não deixa multiplicar
 Decimal por float diretamente (dá TypeError). Usamos Decimal(str(...))

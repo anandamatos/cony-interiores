@@ -136,12 +136,15 @@ class Servico(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["costureira", "data_envio"], name="idx_serv_cost_data"),
-            models.Index(fields=["cliente", "data_envio"], name="idx_serv_cli_data"),
-            models.Index(fields=["prazo_entrega"], name="idx_serv_prazo"),
-            models.Index(fields=["valor"], name="idx_serv_valor"),
-            models.Index(fields=["complexidade"], name="idx_serv_complex"),
+            # Índices existentes (se houver)
+            models.Index(fields=["cliente", "data_envio"], name="idx_servico_cliente_data"),
+            models.Index(fields=["costureira", "data_envio"], name="idx_servico_costureira_data"),
+            models.Index(fields=["data_envio", "prazo_entrega"], name="idx_servico_data_prazo"),
+            models.Index(fields=["valor"], name="idx_servico_valor"),
+            # Índice para consultas por data_envio (já existente)
+            models.Index(fields=["data_envio"], name="idx_servico_data_envio"),
         ]
+        
 
 from django.conf import settings
 from django.db.models import Q, F, CheckConstraint

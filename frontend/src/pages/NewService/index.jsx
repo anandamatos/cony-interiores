@@ -7,9 +7,36 @@ import Typography from '../../components/atoms/Typography';
 const NewService = () => {
   const navigate = useNavigate();
 
+  // Mapeamento de complexidade
+  const COMPLEXIDADE_MAP = {
+    'baixa': 0,
+    'media': 1,
+    'alta': 2
+  };
+
   const handleSubmit = async (formData) => {
-    await serviceService.create(formData);
-    setTimeout(() => navigate('/services'), 1500);
+    try {
+      // Normalizar os dados para o formato que o backend espera
+      const payload = {
+        cliente: parseInt(formData.cliente),
+        costureira: parseInt(formData.costureira),
+        produto: [parseInt(formData.produto)],
+        quantidade: parseInt(formData.quantidade),
+        data_envio: formData.dataEnvio,
+        prazo_entrega: formData.prazoEntrega,
+        valor: formData.valor,
+        complexidade: COMPLEXIDADE_MAP[formData.complexidade] || 1, // ✅ converte string para número
+        observacoes: formData.observacoes || '',
+      };
+
+      console.log('📤 Enviando payload:', payload);
+      
+      await serviceService.create(payload);
+      setTimeout(() => navigate('/services'), 1500);
+    } catch (error) {
+      console.error('Erro ao criar serviço:', error);
+      alert('Erro ao criar serviço. Verifique os dados e tente novamente.');
+    }
   };
 
   const handleCancel = () => {

@@ -1,17 +1,13 @@
-from __future__ import annotations
-
 import logging
-import time
-from decimal import Decimal, InvalidOperation
-
-from django.conf import settings
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+from django.utils import timezone
+from datetime import datetime, timedelta
 
-from users.models import Costureira
-
+from users.models import Servico, Costureira
+from .models import Pagamento
 from .services.calculo_pagamento_costureira import listar_pagamento_todas_costureiras
 from .services.planejamento_pagamentos import (
     planejamento_semanal,
