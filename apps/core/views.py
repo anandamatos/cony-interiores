@@ -1,54 +1,9 @@
 # ==================== EXPORTAÇÃO CSV ====================
 # TASK-M4-CORE-004
 
-from .services.exportacao import (
-    exportar_csv_relatorio_mensal,
-    exportar_csv_atrasos
-)
-
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def exportar_relatorio_mensal_csv(request):
-    """
-    GET /api/core/relatorios/mensal/exportar/csv/
-    Query params: ?periodo=2026-07
-    
-    Exporta o relatório mensal de produção em formato CSV.
-    """
-    periodo = request.query_params.get('periodo')
-    if not periodo:
-        return Response(
-            {"erro": "Informe 'periodo' no formato AAAA-MM, ex: '2026-07'."},
-            status=400
-        )
-    
-    try:
-        return exportar_csv_relatorio_mensal(periodo)
-    except Exception as e:
-        return Response(
-            {"erro": f"Erro ao gerar CSV: {str(e)}"},
-            status=500
-        )
-
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def exportar_atrasos_csv(request):
-    """
-    GET /api/core/relatorios/atrasos/exportar/csv/
-    
-    Exporta o relatório de atrasos em formato CSV.
-    """
-    try:
-        return exportar_csv_atrasos()
-    except Exception as e:
-        return Response(
-            {"erro": f"Erro ao gerar CSV: {str(e)}"},
-            status=500
-        )
-# ==================== EXPORTAÇÃO CSV ====================
-# TASK-M4-CORE-004
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
 from .services.exportacao import (
     exportar_csv_relatorio_mensal,
@@ -95,7 +50,9 @@ def exportar_atrasos_csv(request):
         return Response(
             {"erro": f"Erro ao gerar CSV: {str(e)}"},
             status=500
-        )    
+        )
+
+
 # ==================== EXPORTAÇÃO PDF ====================
 # TASK-M4-CORE-005
 
@@ -143,7 +100,9 @@ def exportar_atrasos_pdf(request):
         return Response(
             {"erro": f"Erro ao gerar PDF: {str(e)}"},
             status=500
-        )    
+        )
+
+
 # ==================== FILTROS AVANÇADOS ====================
 # TASK-M4-CORE-006
 
@@ -163,6 +122,7 @@ def listar_servicos_com_filtros(request):
     Lista serviços com filtros avançados.
     """
     from users.models import Servico
+    from users.serializers import ServicoSerializer
     
     allowed_filters = [
         'periodo_inicio', 'periodo_fim', 'costureira_id',
@@ -177,7 +137,6 @@ def listar_servicos_com_filtros(request):
     queryset = Servico.objects.select_related('cliente', 'costureira')
     queryset = aplicar_filtros_avancados(queryset, request.query_params)
     
-    from users.serializers import ServicoSerializer
     serializer = ServicoSerializer(queryset, many=True)
     return Response(serializer.data)
 
@@ -191,6 +150,7 @@ def listar_pagamentos_com_filtros(request):
     Lista pagamentos com filtros avançados.
     """
     from finance.models import Pagamento
+    from finance.serializers import PagamentoSerializer
     
     allowed_filters = [
         'status', 'data_inicio', 'data_fim',
@@ -204,6 +164,5 @@ def listar_pagamentos_com_filtros(request):
     queryset = Pagamento.objects.select_related('servico', 'servico__cliente', 'servico__costureira')
     queryset = aplicar_filtros_pagamentos(queryset, request.query_params)
     
-    from finance.serializers import PagamentoSerializer
     serializer = PagamentoSerializer(queryset, many=True)
-    return Response(serializer.data)    
+    return Response(serializer.data)
