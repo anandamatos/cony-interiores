@@ -31,17 +31,18 @@ class Pagamento(models.Model):
     )
     enviado_em = models.DateTimeField(auto_now_add=True)
 
-    # Usar o QuerySet customizado
     objects = PagamentoQuerySet.as_manager()
 
     class Meta:
-        # Índices otimizados para consultas financeiras
         indexes = [
-            models.Index(fields=["status"]),
-            models.Index(fields=["data_entrega"]),
-            models.Index(fields=["servico", "status"]),
-            # Índices adicionais para consultas comuns
-            models.Index(fields=["data_entrega", "status"]),
+            # Índices existentes
+            models.Index(fields=["status"], name="idx_pagamento_status"),
+            models.Index(fields=["data_entrega"], name="idx_pagamento_data_entrega"),
+            models.Index(fields=["servico", "status"], name="idx_pagamento_servico_status"),
+            # NOVOS ÍNDICES
+            models.Index(fields=["servico_id"], name="idx_pagamento_servico"),
+            models.Index(fields=["status", "data_entrega"], name="idx_pagamento_status_data"),
+            models.Index(fields=["data_pagamento"], name="idx_pagamento_data_pagamento"),
         ]
         ordering = ["data_entrega"]
 
