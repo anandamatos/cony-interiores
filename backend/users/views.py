@@ -2,8 +2,14 @@ from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view, permission_classes
-from .models import Costureira, Servico, Cliente, Produto
-from .serializers import CostureiraSerializer, ServicoSerializer, ClienteSerializer, ProdutoSerializer
+from .models import Costureira, Servico, Cliente, Produto, GrupoProduto
+from .serializers import (
+    CostureiraSerializer,
+    ServicoSerializer,
+    ClienteSerializer,
+    ProdutoSerializer,
+    GrupoProdutoSerializer,
+)
 from datetime import datetime
 from django.db import models
 from django.utils import timezone
@@ -54,6 +60,12 @@ class ClienteViewSet(viewsets.ModelViewSet):
 class ProdutoViewSet(viewsets.ModelViewSet):
     queryset = Produto.objects.all()
     serializer_class = ProdutoSerializer
+    permission_classes = [AllowAny]
+
+
+class GrupoProdutoViewSet(viewsets.ModelViewSet):
+    queryset = GrupoProduto.objects.all()
+    serializer_class = GrupoProdutoSerializer
     permission_classes = [AllowAny]
 
 

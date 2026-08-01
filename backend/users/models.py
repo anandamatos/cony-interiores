@@ -32,10 +32,30 @@ class Cliente(models.Model):
         return self.nome
 
 
+class GrupoProduto(models.Model):
+    codigo = models.CharField(max_length=40, unique=True)
+    nome = models.CharField(max_length=120)
+    descricao = models.TextField(blank=True)
+    ativo = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["nome"]
+
+    def __str__(self):
+        return self.nome
+
+
 class Produto(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField(blank=True)
     valor_base = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    grupo = models.ForeignKey(
+        GrupoProduto,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="produtos",
+    )
     
     # ---- CAMPO NOVO (cálculo de capacidade) ----
     TIPO_PRODUTO_CHOICES = [

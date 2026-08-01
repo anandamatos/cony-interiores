@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from .models import Costureira, Servico, Cliente, Produto, Relatorio
+from .models import Costureira, Servico, Cliente, Produto, Relatorio, GrupoProduto
 
 
 # ==================== SERIALIZER DA COSTUREIRA ====================
@@ -44,6 +44,12 @@ class ClienteSerializer(serializers.ModelSerializer):
 class ProdutoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produto
+        fields = '__all__'
+
+
+class GrupoProdutoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GrupoProduto
         fields = '__all__'
 
 

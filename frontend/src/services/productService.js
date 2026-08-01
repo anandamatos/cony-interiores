@@ -49,6 +49,45 @@ export const productService = {
       throw error;
     }
   },
+
+  getGroups: async () => {
+    try {
+      const response = await api.get('/grupos-produto/');
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar grupos de produto:', error);
+      throw error;
+    }
+  },
+
+  createGroup: async (data) => {
+    try {
+      const response = await api.post('/grupos-produto/', data);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao criar grupo de produto:', error);
+      throw error;
+    }
+  },
+
+  updateGroup: async (id, data) => {
+    try {
+      const response = await api.put(`/grupos-produto/${id}/`, data);
+      return response.data;
+    } catch (error) {
+      console.error(`Erro ao atualizar grupo de produto ${id}:`, error);
+      throw error;
+    }
+  },
+
+  deleteGroup: async (id) => {
+    try {
+      await api.delete(`/grupos-produto/${id}/`);
+    } catch (error) {
+      console.error(`Erro ao excluir grupo de produto ${id}:`, error);
+      throw error;
+    }
+  },
 };
 
 export default productService;

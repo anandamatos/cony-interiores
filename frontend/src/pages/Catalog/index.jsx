@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Save, RefreshCw, Pencil, PlusCircle, XCircle } from 'lucide-react';
+import { Save, RefreshCw, Pencil, PlusCircle, XCircle, Trash2 } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
@@ -16,8 +16,8 @@ const DIFFICULTY_LEVELS = [
   { value: 'especial', label: 'Especial', multiplier: 2.0 },
 ];
 
-const PRODUCT_GROUPS = [
-  { value: '', label: 'Sem grupo' },
+const TECHNICAL_PRODUCT_TYPES = [
+  { value: '', label: 'Sem categoria técnica' },
   { value: 'ILHO', label: 'Cortina de Ilhó' },
   { value: 'PREGA_MACHO', label: 'Cortina de Prega Macho' },
   { value: 'FORRO', label: 'Forro' },
@@ -31,6 +31,14 @@ const EMPTY_FORM = {
   descricao: '',
   valor_base: '',
   tipo_produto: '',
+  grupo: '',
+};
+
+const EMPTY_GROUP_FORM = {
+  id: null,
+  nome: '',
+  descricao: '',
+  ativo: true,
 };
 
 const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', {
@@ -65,6 +73,7 @@ const normalizeDate = (value) => {
 
 const Catalog = () => {
   const [products, setProducts] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [services, setServices] = useState([]);
   const [pricingMap, setPricingMap] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -72,21 +81,26 @@ const Catalog = () => {
   const [error, setError] = useState('');
   const [feedback, setFeedback] = useState('');
   const [formData, setFormData] = useState(EMPTY_FORM);
+  const [groupFormData, setGroupFormData] = useState(EMPTY_GROUP_FORM);
+  const [isSavingGroup, setIsSavingGroup] = useState(false);
 
   const loadPageData = async () => {
     try {
       setIsLoading(true);
       setError('');
 
-      const [productsData, servicesData] = await Promise.all([
+      const [productsData, servicesData, groupsData] = await Promise.all([
         productService.getAll(),
         serviceService.getAll(),
+        productService.getGroups(),
       ]);
 
       const productList = Array.isArray(productsData) ? productsData : [];
       const servicesList = Array.isArray(servicesData) ? servicesData : [];
+      const groupsList = Array.isArray(groupsData) ? groupsData : [];
       setProducts(productList);
       setServices(servicesList);
+      setGroups(groupsList);
 
       const storedRaw = localStorage.getItem(STORAGE_KEY);
       const stored = storedRaw ? JSON.parse(storedRaw) : {};
@@ -163,6 +177,7 @@ const Catalog = () => {
       descricao: product.descricao || '',
       valor_base: String(product.valor_base ?? ''),
       tipo_produto: product.tipo_produto || '',
+      grupo: product.grupo ? String(product.grupo) : '',
     });
   };
 
@@ -176,6 +191,7 @@ const Catalog = () => {
       descricao: formData.descricao,
       valor_base: parsePositiveNumber(formData.valor_base, 0),
       tipo_produto: formData.tipo_produto,
+      grupo: formData.grupo ? Number(formData.grupo) : null,
     };
 
     if (!payload.nome) {
@@ -206,6 +222,102 @@ const Catalog = () => {
     }
   };
 
+  const slugify = (text) => {
+    return text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toUpperCase()
+      .replace(/[^A-Z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '')
+      .slice(0, 40);
+  };
+
+  const buildUniqueGroupCode = (name, currentId = null) => {
+    const base = slugify(name) || 'GRUPO';
+    const usedCodes = new Set(
+      groups
+        .filter((group) => group.id !== currentId)
+        .map((group) => group.codigo)
+    );
+
+    if (!usedCodes.has(base)) return base;
+    let suffix = 2;
+    while (usedCodes.has(`${base}_${suffix}`)) suffix += 1;
+    return `${base}_${suffix}`;
+  };
+
+  const startGroupCreate = () => {
+    setGroupFormData(EMPTY_GROUP_FORM);
+  };
+
+  const startGroupEdit = (group) => {
+    setGroupFormData({
+      id: group.id,
+      nome: group.nome || '',
+      descricao: group.descricao || '',
+      ativo: group.ativo !== false,
+    });
+  };
+
+  const cancelGroupEdit = () => {
+    setGroupFormData(EMPTY_GROUP_FORM);
+  };
+
+  const saveGroup = async () => {
+    const nome = groupFormData.nome.trim();
+    if (!nome) {
+      setError('Nome do grupo é obrigatório para salvar.');
+      return;
+    }
+
+    const payload = {
+      codigo: buildUniqueGroupCode(nome, groupFormData.id),
+      nome,
+      descricao: groupFormData.descricao,
+      ativo: groupFormData.ativo,
+    };
+
+    try {
+      setIsSavingGroup(true);
+      setError('');
+
+      if (groupFormData.id) {
+        const current = groups.find((item) => item.id === groupFormData.id);
+        payload.codigo = current?.codigo || payload.codigo;
+        await productService.updateGroup(groupFormData.id, payload);
+        setFeedback('Grupo atualizado com sucesso.');
+      } else {
+        await productService.createGroup(payload);
+        setFeedback('Grupo criado com sucesso.');
+      }
+
+      setGroupFormData(EMPTY_GROUP_FORM);
+      await loadPageData();
+      setTimeout(() => setFeedback(''), 3500);
+    } catch (groupErr) {
+      console.error('Erro ao salvar grupo:', groupErr);
+      setError('Não foi possível salvar o grupo.');
+    } finally {
+      setIsSavingGroup(false);
+    }
+  };
+
+  const removeGroup = async (groupId) => {
+    try {
+      setError('');
+      await productService.deleteGroup(groupId);
+      setFeedback('Grupo removido com sucesso.');
+      if (groupFormData.id === groupId) {
+        setGroupFormData(EMPTY_GROUP_FORM);
+      }
+      await loadPageData();
+      setTimeout(() => setFeedback(''), 3500);
+    } catch (groupErr) {
+      console.error('Erro ao remover grupo:', groupErr);
+      setError('Não foi possível remover o grupo. Verifique se há dependências.');
+    }
+  };
+
   const pricingSummary = useMemo(() => {
     return products.map((product) => {
       const productId = String(product.id);
@@ -232,8 +344,12 @@ const Catalog = () => {
     const monthEnd = endOfDay(new Date(now.getFullYear(), now.getMonth() + 1, 0));
 
     const productsById = {};
+    const groupsById = {};
     products.forEach((product) => {
       productsById[product.id] = product;
+    });
+    groups.forEach((group) => {
+      groupsById[group.id] = group;
     });
 
     const weeklyCountByProduct = {};
@@ -257,7 +373,7 @@ const Catalog = () => {
         productIds.forEach((id) => {
           monthlyCountByProduct[id] = (monthlyCountByProduct[id] || 0) + 1;
 
-          const group = productsById[id]?.tipo_produto || 'SEM_GRUPO';
+          const group = productsById[id]?.grupo || productsById[id]?.tipo_produto || 'SEM_GRUPO';
           if (!monthlyGroupStats[group]) {
             monthlyGroupStats[group] = { sum: 0, count: 0 };
           }
@@ -286,7 +402,10 @@ const Catalog = () => {
     const highestTicketGroup = groupTicket[0] || null;
 
     const productName = (id) => productsById[id]?.nome || 'Sem produto';
-    const groupName = (groupValue) => PRODUCT_GROUPS.find((item) => item.value === groupValue)?.label || 'Sem grupo';
+    const groupName = (groupValue) => {
+      if (groupsById[groupValue]) return groupsById[groupValue].nome;
+      return TECHNICAL_PRODUCT_TYPES.find((item) => item.value === groupValue)?.label || 'Sem grupo';
+    };
 
     return {
       topWeek: topWeekEntry ? { label: productName(Number(topWeekEntry[0])), value: `${topWeekEntry[1]} serviços` } : { label: 'Sem dados', value: '-' },
@@ -300,7 +419,7 @@ const Catalog = () => {
         ? { label: productName(Number(topMonthEntry[0])), value: `${topMonthEntry[1]} no mês` }
         : { label: 'Sem dados', value: '-' },
     };
-  }, [products, services]);
+  }, [products, services, groups]);
 
   if (isLoading) {
     return (
@@ -316,7 +435,7 @@ const Catalog = () => {
         <div>
           <Typography variant="h1">Catálogo e Precificação Manual</Typography>
           <Typography variant="body1" className="mt-1 text-taupe">
-            Ajuste dificuldade, preço final e também gerencie o cadastro de produtos.
+            Ajuste dificuldade, preço final e também gerencie produtos e grupos.
           </Typography>
         </div>
 
@@ -394,13 +513,29 @@ const Catalog = () => {
           </div>
 
           <div>
-            <Typography variant="caption" className="text-taupe">Grupo</Typography>
+            <Typography variant="caption" className="text-taupe">Grupo comercial</Typography>
+            <select
+              className="w-full rounded-md border border-border bg-white px-3 py-2 mt-1"
+              value={formData.grupo}
+              onChange={(event) => handleFormChange('grupo', event.target.value)}
+            >
+              <option value="">Sem grupo</option>
+              {groups.map((group) => (
+                <option key={group.id} value={group.id}>
+                  {group.nome}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <Typography variant="caption" className="text-taupe">Categoria técnica</Typography>
             <select
               className="w-full rounded-md border border-border bg-white px-3 py-2 mt-1"
               value={formData.tipo_produto}
               onChange={(event) => handleFormChange('tipo_produto', event.target.value)}
             >
-              {PRODUCT_GROUPS.map((option) => (
+              {TECHNICAL_PRODUCT_TYPES.map((option) => (
                 <option key={option.value || 'none'} value={option.value}>
                   {option.label}
                 </option>
@@ -408,7 +543,7 @@ const Catalog = () => {
             </select>
           </div>
 
-          <div>
+          <div className="md:col-span-2">
               <Typography variant="caption" className="text-taupe">Descrição</Typography>
             <input
               className="w-full rounded-md border border-border bg-white px-3 py-2 mt-1"
@@ -434,6 +569,84 @@ const Catalog = () => {
         </div>
       </Card>
 
+      <Card className="p-6 mb-6">
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <Typography variant="h3">Guia de grupos</Typography>
+          <Button variant="secondary" size="sm" onClick={startGroupCreate}>
+            <PlusCircle className="w-4 h-4" />
+            Novo grupo
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <input
+            className="rounded-md border border-border bg-white px-3 py-2"
+            placeholder="Nome do grupo"
+            value={groupFormData.nome}
+            onChange={(event) => setGroupFormData((prev) => ({ ...prev, nome: event.target.value }))}
+          />
+
+          <input
+            className="rounded-md border border-border bg-white px-3 py-2"
+            placeholder="Descrição"
+            value={groupFormData.descricao}
+            onChange={(event) => setGroupFormData((prev) => ({ ...prev, descricao: event.target.value }))}
+          />
+
+          <select
+            className="rounded-md border border-border bg-white px-3 py-2"
+            value={groupFormData.ativo ? 'true' : 'false'}
+            onChange={(event) => setGroupFormData((prev) => ({ ...prev, ativo: event.target.value === 'true' }))}
+          >
+            <option value="true">Ativo</option>
+            <option value="false">Inativo</option>
+          </select>
+        </div>
+
+        <div className="flex items-center gap-3 mt-4">
+          <Button variant="primary" size="sm" onClick={saveGroup} disabled={isSavingGroup}>
+            <Save className="w-4 h-4" />
+            {groupFormData.id ? 'Salvar grupo' : 'Criar grupo'}
+          </Button>
+
+          {groupFormData.id && (
+            <Button variant="secondary" size="sm" onClick={cancelGroupEdit}>
+              <XCircle className="w-4 h-4" />
+              Cancelar edição
+            </Button>
+          )}
+        </div>
+
+        <div className="mt-5 space-y-2">
+          {groups.map((group) => (
+            <div key={group.id} className="flex items-center justify-between rounded-md border border-border px-4 py-3">
+              <div>
+                <Typography variant="h4">{group.nome}</Typography>
+                <Typography variant="caption" className="text-taupe">
+                  Código: {group.codigo} • {group.ativo ? 'Ativo' : 'Inativo'}
+                </Typography>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="secondary" size="sm" onClick={() => startGroupEdit(group)}>
+                  <Pencil className="w-4 h-4" />
+                  Editar
+                </Button>
+                <Button variant="secondary" size="sm" onClick={() => removeGroup(group.id)}>
+                  <Trash2 className="w-4 h-4" />
+                  Excluir
+                </Button>
+              </div>
+            </div>
+          ))}
+
+          {groups.length === 0 && (
+            <Typography variant="body2" className="text-taupe">
+              Nenhum grupo cadastrado ainda.
+            </Typography>
+          )}
+        </div>
+      </Card>
+
       <Card className="p-0 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
@@ -451,7 +664,9 @@ const Catalog = () => {
             <tbody>
               {pricingSummary.map(({ product, config, suggestedPrice, basePrice }) => {
                 const productId = String(product.id);
-                const groupLabel = PRODUCT_GROUPS.find((option) => option.value === (product.tipo_produto || ''))?.label || 'Sem grupo';
+                const groupLabel = groups.find((option) => option.id === product.grupo)?.nome
+                  || TECHNICAL_PRODUCT_TYPES.find((option) => option.value === (product.tipo_produto || ''))?.label
+                  || 'Sem grupo';
 
                 return (
                   <tr key={productId} className="border-b border-border/70 last:border-b-0">
