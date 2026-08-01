@@ -12,10 +12,12 @@ import {
   CategoryScale,
   LinearScale,
   BarElement,
+  ArcElement,
   Tooltip,
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 
 import Card from "../../components/atoms/Card";
 import Typography from "../../components/atoms/Typography";
@@ -27,9 +29,20 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
+  ArcElement,
   Tooltip,
   Legend
 );
+
+const BAR_COLORS = [
+  "#C9A86A",
+  "#8D9ABA",
+  "#B56A4A",
+  "#D9C7B1",
+  "#7A4E2D",
+  "#9AAA7A",
+  "#D3AF37",
+];
 
 const Productivity = () => {
   const [period, setPeriod] = useState("week");
@@ -140,9 +153,30 @@ const Productivity = () => {
       {
         label: "Serviços concluídos",
         data: productivityData.activities.map((item) => item.value),
-        backgroundColor: "#7A4E2D",
+        backgroundColor: productivityData.activities.map((_, index) => BAR_COLORS[index % BAR_COLORS.length]),
         borderRadius: 8,
         borderSkipped: false,
+      },
+    ],
+  };
+
+  const distributionBuckets = productivityData.activities.reduce(
+    (acc, item) => {
+      if (item.value >= 10) acc.peak += item.value;
+      else if (item.value >= 6) acc.steady += item.value;
+      else acc.low += item.value;
+      return acc;
+    },
+    { peak: 0, steady: 0, low: 0 }
+  );
+
+  const doughnutData = {
+    labels: ["Pico", "Ritmo", "Baixa"],
+    datasets: [
+      {
+        data: [distributionBuckets.peak, distributionBuckets.steady, distributionBuckets.low],
+        backgroundColor: ["#B56A4A", "#C9A86A", "#8D9ABA"],
+        borderWidth: 0,
       },
     ],
   };
@@ -174,6 +208,17 @@ const Productivity = () => {
         },
       },
     },
+  };
+
+  const doughnutOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+      },
+    },
+    cutout: '62%',
   };
 
   return (
@@ -238,30 +283,42 @@ const Productivity = () => {
         })}
       </section>
 
-      <Card className="p-6">
-        <Typography variant="h3">
-          Atividades Semanais
-        </Typography>
+      <section className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <Card className="p-6 xl:col-span-2">
+          <Typography variant="h3">
+            Atividades Semanais
+          </Typography>
 
-        <Typography
-          variant="body2"
-          className="mt-1 text-taupe"
-        >
-          Quantidade de serviços concluídos por dia/semana.
-        </Typography>
+          <Typography
+            variant="body2"
+            className="mt-1 text-taupe"
+          >
+            Quantidade de serviços concluídos por dia/semana.
+          </Typography>
 
-        <div
-          style={{
-            height: "350px",
-            marginTop: "24px",
-          }}
-        >
-          <Bar
-            data={chartData}
-            options={chartOptions}
-          />
-        </div>
-      </Card>
+          <div
+            style={{
+              height: "350px",
+              marginTop: "24px",
+            }}
+          >
+            <Bar
+              data={chartData}
+              options={chartOptions}
+            />
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <Typography variant="h3">Distribuição de Ritmo</Typography>
+          <Typography variant="body2" className="mt-1 text-taupe">
+            Leitura colorida do volume de produção do período.
+          </Typography>
+          <div style={{ height: "260px", marginTop: "18px" }}>
+            <Doughnut data={doughnutData} options={doughnutOptions} />
+          </div>
+        </Card>
+      </section>
     </main>
   );
 };
