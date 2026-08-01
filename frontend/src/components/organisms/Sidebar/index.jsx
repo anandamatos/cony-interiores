@@ -10,6 +10,7 @@ import {
   LogOut,
   Menu,
   X,
+  TrendingUp,
 } from 'lucide-react';
 import classNames from 'classnames';
 
@@ -21,6 +22,7 @@ const menuItems = [
   { path: '/seamstresses', label: 'Costureiras', icon: Users, badge: '4' },
   { path: '/capacity', label: 'Capacidade', icon: Gauge },
   { path: '/financial', label: 'Financeiro', icon: DollarSign },
+  { path: '/productivity', label: 'Produtividade', icon: TrendingUp},
 ];
 
 const Sidebar = () => {
