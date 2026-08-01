@@ -47,7 +47,7 @@ Error.args = {
   type: 'error',
   title: 'Erro',
   message: 'Ocorreu um erro ao processar sua solicitação.',
-};s
+};
 
 export const Warning = (args) => <Alert {...args} />;
 Warning.args = {

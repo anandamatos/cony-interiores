@@ -11,6 +11,16 @@ export default [
   },
   js.configs.recommended,
   {
+    files: ['**/scripts/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
+  },
+  {
     files: ['**/*.{js,jsx}'],
     plugins: {
       react,
