@@ -43,7 +43,7 @@ const Login = () => {
               <Sparkles className="h-4 w-4" />
               Area logada
             </div>
-            <Typography variant="h1" className="mt-8 max-w-md !text-[3rem] !leading-[0.95] text-offWhite">
+            <Typography variant="h1" className="mt-8 max-w-md !text-[3rem] !leading-[0.95] text-[#FFF4E6]">
               Cony Interiores em modo de operação.
             </Typography>
             <Typography variant="body1" className="mt-4 max-w-lg text-[#F8F0E7]/85">
@@ -52,21 +52,21 @@ const Login = () => {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <Card className="border border-white/10 bg-white/8 p-5 text-offWhite shadow-none backdrop-blur-sm">
+            <Card className="border border-white/15 bg-[rgba(45,31,24,0.42)] p-5 text-offWhite shadow-none backdrop-blur-sm">
               <Shield className="h-5 w-5 text-[#DEBBA4]" />
-              <Typography variant="h4" className="mt-3 text-offWhite">
+              <Typography variant="h4" className="mt-3 text-[#FFF4E6]">
                 Erika
               </Typography>
-              <Typography variant="body2" className="mt-1 text-[#F8F0E7]/75">
+              <Typography variant="body2" className="mt-1 text-[#F8F0E7]/90">
                 Perfil de gerente com acesso total às rotas protegidas.
               </Typography>
             </Card>
-            <Card className="border border-white/10 bg-white/8 p-5 text-offWhite shadow-none backdrop-blur-sm">
+            <Card className="border border-white/15 bg-[rgba(45,31,24,0.42)] p-5 text-offWhite shadow-none backdrop-blur-sm">
               <LockKeyhole className="h-5 w-5 text-[#DEBBA4]" />
-              <Typography variant="h4" className="mt-3 text-offWhite">
+              <Typography variant="h4" className="mt-3 text-[#FFF4E6]">
                 Ananda
               </Typography>
-              <Typography variant="body2" className="mt-1 text-[#F8F0E7]/75">
+              <Typography variant="body2" className="mt-1 text-[#F8F0E7]/90">
                 Acesso padrão da operação para navegação diária do sistema.
               </Typography>
             </Card>
@@ -79,7 +79,7 @@ const Login = () => {
               <Typography variant="caption" className="uppercase tracking-[0.2em] text-taupe">
                 Acesso restrito
               </Typography>
-              <Typography variant="h2" className="mt-2">
+              <Typography variant="h2" className="mt-2 text-[#8B4A2E]">
                 Entrar na plataforma
               </Typography>
               <Typography variant="body2" className="mt-2 text-taupe">
@@ -127,9 +127,9 @@ const Login = () => {
               </Button>
             </form>
 
-            <div className="mt-8 rounded-[20px] border border-[rgba(112,56,36,0.08)] bg-offWhite/75 p-5">
-              <Typography variant="h4">Regras de acesso</Typography>
-              <ul className="mt-3 space-y-2 text-sm text-taupe">
+            <div className="mt-8 rounded-[20px] border border-[rgba(112,56,36,0.14)] bg-[#F5ECE1] p-5">
+              <Typography variant="h4" className="text-[#4B3A2E]">Regras de acesso</Typography>
+              <ul className="mt-3 space-y-2 text-sm text-[#5A473B]">
                 <li>• Dashboard permanece liberado sem login.</li>
                 <li>• Serviços, Costureiras, Financeiro e demais áreas exigem autenticação.</li>
                 <li>• A busca do topo continua funcional e acompanha a navegação.</li>
