@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.db import models
+from django.db.models import Q, F, CheckConstraint
 
 # ==================== MODELOS EXISTENTES ====================
 
@@ -115,12 +117,7 @@ class Servico(models.Model):
         blank=True,
         help_text="Tamanho considerado pra todas as peças deste serviço (por enquanto)."
     )
-<<<<<<< HEAD
- 
 
-    def __str__(self):
-        return f"Serviço para {self.cliente.nome} - {self.costureira.nome}"
-=======
     complexidade_manual = models.BooleanField(
         default=False,
         help_text=(
@@ -142,10 +139,7 @@ class Servico(models.Model):
             # Índice para consultas por data_envio (já existente)
             models.Index(fields=["data_envio"], name="idx_servico_data_envio"),
         ]
-        
 
-from django.conf import settings
-from django.db.models import Q, F, CheckConstraint
 
 
 class PeriodoIndisponibilidade(models.Model):
@@ -214,4 +208,3 @@ class LogAuditoria(models.Model):
 
     class Meta:
         ordering = ["-criado_em"]
->>>>>>> 5cc7c664acf5526a65fd42dd45af26adb6b76b93
