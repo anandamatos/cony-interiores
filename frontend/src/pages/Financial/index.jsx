@@ -1,405 +1,337 @@
-import { useMemo, useState, useEffect } from 'react';
-import {
-  CreditCard,
-  DollarSign,
-  Download,
-  FileText,
-  Plus,
-  TrendingDown,
-  TrendingUp,
-  Wallet,
-} from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { CalendarDays, CreditCard, DollarSign, Wallet } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Badge from '../../components/atoms/Badge';
 import Button from '../../components/atoms/Button';
-import { fetchPlanningData } from '../../services/planejamentoService';
+import Alert from '../../components/atoms/Alert';
+import { serviceService } from '../../services/serviceService';
+import {
+  fetchMonthlyPlanning,
+  fetchPaymentsForecast,
+  fetchWeeklyPlanning,
+} from '../../services/financialUxService';
 
 const Financial = () => {
-  const [selectedFilter, setSelectedFilter] = useState('all');
-
-  const mockData = {
-    totalRevenue: 28500,
-    pendingPayments: 4200,
-    completedPayments: 24300,
-    monthlyGrowth: 12.5,
-    targetCollectionRate: 90,
-    collectionRate: 85,
-    planning: [
-      {
-        id: 'this-week',
-        title: 'Esta Semana',
-        subtitle: 'Previsão de pagamentos',
-        total: 3200,
-        seamstresses: 4,
-        services: 8,
-        variant: 'gold',
-      },
-      {
-        id: 'next-week',
-        title: 'Próxima Semana',
-        subtitle: 'Previsão de pagamentos',
-        total: 4500,
-        seamstresses: 5,
-        services: 10,
-        variant: 'default',
-      },
-    ],
-    recentTransactions: [
-      { id: 1, client: 'João Silva', amount: 1500, status: 'paid', date: '25/06/2026' },
-      { id: 2, client: 'Maria Oliveira', amount: 850, status: 'pending', date: '28/06/2026' },
-      { id: 3, client: 'Ana Costa', amount: 2200, status: 'paid', date: '20/06/2026' },
-      { id: 4, client: 'Pedro Santos', amount: 1200, status: 'overdue', date: '15/06/2026' },
-      { id: 5, client: 'Carla Souza', amount: 950, status: 'paid', date: '18/06/2026' },
-    ],
-  };
-
-  // Planejamento
-  const [financialData, setFinancialData] = useState(mockData);
-
-  const filterOptions = [
-    { value: 'all', label: 'Todos' },
-    { value: 'paid', label: 'Pago' },
-    { value: 'pending', label: 'Pendente' },
-    { value: 'overdue', label: 'Atrasado' },
-  ];
+  const [periodFilter, setPeriodFilter] = useState('week');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const [weeklyPlanning, setWeeklyPlanning] = useState([]);
+  const [monthlyPlanning, setMonthlyPlanning] = useState([]);
+  const [forecastPayments, setForecastPayments] = useState([]);
+  const [servicesById, setServicesById] = useState({});
 
   useEffect(() => {
     let isMounted = true;
 
-    const loadPlanning = async () => {
+    const loadFinancialData = async () => {
       try {
-        const planningResponse = await fetchPlanningData();
+        setIsLoading(true);
+        setLoadError('');
 
-        if (!isMounted || !planningResponse?.planning) {
-          return;
-        }
+        const [weekData, monthData, forecastData, services] = await Promise.all([
+          fetchWeeklyPlanning(),
+          fetchMonthlyPlanning(),
+          fetchPaymentsForecast(),
+          serviceService.getAll(),
+        ]);
 
-        setFinancialData((prev) => ({
-          ...prev,
-          planning: planningResponse.planning,
-        }));
+        if (!isMounted) return;
+
+        const mappedServices = {};
+        (Array.isArray(services) ? services : []).forEach((item) => {
+          mappedServices[item.id] = item;
+        });
+
+        setWeeklyPlanning(weekData);
+        setMonthlyPlanning(monthData);
+        setForecastPayments(forecastData);
+        setServicesById(mappedServices);
       } catch (error) {
-        console.error('Erro ao carregar planejamento financeiro:', error);
+        console.error('Erro ao carregar dados financeiros:', error);
+        if (!isMounted) return;
+        setLoadError('Nao foi possivel carregar o resumo financeiro.');
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
-    loadPlanning();
+    loadFinancialData();
 
     return () => {
       isMounted = false;
     };
   }, []);
 
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(value);
+  const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(Number(value || 0));
+
+  const formatDate = (value) => {
+    if (!value) return '-';
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return String(value);
+    return parsed.toLocaleDateString('pt-BR');
   };
 
-  const getStatusBadge = (status) => {
-    const variants = {
-      paid: { label: 'Pago', variant: 'success' },
-      pending: { label: 'Pendente', variant: 'warning' },
-      overdue: { label: 'Atrasado', variant: 'danger' },
-    };
-    return variants[status] || { label: status, variant: 'neutral' };
+  const paymentRows = useMemo(() => {
+    return forecastPayments.map((payment) => {
+      const service = servicesById[payment.serviceId] || {};
+      return {
+        ...payment,
+        seamstressName: service.costureira_nome || `Costureira #${service.costureira || '-'}`,
+        clientName: service.cliente_nome || `Cliente #${service.cliente || '-'}`,
+      };
+    });
+  }, [forecastPayments, servicesById]);
+
+  const filteredPayments = useMemo(() => {
+    if (statusFilter === 'all') return paymentRows;
+    return paymentRows.filter((item) => item.status === statusFilter);
+  }, [paymentRows, statusFilter]);
+
+  const planningData = periodFilter === 'month' ? monthlyPlanning : weeklyPlanning;
+
+  const totalProjected = useMemo(
+    () => planningData.reduce((acc, item) => acc + Number(item.total || 0), 0),
+    [planningData]
+  );
+
+  const seamstressWeeklySummary = useMemo(() => {
+    const grouped = {};
+
+    filteredPayments.forEach((payment) => {
+      const seamstressName = payment.seamstressName || 'Sem costureira';
+      if (!grouped[seamstressName]) {
+        grouped[seamstressName] = { seamstressName, amount: 0, quantity: 0 };
+      }
+      grouped[seamstressName].amount += Number(payment.amount || 0);
+      grouped[seamstressName].quantity += 1;
+    });
+
+    return Object.values(grouped).sort((a, b) => b.amount - a.amount);
+  }, [filteredPayments]);
+
+  const statusConfig = {
+    pago: { label: 'Pago', variant: 'success' },
+    pendente: { label: 'Pendente', variant: 'warning' },
+    atrasado: { label: 'Atrasado', variant: 'danger' },
+    cancelado: { label: 'Cancelado', variant: 'neutral' },
   };
 
-  const filteredTransactions = useMemo(() => {
-    if (selectedFilter === 'all') {
-      return financialData.recentTransactions;
-    }
-
-    return financialData.recentTransactions.filter(
-      (transaction) => transaction.status === selectedFilter
-    );
-  }, [financialData.recentTransactions, selectedFilter]);
-
-  const statCards = [
-    {
-      title: 'Receita Total',
-      value: formatCurrency(financialData.totalRevenue),
-      icon: DollarSign,
-      iconClassName: 'bg-success/10 text-success',
-      badge: {
-        variant: 'success',
-        icon: TrendingUp,
-        text: `${financialData.monthlyGrowth}% este mês`,
-      },
-    },
-    {
-      title: 'Pagamentos Pendentes',
-      value: formatCurrency(financialData.pendingPayments),
-      icon: CreditCard,
-      iconClassName: 'bg-warning/10 text-warning',
-      badge: {
-        variant: 'warning',
-        icon: TrendingDown,
-        text: '2 em atraso',
-      },
-    },
-    {
-      title: 'Pagamentos Realizados',
-      value: formatCurrency(financialData.completedPayments),
-      icon: Wallet,
-      iconClassName: 'bg-info/10 text-info',
-      badge: {
-        variant: 'success',
-        icon: TrendingUp,
-        text: 'Recebidos',
-      },
-    },
-    {
-      title: 'Taxa de Recebimento',
-      value: `${financialData.collectionRate}%`,
-      icon: TrendingUp,
-      iconClassName: 'bg-offWhite text-taupe',
-      progress: `${financialData.targetCollectionRate}%`,
-      badge: {
-        variant: 'success',
-        icon: TrendingUp,
-        text: `Meta: ${financialData.targetCollectionRate}%`,
-      },
-    },
+  const statusOptions = [
+    { value: 'all', label: 'Todos' },
+    { value: 'pendente', label: 'Pendente' },
+    { value: 'atrasado', label: 'Atrasado' },
+    { value: 'pago', label: 'Pago' },
   ];
 
-  const maxPlanning = Math.max(
-    ...(financialData?.planning?.map((item) => item.total) || [0])
-  );
+  if (isLoading) {
+    return (
+      <main className="flex-1 p-6 sm:p-8 lg:p-10">
+        <Typography variant="body1">Carregando resumo financeiro...</Typography>
+      </main>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <main className="flex-1 p-6 sm:p-8 lg:p-10">
+        <Alert type="error" title="Erro" message={loadError} />
+      </main>
+    );
+  }
 
   return (
     <main className="flex-1 p-6 sm:p-8 lg:p-10">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            <Badge variant="info" size="sm">MVP 2</Badge>
-            <Badge variant="warning" size="sm">Discovery</Badge>
-          </div>
-          <Typography variant="h1">Financeiro</Typography>
+          <Typography variant="h1">Resumo Financeiro</Typography>
           <Typography variant="body1" className="mt-1 text-taupe">
-            Acompanhe a saude financeira da sua operacao e valide os fluxos previstos.
+            Visao consolidada de pagamentos por semana e por costureira.
           </Typography>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <Button variant="primary" size="sm">
-            <Plus className="w-4 h-4" />
-            Novo Pagamento
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant={periodFilter === 'week' ? 'primary' : 'secondary'}
+            size="sm"
+            onClick={() => setPeriodFilter('week')}
+          >
+            Semana
           </Button>
-          <Button variant="secondary" size="sm">
-            <FileText className="w-4 h-4" />
-            Relatorio Detalhado
-          </Button>
-          <Button variant="gold" size="sm">
-            <Download className="w-4 h-4" />
-            Exportar Dados
+          <Button
+            variant={periodFilter === 'month' ? 'primary' : 'secondary'}
+            size="sm"
+            onClick={() => setPeriodFilter('month')}
+          >
+            Mes
           </Button>
         </div>
       </div>
 
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {statCards.map((card) => {
-          const Icon = card.icon;
+        <Card className="p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <Typography variant="caption" className="uppercase text-taupe">Total Previsto</Typography>
+              <Typography variant="h3" className="mt-1">{formatCurrency(totalProjected)}</Typography>
+            </div>
+            <div className="w-10 h-10 rounded-md bg-gold/20 text-primary flex items-center justify-center">
+              <DollarSign className="w-5 h-5" />
+            </div>
+          </div>
+        </Card>
 
-          return (
-            <Card key={card.title} hover className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Typography variant="caption" className="uppercase text-taupe">
-                    {card.title}
-                  </Typography>
-                  <Typography variant="h1" className="text-[30px] mt-1">
-                    {card.value}
-                  </Typography>
-                </div>
-                <div className={`w-11 h-11 rounded-md flex items-center justify-center ${card.iconClassName}`}>
-                  <Icon className="w-5 h-5" />
-                </div>
-              </div>
+        <Card className="p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <Typography variant="caption" className="uppercase text-taupe">Pagamentos Previstos</Typography>
+              <Typography variant="h3" className="mt-1">{paymentRows.length}</Typography>
+            </div>
+            <div className="w-10 h-10 rounded-md bg-info/10 text-info flex items-center justify-center">
+              <Wallet className="w-5 h-5" />
+            </div>
+          </div>
+        </Card>
 
-              {card.progress ? (
-                <>
-                  <div className="w-full h-2 bg-gray-200 rounded-md mt-4 overflow-hidden">
-                    <div
-                      className="h-full rounded-md bg-success"
-                      style={{ width: `${financialData.collectionRate}%` }}
-                    />
-                  </div>
-                  <Badge variant={card.badge.variant} size="sm" className="mt-3">
-                    <card.badge.icon className="w-3 h-3 mr-1" />
-                    {card.badge.text}
-                  </Badge>
-                </>
-              ) : (
-                <Badge variant={card.badge.variant} size="sm" className="mt-3">
-                  <card.badge.icon className="w-3 h-3 mr-1" />
-                  {card.badge.text}
-                </Badge>
-              )}
-            </Card>
-          );
-        })}
+        <Card className="p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <Typography variant="caption" className="uppercase text-taupe">Costureiras no Periodo</Typography>
+              <Typography variant="h3" className="mt-1">{seamstressWeeklySummary.length}</Typography>
+            </div>
+            <div className="w-10 h-10 rounded-md bg-success/10 text-success flex items-center justify-center">
+              <CalendarDays className="w-5 h-5" />
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <Typography variant="caption" className="uppercase text-taupe">Filtrados por Status</Typography>
+              <Typography variant="h3" className="mt-1">{filteredPayments.length}</Typography>
+            </div>
+            <div className="w-10 h-10 rounded-md bg-warning/10 text-warning flex items-center justify-center">
+              <CreditCard className="w-5 h-5" />
+            </div>
+          </div>
+        </Card>
       </section>
 
       <section className="mb-8">
         <div className="mb-4">
-          <Typography variant="h2">Pagamentos</Typography>
+          <Typography variant="h2">Planejamento {periodFilter === 'week' ? 'Semanal' : 'Mensal'}</Typography>
           <Typography variant="body2" className="mt-1 text-taupe">
-            Lista validada com base no prototipo para acompanhamento de recebimentos.
+            Valores consolidados para apoiar a visao rapida da operacao financeira.
           </Typography>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-4">
-          {filterOptions.map((option) => (
-            <Button
-              key={option.value}
-              type="button"
-              variant={selectedFilter === option.value ? 'primary' : 'secondary'}
-              size="sm"
-              className={selectedFilter === option.value ? '' : '!border-gray/60'}
-              onClick={() => setSelectedFilter(option.value)}
-            >
-              {option.label}
-            </Button>
+        <div className="space-y-3">
+          {planningData.map((item) => (
+            <Card key={item.period} className="p-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <Typography variant="caption" className="uppercase text-taupe">Periodo</Typography>
+                  <Typography variant="h4" className="mt-1">{item.period}</Typography>
+                </div>
+                <Typography variant="h3">{formatCurrency(item.total)}</Typography>
+              </div>
+            </Card>
           ))}
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <Typography variant="h2">Pagamentos</Typography>
+            <Typography variant="body2" className="mt-1 text-taupe">
+              Lista organizada com indicadores visuais por status.
+            </Typography>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {statusOptions.map((option) => (
+              <Button
+                key={option.value}
+                size="sm"
+                variant={statusFilter === option.value ? 'primary' : 'secondary'}
+                onClick={() => setStatusFilter(option.value)}
+              >
+                {option.label}
+              </Button>
+            ))}
+          </div>
         </div>
 
         <Card className="p-6">
-          <div className="flex items-center justify-between mb-6 gap-3">
-            <Typography variant="h3">Transacoes Recentes</Typography>
-            <Badge variant="neutral" size="sm">
-              {filteredTransactions.length} registro{filteredTransactions.length === 1 ? '' : 's'}
-            </Badge>
-          </div>
-
           <div className="space-y-2">
-          {filteredTransactions.map((transaction) => {
-            const status = getStatusBadge(transaction.status);
-            return (
-              <div
-                key={transaction.id}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-md hover:bg-offWhite transition-colors border-b border-gray/50 last:border-b-0"
-              >
-                <div>
-                  <Typography variant="h4" className="text-[15px]">
-                    {transaction.client}
-                  </Typography>
-                  <Typography variant="caption" className="text-taupe block mt-1">
-                    {transaction.date}
-                  </Typography>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Typography variant="h4" className="text-[15px] font-semibold">
-                    {formatCurrency(transaction.amount)}
-                  </Typography>
-                  <Badge variant={status.variant} size="sm">
-                    {status.label}
-                  </Badge>
-                </div>
-              </div>
-            );
-          })}
+            {filteredPayments.map((payment) => {
+              const status = statusConfig[payment.status] || {
+                label: payment.status,
+                variant: 'neutral',
+              };
 
-          {filteredTransactions.length === 0 && (
-            <div className="py-8 text-center">
-              <Typography variant="body1" className="text-taupe">
-                Nenhum pagamento encontrado para o filtro selecionado.
-              </Typography>
-            </div>
-          )}
+              return (
+                <div
+                  key={payment.paymentId}
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-md border-b border-gray/40 last:border-b-0"
+                >
+                  <div>
+                    <Typography variant="h4">{payment.seamstressName}</Typography>
+                    <Typography variant="body2" className="text-taupe">
+                      {payment.clientName} • Entrega: {formatDate(payment.dueDate)}
+                    </Typography>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <Typography variant="h4" className="font-semibold">
+                      {formatCurrency(payment.amount)}
+                    </Typography>
+                    <Badge variant={status.variant} size="sm">{status.label}</Badge>
+                  </div>
+                </div>
+              );
+            })}
+
+            {filteredPayments.length === 0 && (
+              <div className="py-8 text-center">
+                <Typography variant="body1" className="text-taupe">
+                  Nenhum pagamento encontrado para o filtro selecionado.
+                </Typography>
+              </div>
+            )}
           </div>
         </Card>
       </section>
 
-      <section className="mb-8">
+      <section>
         <div className="mb-4">
-          <Typography variant="h2">Planejamento Financeiro</Typography>
+          <Typography variant="h2">Valores por Costureira</Typography>
           <Typography variant="body2" className="mt-1 text-taupe">
-            Previsao de pagamentos para as proximas semanas.
+            Resumo semanal simplificado para tomada de decisao manual.
           </Typography>
         </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {financialData.planning.map((item) => (
-            <Card
-              key={item.id}
-              variant={item.variant}
-              className={item.variant === "gold" ? "border-primary/10" : ""}
-            >
-              <Typography variant="h3">{item.title}</Typography>
-              <Typography variant="body2" className="mt-1 text-taupe">
-                {item.subtitle}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {seamstressWeeklySummary.map((item) => (
+            <Card key={item.seamstressName} className="p-5">
+              <Typography variant="h4">{item.seamstressName}</Typography>
+              <Typography variant="body2" className="text-taupe mt-1">
+                {item.quantity} pagamento{item.quantity === 1 ? '' : 's'}
               </Typography>
-              <div className="mt-5 space-y-3">
-                <div className="flex items-center justify-between gap-4">
-                  <Typography variant="body2" className="text-taupe">
-                    Total a pagar
-                  </Typography>
-                  <Typography variant="h3">
-                    {formatCurrency(item.total)}
-                  </Typography>
-                </div>
-                <div className="flex items-center justify-between gap-4">
-                  <Typography variant="body2" className="text-taupe">
-                    Costureiras
-                  </Typography>
-                  <Typography variant="body2">
-                    {item.seamstresses}
-                  </Typography>
-                </div>
-                <div className="flex items-center justify-between gap-4">
-                  <Typography variant="body2" className="text-taupe">
-                    Servicos
-                  </Typography>
-                  <Typography variant="body2">
-                    {item.services}
-                  </Typography>
-                </div>
-              </div>
+              <Typography variant="h3" className="mt-3">
+                {formatCurrency(item.amount)}
+              </Typography>
             </Card>
           ))}
         </div>
-
-        {/* Gráfico */}
-        <Card className="mt-8 p-6">
-          <Typography variant="h3">
-            Projeção de Pagamentos
-          </Typography>
-          <Typography variant="body2" className="text-taupe mb-6">
-            Comparativo dos pagamentos previstos.
-          </Typography>
-          <div className="flex items-end justify-center h-40 gap-20 border-b border-gray-200 pb-4">
-            {financialData.planning.map((item) => (
-              <div
-                key={item.id}
-                className="flex flex-col items-center gap-3"
-              >
-                <Typography variant="caption" className="font-medium">
-                  {formatCurrency(item.total)}
-                </Typography>
-                <div
-                  className={`w-24 rounded-t transition-all duration-500 ${
-                    item.variant === "gold"
-                      ? "bg-gold"
-                      : "bg-primary"
-                  }`}
-                  style={{
-                    height: `${(item.total / maxPlanning) * 100}%`,
-                    minHeight: "20px",
-                  }}
-                />
-                <Typography
-                  variant="caption"
-                  className="text-taupe"
-                >
-                  {item.title}
-                </Typography>
-              </div>
-            ))}
-          </div>
-        </Card>
       </section>
     </main>
   );

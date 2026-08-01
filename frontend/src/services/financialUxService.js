@@ -63,12 +63,42 @@ function toMonitoringDashboardViewModel(payload) {
   };
 }
 
+function toWeeklyPlanningViewModel(payload) {
+  const list = Array.isArray(payload) ? payload : [];
+  return list.map((item) => ({
+    period: item?.periodo || '-',
+    total: Number(item?.valor_total || 0),
+  }));
+}
+
+function toMonthlyPlanningViewModel(payload) {
+  const list = Array.isArray(payload) ? payload : [];
+  return list.map((item) => ({
+    period: item?.periodo || '-',
+    total: Number(item?.valor_total || 0),
+  }));
+}
+
+function toForecastPaymentsViewModel(payload) {
+  const list = Array.isArray(payload) ? payload : [];
+  return list.map((item) => ({
+    paymentId: item?.pagamento_id,
+    serviceId: item?.servico_id,
+    dueDate: item?.data_entrega,
+    amount: Number(item?.valor || 0),
+    status: item?.status || 'pendente',
+  }));
+}
+
 export async function fetchFinancialHealth() {
   try {
     const response = await api.get('/financial/health/');
     return toHealthViewModel(response.data);
   } catch (error) {
-    throw new Error(extractErrorMessage(error, 'Falha ao validar saude da API financeira.'));
+    throw new Error(
+      extractErrorMessage(error, 'Falha ao validar saude da API financeira.'),
+      { cause: error }
+    );
   }
 }
 
@@ -84,7 +114,10 @@ export async function simulateFinancialPayment(payload, options = {}) {
     const response = await api.post('/financial/payments/simulate/', payload, { params });
     return toPaymentSimulationViewModel(response.data);
   } catch (error) {
-    throw new Error(extractErrorMessage(error, 'Falha ao simular pagamento financeiro.'));
+    throw new Error(
+      extractErrorMessage(error, 'Falha ao simular pagamento financeiro.'),
+      { cause: error }
+    );
   }
 }
 
@@ -93,6 +126,45 @@ export async function fetchMonitoringDashboard() {
     const response = await api.get('/internal/monitoring/dashboard/');
     return toMonitoringDashboardViewModel(response.data);
   } catch (error) {
-    throw new Error(extractErrorMessage(error, 'Falha ao carregar dashboard de monitoramento financeiro.'));
+    throw new Error(
+      extractErrorMessage(error, 'Falha ao carregar dashboard de monitoramento financeiro.'),
+      { cause: error }
+    );
+  }
+}
+
+export async function fetchWeeklyPlanning() {
+  try {
+    const response = await api.get('/financial/payments/planejamento/semanal/');
+    return toWeeklyPlanningViewModel(response.data);
+  } catch (error) {
+    throw new Error(
+      extractErrorMessage(error, 'Falha ao carregar planejamento semanal.'),
+      { cause: error }
+    );
+  }
+}
+
+export async function fetchMonthlyPlanning() {
+  try {
+    const response = await api.get('/financial/payments/planejamento/mensal/');
+    return toMonthlyPlanningViewModel(response.data);
+  } catch (error) {
+    throw new Error(
+      extractErrorMessage(error, 'Falha ao carregar planejamento mensal.'),
+      { cause: error }
+    );
+  }
+}
+
+export async function fetchPaymentsForecast() {
+  try {
+    const response = await api.get('/financial/payments/previsao/');
+    return toForecastPaymentsViewModel(response.data);
+  } catch (error) {
+    throw new Error(
+      extractErrorMessage(error, 'Falha ao carregar previsao de pagamentos.'),
+      { cause: error }
+    );
   }
 }
