@@ -11,8 +11,8 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
-  const [username, setUsername] = useState('ananda');
-  const [password, setPassword] = useState('Ananda@2026');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -27,7 +27,13 @@ const Login = () => {
       await login(username.trim(), password);
       navigate(from, { replace: true });
     } catch (error) {
-      setErrorMessage('Nao foi possivel entrar com essas credenciais. Verifique usuario e senha.');
+      if (error.response?.status === 401 || error.response?.status === 400) {
+        setErrorMessage('Credenciais inválidas. Verifique o usuário e a senha e tente novamente.');
+      } else if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
+        setErrorMessage('Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.');
+      } else {
+        setErrorMessage('Não foi possível entrar com essas credenciais. Tente novamente.');
+      }
       console.error('Erro ao autenticar usuário:', error);
     } finally {
       setIsLoading(false);

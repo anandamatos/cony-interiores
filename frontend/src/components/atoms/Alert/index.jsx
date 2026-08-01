@@ -45,8 +45,14 @@ const Alert = ({
   const variant = variants[type] || variants.info;
   const Icon = variant.icon;
 
+  const role = type === 'error' || type === 'warning' ? 'alert' : 'status';
+
   return (
-    <div className={`${variant.bg} ${variant.border} border rounded-md p-4 ${className}`}>
+    <div
+      role={role}
+      aria-live={type === 'error' || type === 'warning' ? 'assertive' : 'polite'}
+      className={`${variant.bg} ${variant.border} border rounded-md p-4 ${className}`}
+    >
       <div className="flex items-start">
         <div className="flex-shrink-0">
           <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/65">
@@ -69,9 +75,10 @@ const Alert = ({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Fechar alerta"
             className={`ml-auto flex-shrink-0 ${variant.textColor} hover:opacity-75`}
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" aria-hidden="true" />
           </button>
         )}
       </div>
