@@ -11,7 +11,6 @@ import Alert from '../../components/atoms/Alert';
 import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
 import { serviceService } from '../../services/serviceService';
-import ROICards from '../../components/molecules/ROICards';
 
 const filterOptions = [
   { value: 'all', label: 'Todos', variant: 'all' },
@@ -186,8 +185,6 @@ const Reports = () => {
           </Button>
         </div>
       </div>
-
-      <ROICards />
 
       <Card className="p-5 mb-6">
         <Typography variant="h4" className="mb-4">Filtros</Typography>

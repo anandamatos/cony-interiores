@@ -18,9 +18,4 @@ urlpatterns = [
         views.sugerir_alocacao,
         name='sugerir-alocacao',
     ),
-    path(
-        'eficiencia/',
-        views.listar_cards_roi,
-        name='listar-cards-roi',
-    ),
 ]

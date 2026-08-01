@@ -14,18 +14,6 @@ from .services.bridge import (
     listar_capacidade_todas_costureiras,
 )
 
-from .services.roi import calcular_cards_roi
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def listar_cards_roi(request):
-    """
-    GET /api/core/eficiencia/
-    Retorna os cards de ROI/eficiência de todas as costureiras ativas.
-    """
-    cards = calcular_cards_roi()
-    return Response(cards)
-
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def consultar_carga(request, costureira_id):
