@@ -64,6 +64,33 @@ const Financial = () => {
     { value: 'overdue', label: 'Atrasado' },
   ];
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPlanning = async () => {
+      try {
+        const planningResponse = await fetchPlanningData();
+
+        if (!isMounted || !planningResponse?.planning) {
+          return;
+        }
+
+        setFinancialData((prev) => ({
+          ...prev,
+          planning: planningResponse.planning,
+        }));
+      } catch (error) {
+        console.error('Erro ao carregar planejamento financeiro:', error);
+      }
+    };
+
+    loadPlanning();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
