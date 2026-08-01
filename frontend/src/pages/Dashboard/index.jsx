@@ -20,6 +20,9 @@ import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
+import { serviceService } from '../../services/serviceService';
+import { seamstressService } from '../../services/seamstressService';
+import { fetchPaymentsForecast } from '../../services/financialUxService';
 
 // ============================================
 // DADOS MOCKADOS
@@ -166,14 +169,53 @@ const Dashboard = () => {
   const [hoveredBar, setHoveredBar] = useState(null);
 
   // ============================================
-  // CARREGAR DADOS (simulação)
+  // CARREGAR DADOS
   // ============================================
   useEffect(() => {
+    const getUpcomingDeliveries = (services) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const nextWeek = new Date(today);
+      nextWeek.setDate(nextWeek.getDate() + 7);
+
+      return services.filter((service) => {
+        if (!service?.prazo_entrega) return false;
+        const dueDate = new Date(service.prazo_entrega);
+        if (Number.isNaN(dueDate.getTime())) return false;
+        dueDate.setHours(0, 0, 0, 0);
+        return dueDate >= today && dueDate <= nextWeek;
+      }).length;
+    };
+
     const loadData = async () => {
       try {
         setIsLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        setStats(mockStats);
+
+        const [services, seamstresses, forecastPayments] = await Promise.all([
+          serviceService.getAll(),
+          seamstressService.getAll(),
+          fetchPaymentsForecast(),
+        ]);
+
+        const servicesList = Array.isArray(services) ? services : [];
+        const seamstressesList = Array.isArray(seamstresses) ? seamstresses : [];
+        const paymentsList = Array.isArray(forecastPayments) ? forecastPayments : [];
+
+        const activeServices = servicesList.length;
+        const activeSeamstresses = seamstressesList.filter((item) => item?.ativa !== false).length;
+        const pendingPayments = paymentsList.filter(
+          (item) => item?.status === 'pendente' || item?.status === 'atrasado'
+        ).length;
+        const upcomingDeliveries = getUpcomingDeliveries(servicesList);
+
+        setStats({
+          ...mockStats,
+          activeServices,
+          seamstresses: activeSeamstresses,
+          pendingPayments,
+          upcomingDeliveries,
+        });
         setError(null);
       } catch (err) {
         setError('Erro ao carregar dados do dashboard');
