@@ -127,7 +127,6 @@ const Productivity = () => {
       </main>
     );
   }
-
   const stats = {
     completed: productivityData.completed,
     inProgress: productivityData.inProgress,
