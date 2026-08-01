@@ -10,6 +10,7 @@ from users.models import Cliente, Costureira, Produto, Servico
 
 
 SEED_PREFIX = "[SEED-DASH]"
+LEGACY_SEED_PREFIX = "[SEED-DASH]"
 
 
 class Command(BaseCommand):
@@ -41,31 +42,31 @@ class Command(BaseCommand):
             Costureira.objects.all().delete()
         else:
             self.stdout.write("Limpando seeds antigos sem afetar dados reais...")
-            Pagamento.objects.filter(servico__cliente__nome__startswith=SEED_PREFIX).delete()
-            Servico.objects.filter(cliente__nome__startswith=SEED_PREFIX).delete()
-            Produto.objects.filter(nome__startswith=SEED_PREFIX).delete()
-            Cliente.objects.filter(nome__startswith=SEED_PREFIX).delete()
-            Costureira.objects.filter(nome__startswith=SEED_PREFIX).delete()
+            Pagamento.objects.filter(servico__cliente__nome__startswith=LEGACY_SEED_PREFIX).delete()
+            Servico.objects.filter(cliente__nome__startswith=LEGACY_SEED_PREFIX).delete()
+            Produto.objects.filter(nome__startswith=LEGACY_SEED_PREFIX).delete()
+            Cliente.objects.filter(nome__startswith=LEGACY_SEED_PREFIX).delete()
+            Costureira.objects.filter(nome__startswith=LEGACY_SEED_PREFIX).delete()
 
         today = timezone.localdate()
 
         costureiras = [
-            Costureira.objects.create(nome=f"{SEED_PREFIX} Sirlene", ativo=True),
-            Costureira.objects.create(nome=f"{SEED_PREFIX} Mariana", ativo=True),
-            Costureira.objects.create(nome=f"{SEED_PREFIX} Joana", ativo=True),
-            Costureira.objects.create(nome=f"{SEED_PREFIX} Ana Paula", ativo=True),
+            Costureira.objects.create(nome="Sirlene", ativo=True),
+            Costureira.objects.create(nome="Mariana", ativo=True),
+            Costureira.objects.create(nome="Joana", ativo=True),
+            Costureira.objects.create(nome="Ana Paula", ativo=True),
         ]
 
         clientes = [
-            Cliente.objects.create(nome=f"{SEED_PREFIX} Cliente A"),
-            Cliente.objects.create(nome=f"{SEED_PREFIX} Cliente B"),
-            Cliente.objects.create(nome=f"{SEED_PREFIX} Cliente C"),
+            Cliente.objects.create(nome="Cliente A"),
+            Cliente.objects.create(nome="Cliente B"),
+            Cliente.objects.create(nome="Cliente C"),
         ]
 
         produtos = [
-            Produto.objects.create(nome=f"{SEED_PREFIX} Cortina", valor_base=Decimal("120.00")),
-            Produto.objects.create(nome=f"{SEED_PREFIX} Almofada", valor_base=Decimal("60.00")),
-            Produto.objects.create(nome=f"{SEED_PREFIX} Forro", valor_base=Decimal("80.00")),
+            Produto.objects.create(nome="Cortina", valor_base=Decimal("120.00")),
+            Produto.objects.create(nome="Almofada", valor_base=Decimal("60.00")),
+            Produto.objects.create(nome="Forro", valor_base=Decimal("80.00")),
         ]
 
         servicos = []

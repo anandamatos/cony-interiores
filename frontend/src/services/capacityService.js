@@ -59,12 +59,15 @@ const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === "true" || false;
  */
 export const fetchCapacityData = async (params = {}) => {
   try {
-    // Tenta buscar da API
-    const response = await api.get("/capacidade/", { params });
+    const response = await api.get("/core/costureiras/carga/", { params });
     return response.data;
   } catch (error) {
+    if (!USE_MOCKS) {
+      console.error("Erro ao buscar capacidade:", error);
+      throw new Error("Erro ao carregar capacidade", { cause: error });
+    }
+
     console.warn("API de capacidade não disponível, usando dados mockados:", error.message);
-    // Retorna dados mockados como fallback
     return mockCapacityData;
   }
 };
@@ -73,13 +76,7 @@ export const fetchCapacityData = async (params = {}) => {
  * Busca dados de capacidade filtrados por período
  */
 export const fetchCapacityByPeriod = async (period) => {
-  try {
-    const response = await api.get("/capacidade/", { params: { periodo: period } });
-    return response.data;
-  } catch (error) {
-    console.warn("API de capacidade não disponível, usando dados mockados para o período:", period);
-    return mockCapacityData;
-  }
+  return fetchCapacityData({ periodo: period });
 };
 
 /**
@@ -87,9 +84,14 @@ export const fetchCapacityByPeriod = async (period) => {
  */
 export const fetchCapacityBySpecialty = async (specialty) => {
   try {
-    const response = await api.get("/capacidade/", { params: { especialidade: specialty } });
+    const response = await api.get("/core/costureiras/carga/", { params: { especialidade: specialty } });
     return response.data;
   } catch (error) {
+    if (!USE_MOCKS) {
+      console.error("Erro ao buscar capacidade por especialidade:", error);
+      throw new Error("Erro ao carregar capacidade", { cause: error });
+    }
+
     console.warn(
       "API de capacidade não disponível, usando dados mockados para especialidade:",
       specialty,
@@ -108,11 +110,10 @@ export const fetchCapacityWithFilters = async (filters = {}) => {
   const { period, specialty } = filters;
 
   try {
-    const response = await api.get("/capacidade/", { params: filters });
+    const response = await api.get("/core/costureiras/carga/", { params: filters });
     return response.data;
   } catch (error) {
-    // Em produção, não usar mock silencioso
-    if (!USE_MOCKS && import.meta.env.PROD) {
+    if (!USE_MOCKS) {
       console.error("Erro ao buscar dados de capacidade:", error);
       throw new Error("Erro ao processar dados de capacidade", { cause: error });
     }
