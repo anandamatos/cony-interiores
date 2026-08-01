@@ -37,53 +37,53 @@ const Login = () => {
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(222,187,164,0.38),_transparent_35%),linear-gradient(135deg,_#F8F5F0_0%,_#FFF9F2_52%,_#EFE3D2_100%)] px-6 py-10 sm:px-8 lg:px-12">
       <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-6xl items-stretch gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <section className="flex flex-col justify-between rounded-[28px] border border-[rgba(112,56,36,0.08)] bg-[linear-gradient(160deg,_rgba(112,56,36,0.96),_rgba(75,58,46,0.92))] p-8 text-offWhite shadow-[0_28px_60px_rgba(75,58,46,0.18)] sm:p-10">
+        <section className="flex flex-col justify-between rounded-[28px] border border-[rgba(34,24,18,0.35)] bg-[linear-gradient(160deg,_rgba(43,30,22,0.98),_rgba(75,58,46,0.96))] p-8 text-offWhite shadow-[0_28px_60px_rgba(26,20,16,0.28)] sm:p-10">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#F6E9DC]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/8 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#FFF7EF]">
               <Sparkles className="h-4 w-4" />
-              Area logada
+              Sua área de trabalho
             </div>
-            <Typography variant="h1" className="mt-8 max-w-md !text-[3rem] !leading-[0.95] text-[#FFF4E6]">
-              Cony Interiores em modo de operação.
+            <Typography variant="h1" className="mt-8 max-w-md !text-[3rem] !leading-[0.95] text-white">
+              Entre para continuar seu atendimento.
             </Typography>
-            <Typography variant="body1" className="mt-4 max-w-lg text-[#F8F0E7]/85">
-              O Dashboard continua público. O restante da plataforma fica disponível apenas para quem entrar com acesso válido.
+            <Typography variant="body1" className="mt-4 max-w-lg text-white/90">
+              Aqui você acompanha pedidos, cadastros e tudo o que precisa para seguir o dia com mais organização.
             </Typography>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <Card className="border border-white/15 bg-[rgba(45,31,24,0.42)] p-5 text-offWhite shadow-none backdrop-blur-sm">
-              <Shield className="h-5 w-5 text-[#DEBBA4]" />
-              <Typography variant="h4" className="mt-3 text-[#FFF4E6]">
-                Erika
+            <Card className="border border-white/12 bg-[rgba(18,12,9,0.48)] p-5 text-offWhite shadow-none backdrop-blur-sm">
+              <Shield className="h-5 w-5 text-[#F3D6BF]" />
+              <Typography variant="h4" className="mt-3 text-white">
+                Acesso da gestora
               </Typography>
-              <Typography variant="body2" className="mt-1 text-[#F8F0E7]/90">
-                Perfil de gerente com acesso total às rotas protegidas.
+              <Typography variant="body2" className="mt-1 text-white/88">
+                Para quem acompanha os pedidos e organiza a rotina da equipe.
               </Typography>
             </Card>
-            <Card className="border border-white/15 bg-[rgba(45,31,24,0.42)] p-5 text-offWhite shadow-none backdrop-blur-sm">
-              <LockKeyhole className="h-5 w-5 text-[#DEBBA4]" />
-              <Typography variant="h4" className="mt-3 text-[#FFF4E6]">
-                Ananda
+            <Card className="border border-white/12 bg-[rgba(18,12,9,0.48)] p-5 text-offWhite shadow-none backdrop-blur-sm">
+              <LockKeyhole className="h-5 w-5 text-[#F3D6BF]" />
+              <Typography variant="h4" className="mt-3 text-white">
+                Acesso da operação
               </Typography>
-              <Typography variant="body2" className="mt-1 text-[#F8F0E7]/90">
-                Acesso padrão da operação para navegação diária do sistema.
+              <Typography variant="body2" className="mt-1 text-white/88">
+                Para seguir com os cadastros e consultas do dia a dia.
               </Typography>
             </Card>
           </div>
         </section>
 
         <section className="flex items-center justify-center">
-          <Card className="w-full max-w-xl border border-[rgba(112,56,36,0.08)] bg-white/92 p-7 shadow-[0_22px_50px_rgba(75,58,46,0.12)] backdrop-blur-sm sm:p-10">
+          <Card className="w-full max-w-xl border border-[rgba(112,56,36,0.14)] bg-[#FFFDF9] p-7 shadow-[0_22px_50px_rgba(75,58,46,0.14)] backdrop-blur-sm sm:p-10">
             <div>
-              <Typography variant="caption" className="uppercase tracking-[0.2em] text-taupe">
-                Acesso restrito
+              <Typography variant="caption" className="uppercase tracking-[0.2em] text-[#7C5B47]">
+                Bem-vinda
               </Typography>
-              <Typography variant="h2" className="mt-2 text-[#8B4A2E]">
-                Entrar na plataforma
+              <Typography variant="h2" className="mt-2 text-[#5A2F1E]">
+                Acesse sua área
               </Typography>
-              <Typography variant="body2" className="mt-2 text-taupe">
-                Use as credenciais de teste para acessar todas as áreas protegidas.
+              <Typography variant="body2" className="mt-2 text-[#5A473B]">
+                Entre com seus dados para continuar.
               </Typography>
             </div>
 
@@ -93,21 +93,21 @@ const Login = () => {
 
             <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="login-username" className="mb-2 block text-sm font-semibold text-primary">
-                  Usuário
+                <label htmlFor="login-username" className="mb-2 block text-sm font-semibold text-[#4B3A2E]">
+                  Seu nome de acesso
                 </label>
                 <input
                   id="login-username"
                   value={username}
                   onChange={(event) => setUsername(event.target.value)}
-                  className="w-full rounded-md border border-border bg-offWhite px-4 py-3 text-primary outline-none transition-all focus:border-gold focus:ring-2 focus:ring-gold/20"
+                  className="w-full rounded-md border border-[rgba(75,58,46,0.18)] bg-white px-4 py-3 text-[#2E221A] placeholder:text-[#8C7568] outline-none transition-all focus:border-gold focus:ring-2 focus:ring-gold/20"
                   autoComplete="username"
                   placeholder="ananda"
                 />
               </div>
 
               <div>
-                <label htmlFor="login-password" className="mb-2 block text-sm font-semibold text-primary">
+                <label htmlFor="login-password" className="mb-2 block text-sm font-semibold text-[#4B3A2E]">
                   Senha
                 </label>
                 <input
@@ -115,24 +115,24 @@ const Login = () => {
                   type="password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  className="w-full rounded-md border border-border bg-offWhite px-4 py-3 text-primary outline-none transition-all focus:border-gold focus:ring-2 focus:ring-gold/20"
+                  className="w-full rounded-md border border-[rgba(75,58,46,0.18)] bg-white px-4 py-3 text-[#2E221A] placeholder:text-[#8C7568] outline-none transition-all focus:border-gold focus:ring-2 focus:ring-gold/20"
                   autoComplete="current-password"
                   placeholder="Sua senha"
                 />
               </div>
 
               <Button type="submit" variant="primary" className="w-full justify-center" disabled={isLoading}>
-                {isLoading ? 'Entrando...' : 'Acessar sistema'}
+                {isLoading ? 'Entrando...' : 'Continuar'}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </form>
 
-            <div className="mt-8 rounded-[20px] border border-[rgba(112,56,36,0.14)] bg-[#F5ECE1] p-5">
-              <Typography variant="h4" className="text-[#4B3A2E]">Regras de acesso</Typography>
-              <ul className="mt-3 space-y-2 text-sm text-[#5A473B]">
-                <li>• Dashboard permanece liberado sem login.</li>
-                <li>• Serviços, Costureiras, Financeiro e demais áreas exigem autenticação.</li>
-                <li>• A busca do topo continua funcional e acompanha a navegação.</li>
+            <div className="mt-8 rounded-[20px] border border-[rgba(112,56,36,0.18)] bg-[#F2E8DD] p-5">
+              <Typography variant="h4" className="text-[#40281E]">O que você encontra aqui</Typography>
+              <ul className="mt-3 space-y-2 text-sm text-[#4B3A2E]">
+                <li>• Um espaço para organizar pedidos, cadastros e acompanhamento.</li>
+                <li>• Uma navegação simples para seguir o trabalho sem perder contexto.</li>
+                <li>• Acesso preparado para a rotina de quem cuida da operação.</li>
               </ul>
             </div>
           </Card>
