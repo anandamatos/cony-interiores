@@ -15,6 +15,7 @@ const EditSeamstress = lazy(() => import('./pages/Seamstresses/EditSeamstress'))
 const Capacity = lazy(() => import('./pages/Capacity'));
 const Financial = lazy(() => import('./pages/Financial'));
 const Productivity = lazy(() => import('./pages/Productivity'));
+const Catalog = lazy(() => import('./pages/Catalog'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Team = lazy(() => import('./pages/Team'));
 
@@ -39,6 +40,7 @@ function App() {
             <Route path="capacity" element={<Capacity />} />
             <Route path="financial" element={<Financial />} />
             <Route path="productivity" element={<Productivity />} />
+            <Route path="catalog" element={<Catalog />} />
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<Settings />} />
             <Route path="team" element={<Team />} />

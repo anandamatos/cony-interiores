@@ -98,7 +98,6 @@ class Servico(models.Model):
     costureira = models.ForeignKey(Costureira, on_delete=models.CASCADE, related_name="servicos")
     quantidade = models.IntegerField(default=0)
     complexidade = models.IntegerField(default=0)
-    criacao = models.DateField(auto_now_add=True, verbose_name="Data de Criação")
     data_envio = models.DateField(blank=True)
     prazo_entrega = models.DateField() #Correção
     valor = models.DecimalField(max_digits=10, decimal_places=2)

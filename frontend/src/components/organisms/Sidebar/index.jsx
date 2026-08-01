@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   TrendingUp,
+  Package,
 } from 'lucide-react';
 import classNames from 'classnames';
 
@@ -23,6 +24,7 @@ const menuItems = [
   { path: '/capacity', label: 'Capacidade', icon: Gauge },
   { path: '/financial', label: 'Financeiro', icon: DollarSign },
   { path: '/productivity', label: 'Produtividade', icon: TrendingUp},
+  { path: '/catalog', label: 'Catálogo', icon: Package },
 ];
 
 const Sidebar = () => {
