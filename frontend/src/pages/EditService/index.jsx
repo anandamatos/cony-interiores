@@ -15,9 +15,11 @@ const EditService = () => {
 
   // Mapeamento de complexidade
   const COMPLEXIDADE_MAP = {
-    0: 'baixa',
-    1: 'media',
-    2: 'alta'
+    0: 'sem_definicao',
+    1: 'baixa',
+    2: 'media',
+    3: 'alta',
+    5: 'especial',
   };
 
   useEffect(() => {
@@ -52,9 +54,11 @@ const EditService = () => {
 
   // Mapeamento reverso para enviar ao backend
   const COMPLEXIDADE_REVERSE = {
-    'baixa': 0,
-    'media': 1,
-    'alta': 2
+    sem_definicao: 1,
+    baixa: 1,
+    media: 2,
+    alta: 3,
+    especial: 5,
   };
 
   const handleSubmit = async (formData) => {

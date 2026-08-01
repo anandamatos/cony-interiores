@@ -59,6 +59,16 @@ export const serviceService = {
       throw error;
     }
   },
+
+  createCliente: async (data) => {
+    try {
+      const response = await api.post('/clientes/', data);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao criar cliente:', error);
+      throw error;
+    }
+  },
 };
 
 export default serviceService;

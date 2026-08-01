@@ -9,9 +9,11 @@ const NewService = () => {
 
   // Mapeamento de complexidade
   const COMPLEXIDADE_MAP = {
-    'baixa': 0,
-    'media': 1,
-    'alta': 2
+    sem_definicao: 1,
+    baixa: 1,
+    media: 2,
+    alta: 3,
+    especial: 5,
   };
 
   const handleSubmit = async (formData) => {
@@ -25,7 +27,7 @@ const NewService = () => {
         data_envio: formData.dataEnvio,
         prazo_entrega: formData.prazoEntrega,
         valor: formData.valor,
-        complexidade: COMPLEXIDADE_MAP[formData.complexidade] || 1, // ✅ converte string para número
+        complexidade: COMPLEXIDADE_MAP[formData.complexidade] || 1,
         observacoes: formData.observacoes || '',
       };
 
