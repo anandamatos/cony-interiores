@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -17,6 +18,7 @@ import logging
 import time
 
 logger = logging.getLogger(__name__)
+User = get_user_model()
 
 
 class CostureiraViewSet(viewsets.ModelViewSet):
@@ -67,6 +69,21 @@ class GrupoProdutoViewSet(viewsets.ModelViewSet):
     queryset = GrupoProduto.objects.all()
     serializer_class = GrupoProdutoSerializer
     permission_classes = [AllowAny]
+
+
+@api_view(['GET'])
+def current_user(request):
+    user = request.user
+    return Response({
+        'id': user.id,
+        'username': user.username,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'full_name': user.get_full_name() or user.username,
+        'email': user.email,
+        'is_staff': user.is_staff,
+        'is_superuser': user.is_superuser,
+    })
 
 
 # ===== VIEWS DE TESTE =====

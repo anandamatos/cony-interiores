@@ -7,6 +7,7 @@ from .views import (
     ProdutoViewSet,
     GrupoProdutoViewSet,
     MetricaViewSet,
+    current_user,
     hello,
     home,
 )
@@ -23,5 +24,6 @@ router.register(r'metricas', MetricaViewSet, basename='metrica') #novo
 urlpatterns = [
     path('hello/', hello),
     path('', home),
+    path('auth/me/', current_user, name='auth-me'),
     path('', include(router.urls)),
 ]
