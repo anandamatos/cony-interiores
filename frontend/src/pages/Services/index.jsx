@@ -210,7 +210,7 @@ const Services = () => {
                         variant="ghost"
                         size="sm"
                         className="!p-2"
-                        onClick={() => navigate(`/services/${service.id}/edit`)}
+                        onClick={() => navigate(`/services/edit/${service.id}`)} // ✅ CORRIGIDO
                         aria-label={`Editar serviço de ${service.client}`}
                         title="Editar"
                       >

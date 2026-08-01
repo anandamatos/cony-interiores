@@ -175,11 +175,21 @@ const Reports = () => {
           </Typography>
         </div>
         <div className="flex gap-2">
-          <Button variant="secondary" size="sm" onClick={handleExport} disabled={filteredServices.length === 0}>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={handleExport}
+            disabled={filteredServices.length === 0}
+          >
             <Download className="w-4 h-4" />
             CSV
           </Button>
-          <Button variant="primary" size="sm" onClick={handleExportPdf} disabled={filteredServices.length === 0}>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={handleExportPdf}
+            disabled={filteredServices.length === 0}
+          >
             <Download className="w-4 h-4" />
             PDF
           </Button>
@@ -255,7 +265,6 @@ const Reports = () => {
             </ResponsiveContainer>
           </Card>
         )}
-
         {!isLoading && loadError && (
           <Alert type="error" title="Erro" message={loadError} />
         )}

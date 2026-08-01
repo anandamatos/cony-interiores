@@ -13,12 +13,31 @@ const EditService = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
 
+  // Mapeamento de complexidade
+  const COMPLEXIDADE_MAP = {
+    0: 'baixa',
+    1: 'media',
+    2: 'alta'
+  };
+
   useEffect(() => {
     const loadService = async () => {
       try {
         setIsLoading(true);
         const data = await serviceService.getById(id);
-        setInitialData(data);
+        
+        // Transformar dados do backend para o formato do formulário
+        setInitialData({
+          cliente: data.cliente || '',
+          costureira: data.costureira || '',
+          produto: data.produto?.[0] || '',
+          quantidade: data.quantidade || 1,
+          complexidade: COMPLEXIDADE_MAP[data.complexidade] || 'media',
+          dataEnvio: data.data_envio || '',
+          prazoEntrega: data.prazo_entrega || '',
+          valor: data.valor || '',
+          observacoes: data.observacoes || '',
+        });
       } catch (error) {
         console.error('Erro ao carregar serviço:', error);
         setLoadError(error?.message || 'Não foi possível carregar o serviço.');
@@ -31,8 +50,26 @@ const EditService = () => {
     loadService();
   }, [id, navigate]);
 
+  // Mapeamento reverso para enviar ao backend
+  const COMPLEXIDADE_REVERSE = {
+    'baixa': 0,
+    'media': 1,
+    'alta': 2
+  };
+
   const handleSubmit = async (formData) => {
-    await serviceService.update(id, formData);
+    const payload = {
+      cliente: parseInt(formData.cliente),
+      costureira: parseInt(formData.costureira),
+      produto: [parseInt(formData.produto)],
+      quantidade: parseInt(formData.quantidade),
+      data_envio: formData.dataEnvio,
+      prazo_entrega: formData.prazoEntrega,
+      valor: formData.valor,
+      complexidade: COMPLEXIDADE_REVERSE[formData.complexidade] || 1,
+      observacoes: formData.observacoes || '',
+    };
+    await serviceService.update(id, payload);
     setTimeout(() => navigate('/services'), 1500);
   };
 
