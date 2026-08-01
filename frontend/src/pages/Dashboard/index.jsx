@@ -24,6 +24,7 @@ import { serviceService } from '../../services/serviceService';
 import { seamstressService } from '../../services/seamstressService';
 import { productService } from '../../services/productService';
 import { fetchPaymentsForecast } from '../../services/financialUxService';
+import { buildOperationalCapacityContext } from '../../utils/operationalCapacity';
 
 // ============================================
 // DADOS MOCKADOS
@@ -153,6 +154,14 @@ const alertTypeIcon = {
   info: Pin,
 };
 
+const activityTypeIcon = {
+  created: CirclePlus,
+  due: Clock3,
+  payment: DollarSign,
+  completed: CheckCircle2,
+  staffing: UserPlus,
+};
+
 const statAccentMap = {
   gold: 'before:bg-gradient-gold',
   sage: 'before:bg-sage',
@@ -167,7 +176,159 @@ const DISTRIBUTION_STYLES = [
   { color: '#C9A86A', swatch: 'bg-gold' },
   { color: '#B56A4A', swatch: 'bg-terracota' },
 ];
-const DEFAULT_WEEKLY_CAPACITY = 5;
+
+const normalizeDate = (value) => {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed;
+};
+
+const startOfDay = (date) => {
+  const copy = new Date(date);
+  copy.setHours(0, 0, 0, 0);
+  return copy;
+};
+
+const formatDate = (value) => {
+  const date = normalizeDate(value);
+  if (!date) return '-';
+  return date.toLocaleDateString('pt-BR');
+};
+
+const formatTimeLabel = (date) => {
+  if (!date) return '-';
+  const today = startOfDay(new Date());
+  const target = startOfDay(date);
+  const diff = Math.round((target - today) / (1000 * 60 * 60 * 24));
+  if (diff === 0) return 'Hoje';
+  if (diff === -1) return 'Ontem';
+  if (diff > 0 && diff <= 7) return `${diff}d`;
+  if (diff < 0 && diff >= -7) return `${Math.abs(diff)}d atrás`;
+  return date.toLocaleDateString('pt-BR');
+};
+
+const buildRecentActivities = (servicesList, paymentsList, seamstressesList, productsById) => {
+  const entries = [];
+
+  servicesList.forEach((service) => {
+    const dueDate = normalizeDate(service?.prazo_entrega);
+    const sentDate = normalizeDate(service?.data_envio);
+    const productIds = Array.isArray(service?.produto) ? service.produto : [];
+    const productLabel = productIds.length > 0
+      ? productIds.map((id) => productsById[id] || `Produto #${id}`).join(', ')
+      : 'Sem produto';
+    const clientLabel = service?.cliente_nome || 'Sem cliente';
+
+    if (sentDate) {
+      entries.push({
+        id: `svc-sent-${service.id}`,
+        sortDate: sentDate,
+        type: 'created',
+        title: 'Serviço em produção',
+        description: `${productLabel} - Cliente: ${clientLabel}`,
+        time: formatTimeLabel(sentDate),
+      });
+    }
+
+    if (dueDate) {
+      entries.push({
+        id: `svc-due-${service.id}`,
+        sortDate: dueDate,
+        type: 'due',
+        title: 'Prazo de entrega mapeado',
+        description: `${productLabel} - Entrega em ${formatDate(dueDate)}`,
+        time: formatTimeLabel(dueDate),
+      });
+    }
+  });
+
+  paymentsList.forEach((payment) => {
+    const dueDate = normalizeDate(payment?.dueDate);
+    entries.push({
+      id: `pay-${payment.paymentId || payment.serviceId}`,
+      sortDate: dueDate,
+      type: 'payment',
+      title: 'Previsão financeira atualizada',
+      description: `Serviço #${payment.serviceId || '-'} • ${payment.status || 'pendente'} • R$ ${Number(payment.amount || 0).toFixed(2)}`,
+      time: formatTimeLabel(dueDate),
+    });
+  });
+
+  if (seamstressesList.length > 0) {
+    entries.push({
+      id: 'staffing-summary',
+      sortDate: new Date(),
+      type: 'staffing',
+      title: 'Base de costureiras sincronizada',
+      description: `${seamstressesList.filter((item) => item?.ativa !== false).length} costureiras ativas na operação.`,
+      time: 'Hoje',
+    });
+  }
+
+  return entries
+    .filter((item) => item.sortDate)
+    .sort((a, b) => b.sortDate.getTime() - a.sortDate.getTime())
+    .slice(0, 4);
+};
+
+const buildAlerts = (servicesList, paymentsList, productsById) => {
+  const alerts = [];
+  const today = startOfDay(new Date());
+
+  servicesList.forEach((service) => {
+    const dueDate = normalizeDate(service?.prazo_entrega);
+    if (!dueDate) return;
+
+    const sentDate = normalizeDate(service?.data_envio);
+    const dueAt = startOfDay(dueDate);
+    const diffDays = Math.round((dueAt - today) / (1000 * 60 * 60 * 24));
+    const productIds = Array.isArray(service?.produto) ? service.produto : [];
+    const productLabel = productIds.length > 0
+      ? productIds.map((id) => productsById[id] || `Produto #${id}`).join(', ')
+      : 'Sem produto';
+    const clientLabel = service?.cliente_nome || 'Sem cliente';
+
+    if (diffDays < 0 && (!sentDate || startOfDay(sentDate) > dueAt)) {
+      alerts.push({
+        id: `overdue-${service.id}`,
+        type: 'danger',
+        title: 'Serviço em atraso',
+        description: `${productLabel} - ${clientLabel} (Prazo: ${formatDate(dueAt)}) • ${Math.abs(diffDays)} dia(s)`,
+        time: 'Hoje',
+        priority: 1,
+      });
+      return;
+    }
+
+    if (diffDays >= 0 && diffDays <= 2) {
+      alerts.push({
+        id: `urgent-${service.id}`,
+        type: 'warning',
+        title: 'Próximo do prazo',
+        description: `${productLabel} - ${clientLabel} (Entrega: ${formatDate(dueAt)}) • ${diffDays} dia(s)`,
+        time: formatTimeLabel(dueAt),
+        priority: 2,
+      });
+    }
+  });
+
+  paymentsList.forEach((payment) => {
+    if (!payment?.status || (payment.status !== 'atrasado' && payment.status !== 'pendente')) return;
+    alerts.push({
+      id: `payment-${payment.paymentId || payment.serviceId}`,
+      type: payment.status === 'atrasado' ? 'danger' : 'info',
+      title: payment.status === 'atrasado' ? 'Pagamento atrasado' : 'Pagamento pendente',
+      description: `Serviço #${payment.serviceId || '-'} • Vencimento: ${formatDate(payment.dueDate)} • R$ ${Number(payment.amount || 0).toFixed(2)}`,
+      time: formatTimeLabel(normalizeDate(payment.dueDate)),
+      priority: payment.status === 'atrasado' ? 1 : 3,
+    });
+  });
+
+  return alerts
+    .sort((a, b) => a.priority - b.priority)
+    .slice(0, 6);
+};
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -304,40 +465,12 @@ const Dashboard = () => {
           });
         }
 
-        const upcomingServices = servicesList.filter((service) => {
-          if (!service?.prazo_entrega) return false;
-
-          const dueDate = new Date(service.prazo_entrega);
-          if (Number.isNaN(dueDate.getTime())) return false;
-
-          dueDate.setHours(0, 0, 0, 0);
-          return dueDate >= start && dueDate <= end;
-        });
-
-        const servicesBySeamstress = {};
-        upcomingServices.forEach((service) => {
-          const seamstressId = service?.costureira;
-          if (!seamstressId) return;
-          servicesBySeamstress[seamstressId] = (servicesBySeamstress[seamstressId] || 0) + 1;
-        });
-
-        const topSeamstressLoad = Math.max(0, ...Object.values(servicesBySeamstress));
-        const weeklyCapacity = Math.max(DEFAULT_WEEKLY_CAPACITY, topSeamstressLoad);
-
-        const workload = seamstressesList
-          .filter((item) => item?.ativa !== false)
-          .map((item) => {
-            const count = servicesBySeamstress[item.id] || 0;
-            const percentage = Math.round((count / weeklyCapacity) * 100);
-
-            return {
-              name: item.nome,
-              services: count,
-              percentage,
-            };
-          })
-          .sort((a, b) => b.services - a.services)
-          .slice(0, 4);
+        const operationalContext = buildOperationalCapacityContext(servicesList, seamstressesList, { days: 7 });
+        const workload = operationalContext.workload.slice(0, 4).map((item) => ({
+          name: item.name,
+          services: item.services,
+          percentage: item.percentage,
+        }));
 
         const activeServices = servicesList.length;
         const activeSeamstresses = seamstressesList.filter((item) => item?.ativa !== false).length;
@@ -346,8 +479,15 @@ const Dashboard = () => {
         ).length;
         const upcomingDeliveries = getUpcomingDeliveries(servicesList);
 
+        const recentActivities = buildRecentActivities(
+          servicesList,
+          paymentsList,
+          seamstressesList,
+          productNamesById
+        );
+        const alerts = buildAlerts(servicesList, paymentsList, productNamesById);
+
         setStats({
-          ...mockStats,
           activeServices,
           seamstresses: activeSeamstresses,
           pendingPayments,
@@ -355,6 +495,11 @@ const Dashboard = () => {
           weeklyActivity,
           distribution,
           workload,
+          recentActivities,
+          alerts,
+          operationalWeeklyCapacity: operationalContext.weeklyCapacity,
+          operationalUtilization: operationalContext.utilization,
+          operationalCapacity: operationalContext.operationalCapacity,
         });
         setError(null);
       } catch (err) {
@@ -415,7 +560,16 @@ const Dashboard = () => {
   // ============================================
   // RENDER: DADOS
   // ============================================
-  const { weeklyActivity, distribution, workload, alerts } = stats;
+  const {
+    weeklyActivity,
+    distribution,
+    workload,
+    recentActivities,
+    alerts,
+    operationalWeeklyCapacity,
+    operationalUtilization,
+    operationalCapacity,
+  } = stats;
   const maxBarValue = Math.max(...weeklyActivity.map((item) => item.value));
 
   return (
@@ -574,8 +728,12 @@ const Dashboard = () => {
         <Card className="p-6">
           <div className="flex items-center justify-between mb-6">
             <Typography variant="h3">Carga de Trabalho</Typography>
-            <Typography variant="caption">Costureiras</Typography>
+            <Typography variant="caption">{operationalUtilization}% da capacidade</Typography>
           </div>
+
+          <Typography variant="body2" className="text-taupe mb-4">
+            Base operacional: {operationalWeeklyCapacity} serviços por costureira ({operationalCapacity} no total / próximos 7 dias)
+          </Typography>
 
           {workload.map((item, index) => {
             const progressGradient = getWorkloadGradient(item.percentage);
@@ -611,44 +769,29 @@ const Dashboard = () => {
           </div>
 
           <div className="space-y-4">
-            <div>
-              <div className="flex justify-between text-sm gap-3">
-                <span className="font-medium inline-flex items-center gap-2">
-                  <CirclePlus className="w-4 h-4 text-success" />
-                  Novo serviço adicionado
-                </span>
-                <span className="text-taupe">10:30</span>
-              </div>
-              <Typography variant="body2" className="text-taupe mt-1">
-                Cortina Ilhós - Cliente: João Silva
-              </Typography>
-            </div>
+            {recentActivities.map((activity) => {
+              const ActivityIcon = activityTypeIcon[activity.type] || CirclePlus;
+              return (
+                <div key={activity.id}>
+                  <div className="flex justify-between text-sm gap-3">
+                    <span className="font-medium inline-flex items-center gap-2">
+                      <ActivityIcon className="w-4 h-4 text-success" />
+                      {activity.title}
+                    </span>
+                    <span className="text-taupe">{activity.time}</span>
+                  </div>
+                  <Typography variant="body2" className="text-taupe mt-1">
+                    {activity.description}
+                  </Typography>
+                </div>
+              );
+            })}
 
-            <div>
-              <div className="flex justify-between text-sm gap-3">
-                <span className="font-medium inline-flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-success" />
-                  Status atualizado
-                </span>
-                <span className="text-taupe">09:15</span>
-              </div>
-              <Typography variant="body2" className="text-taupe mt-1">
-                Almofadas - Concluído
+            {recentActivities.length === 0 && (
+              <Typography variant="body2" className="text-taupe">
+                Sem atividades recentes no período.
               </Typography>
-            </div>
-
-            <div>
-              <div className="flex justify-between text-sm gap-3">
-                <span className="font-medium inline-flex items-center gap-2">
-                  <UserPlus className="w-4 h-4 text-gold" />
-                  Nova costureira
-                </span>
-                <span className="text-taupe">08:00</span>
-              </div>
-              <Typography variant="body2" className="text-taupe mt-1">
-                Ana Paula foi adicionada ao time
-              </Typography>
-            </div>
+            )}
           </div>
         </Card>
       </section>

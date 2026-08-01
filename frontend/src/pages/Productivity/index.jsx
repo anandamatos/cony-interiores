@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   CheckCircle,
   Clock,
@@ -49,6 +49,9 @@ const Productivity = () => {
   const [productivityData, setProductivityData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+  const [statusFilter, setStatusFilter] = useState("todos");
+  const [seamstressFilter, setSeamstressFilter] = useState("todas");
+  const [search, setSearch] = useState("");
 
   const periodOptions = [
     { value: "week", label: "Semanal", variant: "all" },
@@ -119,6 +122,57 @@ const Productivity = () => {
     loadProductivity();
   }, [period]);
 
+  const servicesInProduction = useMemo(() => {
+    return Array.isArray(productivityData?.servicesInProduction)
+      ? productivityData.servicesInProduction
+      : [];
+  }, [productivityData]);
+
+  const seamstressOptions = useMemo(
+    () => [
+      { value: "todas", label: "Todas as costureiras" },
+      ...Array.from(new Set(servicesInProduction.map((item) => item.costureiraNome))).map((name) => ({
+        value: name,
+        label: name,
+      })),
+    ],
+    [servicesInProduction]
+  );
+
+  const filteredServices = useMemo(() => {
+    return servicesInProduction.filter((item) => {
+      const matchStatus = statusFilter === "todos" || item.status === statusFilter;
+      const matchSeamstress = seamstressFilter === "todas" || item.costureiraNome === seamstressFilter;
+      const query = search.trim().toLowerCase();
+      const matchQuery = query.length === 0
+        || item.clienteNome.toLowerCase().includes(query)
+        || item.produtos.toLowerCase().includes(query)
+        || item.costureiraNome.toLowerCase().includes(query);
+
+      return matchStatus && matchSeamstress && matchQuery;
+    });
+  }, [servicesInProduction, statusFilter, seamstressFilter, search]);
+
+  const filteredRhythm = useMemo(() => {
+    const bucket = {
+      atrasado: 0,
+      urgente: 0,
+      estavel: 0,
+      planejado: 0,
+    };
+
+    filteredServices.forEach((item) => {
+      if (bucket[item.status] !== undefined) bucket[item.status] += 1;
+    });
+
+    return [
+      { key: "atrasado", label: "Atrasado", value: bucket.atrasado, color: "#B56A4A" },
+      { key: "urgente", label: "Urgente (0-2d)", value: bucket.urgente, color: "#C9A86A" },
+      { key: "estavel", label: "Estável (3-7d)", value: bucket.estavel, color: "#8D9ABA" },
+      { key: "planejado", label: "Planejado", value: bucket.planejado, color: "#4A7C59" },
+    ];
+  }, [filteredServices]);
+
   if (isLoading) {
     return (
       <main className="flex-1 p-10">
@@ -140,9 +194,10 @@ const Productivity = () => {
       </main>
     );
   }
+
   const stats = {
     completed: productivityData.completed,
-    inProgress: productivityData.inProgress,
+    inProgress: filteredServices.length,
     seamstresses: productivityData.seamstresses,
     efficiency: `${productivityData.efficiency}%`,
   };
@@ -160,22 +215,12 @@ const Productivity = () => {
     ],
   };
 
-  const distributionBuckets = productivityData.activities.reduce(
-    (acc, item) => {
-      if (item.value >= 10) acc.peak += item.value;
-      else if (item.value >= 6) acc.steady += item.value;
-      else acc.low += item.value;
-      return acc;
-    },
-    { peak: 0, steady: 0, low: 0 }
-  );
-
   const doughnutData = {
-    labels: ["Pico", "Ritmo", "Baixa"],
+    labels: filteredRhythm.map((item) => item.label),
     datasets: [
       {
-        data: [distributionBuckets.peak, distributionBuckets.steady, distributionBuckets.low],
-        backgroundColor: ["#B56A4A", "#C9A86A", "#8D9ABA"],
+        data: filteredRhythm.map((item) => item.value),
+        backgroundColor: filteredRhythm.map((item) => item.color),
         borderWidth: 0,
       },
     ],
@@ -276,7 +321,10 @@ const Productivity = () => {
                 }`}
               >
                 <TrendIcon className="w-3.5 h-3.5" />
-                {card.trendText}
+                {card.key === "completed" && `${productivityData.completed} no período`}
+                {card.key === "inProgress" && `${filteredServices.length} em produção`}
+                {card.key === "seamstresses" && `${productivityData.seamstresses} com carga`}
+                {card.key === "efficiency" && `${productivityData.efficiency >= 90 ? "Meta atingida" : "Atenção"}`}
               </span>
             </article>
           );
@@ -312,13 +360,99 @@ const Productivity = () => {
         <Card className="p-6">
           <Typography variant="h3">Distribuição de Ritmo</Typography>
           <Typography variant="body2" className="mt-1 text-taupe">
-            Leitura colorida do volume de produção do período.
+            Leitura por prazo de entrega com base nos serviços em produção.
           </Typography>
           <div style={{ height: "260px", marginTop: "18px" }}>
             <Doughnut data={doughnutData} options={doughnutOptions} />
           </div>
         </Card>
       </section>
+
+      <Card className="p-6 mt-6">
+        <div className="flex flex-col gap-4 mb-5">
+          <div>
+            <Typography variant="h3">Serviços em Produção</Typography>
+            <Typography variant="body2" className="text-taupe mt-1">
+              Lista operacional conectada ao mesmo contexto de capacidade e carga do dashboard.
+            </Typography>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <select
+              className="rounded-md border border-border bg-white px-3 py-2"
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="todos">Todos os status</option>
+              <option value="atrasado">Atrasado</option>
+              <option value="urgente">Urgente (0-2d)</option>
+              <option value="estavel">Estável (3-7d)</option>
+              <option value="planejado">Planejado</option>
+            </select>
+
+            <select
+              className="rounded-md border border-border bg-white px-3 py-2"
+              value={seamstressFilter}
+              onChange={(event) => setSeamstressFilter(event.target.value)}
+            >
+              {seamstressOptions.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+
+            <input
+              className="rounded-md border border-border bg-white px-3 py-2 md:col-span-2"
+              placeholder="Buscar por cliente, produto ou costureira"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm">
+            <thead className="bg-offWhite border-b border-border">
+              <tr>
+                <th className="text-left px-4 py-3 font-semibold text-primary">Cliente</th>
+                <th className="text-left px-4 py-3 font-semibold text-primary">Produtos</th>
+                <th className="text-left px-4 py-3 font-semibold text-primary">Costureira</th>
+                <th className="text-left px-4 py-3 font-semibold text-primary">Prazo</th>
+                <th className="text-left px-4 py-3 font-semibold text-primary">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredServices.map((item) => (
+                <tr key={item.id} className="border-b border-border/60 last:border-b-0">
+                  <td className="px-4 py-3">{item.clienteNome}</td>
+                  <td className="px-4 py-3">{item.produtos}</td>
+                  <td className="px-4 py-3">{item.costureiraNome}</td>
+                  <td className="px-4 py-3">{item.prazoEntrega || '-'}</td>
+                  <td className="px-4 py-3">
+                    <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
+                      item.status === "atrasado" ? "bg-danger/15 text-danger" :
+                      item.status === "urgente" ? "bg-warning/15 text-warning" :
+                      item.status === "estavel" ? "bg-sage/20 text-sage" : "bg-info/15 text-info"
+                    }`}>
+                      {item.status === "atrasado" && "Atrasado"}
+                      {item.status === "urgente" && "Urgente"}
+                      {item.status === "estavel" && "Estável"}
+                      {item.status === "planejado" && "Planejado"}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+
+              {filteredServices.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-4 py-8 text-center text-taupe">
+                    Nenhum serviço encontrado com os filtros selecionados.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Card>
     </main>
   );
 };

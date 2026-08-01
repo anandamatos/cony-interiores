@@ -9,8 +9,8 @@ from finance.models import Pagamento
 from users.models import Cliente, Costureira, Produto, Servico
 
 
-SEED_PREFIX = "[SEED-DASH]"
 LEGACY_SEED_PREFIX = "[SEED-DASH]"
+SEED_CONTACT_TAG = "seed-dashboard"
 
 
 class Command(BaseCommand):
@@ -42,6 +42,12 @@ class Command(BaseCommand):
             Costureira.objects.all().delete()
         else:
             self.stdout.write("Limpando seeds antigos sem afetar dados reais...")
+            Pagamento.objects.filter(servico__cliente__contato=SEED_CONTACT_TAG).delete()
+            Servico.objects.filter(cliente__contato=SEED_CONTACT_TAG).delete()
+            Produto.objects.filter(descricao__icontains=f"[{SEED_CONTACT_TAG}]").delete()
+            Cliente.objects.filter(contato=SEED_CONTACT_TAG).delete()
+            Costureira.objects.filter(contato=SEED_CONTACT_TAG).delete()
+
             Pagamento.objects.filter(servico__cliente__nome__startswith=LEGACY_SEED_PREFIX).delete()
             Servico.objects.filter(cliente__nome__startswith=LEGACY_SEED_PREFIX).delete()
             Produto.objects.filter(nome__startswith=LEGACY_SEED_PREFIX).delete()
@@ -50,24 +56,47 @@ class Command(BaseCommand):
 
         today = timezone.localdate()
 
-        costureiras = [
-            Costureira.objects.create(nome="Sirlene", ativo=True),
-            Costureira.objects.create(nome="Mariana", ativo=True),
-            Costureira.objects.create(nome="Joana", ativo=True),
-            Costureira.objects.create(nome="Ana Paula", ativo=True),
-        ]
+        costureiras = []
+        for name in ["Sirlene", "Mariana", "Joana", "Ana Paula"]:
+            costureira, _ = Costureira.objects.get_or_create(
+                nome=name,
+                defaults={"ativo": True, "contato": SEED_CONTACT_TAG},
+            )
+            costureira.ativo = True
+            if not costureira.contato:
+                costureira.contato = SEED_CONTACT_TAG
+            costureira.save(update_fields=["ativo", "contato"])
+            costureiras.append(costureira)
 
-        clientes = [
-            Cliente.objects.create(nome="Cliente A"),
-            Cliente.objects.create(nome="Cliente B"),
-            Cliente.objects.create(nome="Cliente C"),
-        ]
+        clientes = []
+        for name in ["Cliente A", "Cliente B", "Cliente C"]:
+            cliente, _ = Cliente.objects.get_or_create(
+                nome=name,
+                defaults={"contato": SEED_CONTACT_TAG},
+            )
+            if not cliente.contato:
+                cliente.contato = SEED_CONTACT_TAG
+                cliente.save(update_fields=["contato"])
+            clientes.append(cliente)
 
-        produtos = [
-            Produto.objects.create(nome="Cortina", valor_base=Decimal("120.00")),
-            Produto.objects.create(nome="Almofada", valor_base=Decimal("60.00")),
-            Produto.objects.create(nome="Forro", valor_base=Decimal("80.00")),
-        ]
+        produtos = []
+        for name, price in [
+            ("Cortina", Decimal("120.00")),
+            ("Almofada", Decimal("60.00")),
+            ("Forro", Decimal("80.00")),
+        ]:
+            produto, _ = Produto.objects.get_or_create(
+                nome=name,
+                defaults={
+                    "valor_base": price,
+                    "descricao": f"[{SEED_CONTACT_TAG}] Produto de seed",
+                },
+            )
+            produto.valor_base = price
+            if not produto.descricao:
+                produto.descricao = f"[{SEED_CONTACT_TAG}] Produto de seed"
+            produto.save(update_fields=["valor_base", "descricao"])
+            produtos.append(produto)
 
         servicos = []
         for i in range(12):

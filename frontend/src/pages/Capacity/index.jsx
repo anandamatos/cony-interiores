@@ -7,29 +7,18 @@ import StatusFilter from '../../components/molecules/StatusFilter';
 import Alert from '../../components/atoms/Alert';
 import { fetchCapacityByPeriod } from '../../services/capacityService';
 import { serviceService } from '../../services/serviceService';
+import { seamstressService } from '../../services/seamstressService';
+import {
+  buildOperationalCapacityContext,
+  normalizeDate,
+  startOfDay,
+  endOfDay,
+  getOperationalWindow,
+} from '../../utils/operationalCapacity';
 
 const WEEK_ORDER = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 const WEEKDAY_LABEL = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const MONTH_WEEKS = ['1ª Sem', '2ª Sem', '3ª Sem', '4ª Sem', '5ª Sem'];
-
-const startOfDay = (date) => {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d;
-};
-
-const endOfDay = (date) => {
-  const d = new Date(date);
-  d.setHours(23, 59, 59, 999);
-  return d;
-};
-
-const normalizeDate = (value) => {
-  if (!value) return null;
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return null;
-  return parsed;
-};
 
 const percentToTone = (percentage) => {
   if (percentage < 70) return { text: 'Boa', className: 'text-success bg-success/10', bar: 'bg-sage' };
@@ -40,6 +29,7 @@ const percentToTone = (percentage) => {
 const Capacity = () => {
   const [period, setPeriod] = useState('week');
   const [capacityRows, setCapacityRows] = useState([]);
+  const [seamstresses, setSeamstresses] = useState([]);
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -55,18 +45,21 @@ const Capacity = () => {
         setIsLoading(true);
         setError('');
 
-        const [capacityResponse, servicesResponse] = await Promise.all([
+        const [capacityResponse, servicesResponse, seamstressesResponse] = await Promise.all([
           fetchCapacityByPeriod(period),
           serviceService.getAll(),
+          seamstressService.getAll(),
         ]);
 
         setCapacityRows(Array.isArray(capacityResponse) ? capacityResponse : []);
         setServices(Array.isArray(servicesResponse) ? servicesResponse : []);
+        setSeamstresses(Array.isArray(seamstressesResponse) ? seamstressesResponse : []);
       } catch (loadErr) {
         console.error('Erro ao carregar capacidade:', loadErr);
         setError('Não foi possível carregar os dados de capacidade.');
         setCapacityRows([]);
         setServices([]);
+        setSeamstresses([]);
       } finally {
         setIsLoading(false);
       }
@@ -80,6 +73,11 @@ const Capacity = () => {
     const todayStart = startOfDay(now);
     const todayEnd = endOfDay(now);
     const nextWeekEnd = endOfDay(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7));
+    const operationalContext = buildOperationalCapacityContext(services, seamstresses, { days: 7 });
+    const technicalById = {};
+    capacityRows.forEach((row) => {
+      technicalById[row.costureira_id] = row;
+    });
 
     const totalCapacity = capacityRows.reduce((acc, row) => acc + Number(row.capacidade_base_semanal || 0), 0);
     const totalLoad = capacityRows.reduce((acc, row) => acc + Number(row.carga_atual || 0), 0);
@@ -100,11 +98,11 @@ const Capacity = () => {
     }).length;
 
     const weeklyCounts = { Seg: 0, Ter: 0, Qua: 0, Qui: 0, Sex: 0, Sáb: 0, Dom: 0 };
-    const weekStart = startOfDay(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6));
+    const weekWindow = getOperationalWindow(7);
 
-    services.forEach((service) => {
-      const sent = normalizeDate(service?.data_envio || service?.prazo_entrega);
-      if (!sent || sent < weekStart || sent > todayEnd) return;
+    operationalContext.upcomingServices.forEach((service) => {
+      const sent = normalizeDate(service?.prazo_entrega);
+      if (!sent || sent < weekWindow.start || sent > weekWindow.end) return;
       const label = WEEKDAY_LABEL[sent.getDay()];
       if (weeklyCounts[label] !== undefined) weeklyCounts[label] += 1;
     });
@@ -114,21 +112,24 @@ const Capacity = () => {
     const monthEnd = endOfDay(new Date(now.getFullYear(), now.getMonth() + 1, 0));
 
     services.forEach((service) => {
-      const sent = normalizeDate(service?.data_envio || service?.prazo_entrega);
+      const sent = normalizeDate(service?.prazo_entrega);
       if (!sent || sent < monthStart || sent > monthEnd) return;
       const index = Math.min(4, Math.floor((sent.getDate() - 1) / 7));
       monthlyCounts[index] += 1;
     });
 
+    const weeklyDenominator = Math.max(1, operationalContext.operationalCapacity);
+    const monthlyDenominator = Math.max(1, operationalContext.operationalCapacity * 4);
+
     const weeklyData = WEEK_ORDER.map((day) => ({
       day,
-      load: totalCapacity > 0 ? Math.round((weeklyCounts[day] / totalCapacity) * 100) : 0,
+      load: Math.round((weeklyCounts[day] / weeklyDenominator) * 100),
       volume: weeklyCounts[day],
     }));
 
     const monthlyData = MONTH_WEEKS.map((week, index) => ({
       day: week,
-      load: totalCapacity > 0 ? Math.round((monthlyCounts[index] / totalCapacity) * 100) : 0,
+      load: Math.round((monthlyCounts[index] / monthlyDenominator) * 100),
       volume: monthlyCounts[index],
     }));
 
@@ -137,18 +138,24 @@ const Capacity = () => {
       currentLoad,
       available,
       servicesInProgress,
-      seamstresses: capacityRows.length,
+      seamstresses: operationalContext.activeSeamstresses.length,
       upcoming,
       weeklyData,
       monthlyData,
-      seamstressLoad: capacityRows.map((row) => ({
-        id: row.costureira_id,
-        nome: row.nome,
-        cargaSemanal: Math.round(Number(row.carga_percentual_semanal || 0)),
-        diasLivres: Number(row.dias_livres || 0),
+      operationalWeeklyCapacity: operationalContext.weeklyCapacity,
+      operationalCapacity: operationalContext.operationalCapacity,
+      operationalUtilization: operationalContext.utilization,
+      operationalAssignedServices: operationalContext.assignedServices,
+      seamstressLoad: operationalContext.workload.map((row) => ({
+        id: row.id,
+        nome: row.name,
+        services: row.services,
+        cargaSemanal: row.percentage,
+        cargaTecnica: Math.round(Number(technicalById[row.id]?.carga_percentual_semanal || 0)),
+        diasLivres: Number(technicalById[row.id]?.dias_livres || 0),
       })),
     };
-  }, [capacityRows, services]);
+  }, [capacityRows, services, seamstresses]);
 
   const periodLoadSeries = period === 'month' ? capacityData.monthlyData : capacityData.weeklyData;
   const maxLoad = Math.max(...(periodLoadSeries.map((d) => d.load) || [0]));
@@ -208,10 +215,10 @@ const Capacity = () => {
           <div className="flex items-start justify-between">
             <div>
               <Typography variant="caption" className="uppercase text-taupe">
-                  Capacidade Disponível
+                Uso Operacional (7 dias)
               </Typography>
               <Typography variant="h1" className="text-3xl mt-1">
-                {capacityData.available}%
+                {capacityData.operationalUtilization}%
               </Typography>
             </div>
             <div className="w-10 h-10 rounded-md bg-offWhite flex items-center justify-center text-taupe">
@@ -224,7 +231,7 @@ const Capacity = () => {
           <div className="flex items-start justify-between">
             <div>
               <Typography variant="caption" className="uppercase text-taupe">
-                  Serviços em Andamento
+                Serviços em Andamento
               </Typography>
               <Typography variant="h1" className="text-3xl mt-1">
                 {capacityData.servicesInProgress}
@@ -240,7 +247,7 @@ const Capacity = () => {
           <div className="flex items-start justify-between">
             <div>
               <Typography variant="caption" className="uppercase text-taupe">
-                  Próximos Serviços
+                Próximos Serviços
               </Typography>
               <Typography variant="h1" className="text-3xl mt-1">
                 {capacityData.upcoming}
@@ -257,25 +264,27 @@ const Capacity = () => {
         <div className="mb-6">
           <Typography variant="h3">Carga Temporal</Typography>
           <Typography variant="body2" className="text-taupe">
-            Distribuição da carga por {period === 'month' ? 'semana do mês' : 'dia da semana'}.
+            Distribuição de entregas previstas por {period === 'month' ? 'semana do mês' : 'dia da semana'},
+            com referência à capacidade operacional de {capacityData.operationalCapacity} serviços.
           </Typography>
         </div>
 
         <div className="flex items-end justify-between h-48 gap-3 pt-4">
           {periodLoadSeries.map((item) => (
             <div key={item.day} className="flex-1 flex flex-col items-center gap-3">
-              <div
-                className="w-full max-w-12 rounded-t transition-all duration-500 ease-spring"
-                style={{
-                  height: `${maxLoad > 0 ? (item.load / maxLoad) * 100 : 0}%`,
-                  minHeight: '16px',
-                  background: item.load > 85
-                    ? 'var(--color-terracota)'
-                    : item.load > 70
-                    ? 'var(--color-gold)'
-                    : 'var(--color-sage)',
-                }}
-              />
+              <div className="w-full max-w-12 h-32 flex items-end bg-offWhite rounded-t">
+                <div
+                  className="w-full rounded-t transition-all duration-500 ease-spring"
+                  style={{
+                    height: `${maxLoad > 0 ? Math.max(12, (item.load / maxLoad) * 100) : 12}%`,
+                    backgroundColor: item.load > 85
+                      ? '#B56A4A'
+                      : item.load > 70
+                      ? '#C9A86A'
+                      : '#4A7C59',
+                  }}
+                />
+              </div>
               <div className="text-center">
                 <Typography variant="caption" className="text-xs font-medium">
                   {item.load}% ({item.volume})
@@ -293,7 +302,13 @@ const Capacity = () => {
         <div className="mb-4">
           <Typography variant="h3">Carga por Costureira</Typography>
           <Typography variant="body2" className="text-taupe">
-            Dados da API core/costureiras/carga com percentual semanal e dias livres.
+            Carga operacional (dashboard) e carga técnica (core) lado a lado.
+          </Typography>
+        </div>
+
+        <div className="mb-4 rounded-md border border-border bg-offWhite px-4 py-3">
+          <Typography variant="body2" className="text-taupe">
+            Capacidade base ativa: {capacityData.operationalWeeklyCapacity} serviços/costureira. Planejado: {capacityData.operationalAssignedServices} de {capacityData.operationalCapacity} serviços nos próximos 7 dias.
           </Typography>
         </div>
 
@@ -313,7 +328,7 @@ const Capacity = () => {
                 />
               </div>
               <Typography variant="caption" className="text-xs text-taupe mt-1 block">
-                Carga semanal: {item.cargaSemanal}%
+                Operacional: {item.services} serviços ({item.cargaSemanal}%) | Técnica core: {item.cargaTecnica}%
               </Typography>
             </div>
           ))}
