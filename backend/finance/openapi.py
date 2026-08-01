@@ -47,6 +47,34 @@ def build_openapi_schema() -> dict:
                     }
                 }
             },
+            '/api/metricas/roi/': {
+                'get': {
+                    'summary': 'Consulta de Métricas de ROI',
+                    'parameters': [
+                        {
+                            'in': 'query',
+                            'name': 'q',
+                            'schema': {'type': 'string'},
+                            'description': 'Filtra por nome da costureira',
+                        },
+                        {
+                            'in': 'query',
+                            'name': 'periodo_inicio',
+                            'schema': {'type': 'string', 'format': 'date'},
+                            'description': 'Data inicial (YYYY-MM-DD)',
+                        },
+                        {
+                            'in': 'query',
+                            'name': 'periodo_fim',
+                            'schema': {'type': 'string', 'format': 'date'},
+                            'description': 'Data final (YYYY-MM-DD)',
+                        },
+                    ],
+                    'responses': {
+                        '200': {'description': 'Métricas de ROI retornadas com sucesso'},
+                    },
+                }
+            },
 # Até aqui
             '/api/financial/health/': {
                 'get': {

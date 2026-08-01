@@ -203,6 +203,7 @@ class ServicoAPITest(TestCase):
 
 class Test_Metrica(TestCase):
     def setUp(self):
+        self.client = APIClient()
         self.cliente = Cliente.objects.create(
             nome="João Silva",
             contato="(71) 99999-9999")
@@ -267,3 +268,22 @@ class Test_Metrica(TestCase):
         self.assertIn(self.servico_limite, no_prazo)
 
         self.assertNotIn(self.servico_atrasado, no_prazo)
+
+    def test_otif_endpoint_retorna_total_de_pedidos(self):
+        response = self.client.get('/api/metricas/otif/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['total_pedidos'], 3)
+        self.assertEqual(len(response.data['Cycle']), 3)
+
+    def test_roi_endpoint_calcula_percentual(self):
+        response = self.client.get(
+            '/api/metricas/roi/?periodo_inicio=2026-07-01&periodo_fim=2026-07-31'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['total_servicos'], 3)
+        self.assertEqual(response.data['receita_total'], '1070.00')
+        self.assertEqual(response.data['custo_estimado_total'], '642.00')
+        self.assertEqual(response.data['lucro_estimado_total'], '428.00')
+        self.assertEqual(response.data['roi_percentual_total'], '66.67%')

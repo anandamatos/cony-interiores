@@ -7,8 +7,11 @@ from .serializers import CostureiraSerializer, ServicoSerializer, ClienteSeriali
 from datetime import datetime
 from django.db import models
 from django.utils import timezone
+from decimal import Decimal
 import logging
 import time
+
+from finance.services.calculo_pagamento_costureira import PERCENTUAL_PADRAO
 
 logger = logging.getLogger(__name__)
 
@@ -238,4 +241,67 @@ class MetricaViewSet(viewsets.ViewSet):
             "total_pedidos_mes": total_mes,
             "entregas_no_prazo": no_prazo_mes,
             "taxa_eficiencia_porcentagem": f"{taxa_eficiencia}%",
+        })
+
+    @action(detail=False, methods=["get"], url_path="roi")
+    def roi(self, request):
+        """Endpoint: /api/metricas/roi/"""
+        pesquisada = request.query_params.get('q', None)
+        periodo_inicio = request.query_params.get('periodo_inicio')
+        periodo_fim = request.query_params.get('periodo_fim')
+
+        queryset = Servico.objects.all()
+        if pesquisada:
+            queryset = queryset.filter(costureira__nome=pesquisada)
+        if periodo_inicio:
+            queryset = queryset.filter(data_envio__gte=periodo_inicio)
+        if periodo_fim:
+            queryset = queryset.filter(data_envio__lte=periodo_fim)
+
+        total_receita = Decimal('0.00')
+        for servico in queryset:
+            total_receita += servico.valor
+
+        custo_estimado = (total_receita * PERCENTUAL_PADRAO).quantize(Decimal('0.01'))
+        lucro_estimado = (total_receita - custo_estimado).quantize(Decimal('0.01'))
+
+        if custo_estimado > 0:
+            roi = ((lucro_estimado / custo_estimado) * Decimal('100')).quantize(Decimal('0.01'))
+        else:
+            roi = Decimal('0.00')
+
+        detalhamento = []
+        for costureira in Costureira.objects.filter(servicos__in=queryset).distinct():
+            servicos_costureira = queryset.filter(costureira=costureira)
+            receita_costureira = Decimal('0.00')
+            for servico in servicos_costureira:
+                receita_costureira += servico.valor
+
+            custo_costureira = (receita_costureira * PERCENTUAL_PADRAO).quantize(Decimal('0.01'))
+            lucro_costureira = (receita_costureira - custo_costureira).quantize(Decimal('0.01'))
+
+            if custo_costureira > 0:
+                roi_costureira = ((lucro_costureira / custo_costureira) * Decimal('100')).quantize(Decimal('0.01'))
+            else:
+                roi_costureira = Decimal('0.00')
+
+            detalhamento.append({
+                "costureira_id": costureira.id,
+                "costureira_nome": costureira.nome,
+                "receita": f"{receita_costureira:.2f}",
+                "custo_estimado": f"{custo_costureira:.2f}",
+                "lucro_estimado": f"{lucro_costureira:.2f}",
+                "roi_percentual": f"{roi_costureira:.2f}%",
+            })
+
+        return Response({
+            "periodo_inicio": periodo_inicio,
+            "periodo_fim": periodo_fim,
+            "filtro_costureira": pesquisada,
+            "total_servicos": queryset.count(),
+            "receita_total": f"{total_receita:.2f}",
+            "custo_estimado_total": f"{custo_estimado:.2f}",
+            "lucro_estimado_total": f"{lucro_estimado:.2f}",
+            "roi_percentual_total": f"{roi:.2f}%",
+            "detalhamento_costureiras": detalhamento,
         })

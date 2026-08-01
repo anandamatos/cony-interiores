@@ -53,7 +53,7 @@ class TestEndpointListarCargas(TestCase):
             quantidade=2,
             tamanho="G",
             data_envio="2026-07-01",
-            prazo_entrega="15 dias",
+            prazo_entrega="2026-07-15",
             valor=300,
         )
         self.servico.produto.add(self.produto)
