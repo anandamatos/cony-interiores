@@ -20,6 +20,7 @@ import { Bar } from "react-chartjs-2";
 import Card from "../../components/atoms/Card";
 import Typography from "../../components/atoms/Typography";
 import StatusFilter from "../../components/molecules/StatusFilter";
+import Alert from "../../components/atoms/Alert";
 import productivityService from "../../services/productivityService";
 
 ChartJS.register(
@@ -33,6 +34,8 @@ ChartJS.register(
 const Productivity = () => {
   const [period, setPeriod] = useState("week");
   const [productivityData, setProductivityData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
 
   const periodOptions = [
     { value: "week", label: "Semanal", variant: "all" },
@@ -87,22 +90,40 @@ const Productivity = () => {
   useEffect(() => {
     const loadProductivity = async () => {
       try {
+        setIsLoading(true);
+        setLoadError("");
         const data = await productivityService.fetchProductivityData(period);
         setProductivityData(data);
       } catch (error) {
         console.error("Erro ao carregar produtividade:", error);
+        setLoadError("Não foi possível carregar as métricas de produtividade.");
+        setProductivityData(null);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     loadProductivity();
   }, [period]);
 
-  if (!productivityData) {
+  if (isLoading) {
     return (
       <main className="flex-1 p-10">
         <Typography variant="body1">
           Carregando...
         </Typography>
+      </main>
+    );
+  }
+
+  if (loadError || !productivityData) {
+    return (
+      <main className="flex-1 p-10">
+        <Alert
+          type="error"
+          title="Erro"
+          message={loadError || "Não foi possível carregar os dados de produtividade."}
+        />
       </main>
     );
   }
