@@ -17,11 +17,14 @@ Definir e validar uma estrategia de lazy loading para dashboards com foco em per
 ## Implementacao validada
 Arquivos alterados:
 - frontend/src/App.jsx
+- frontend/src/routes/AppRoutes.jsx
 - frontend/src/layouts/MainLayout.jsx
+- frontend/vite.config.js
 
 Resumo tecnico:
-- Rotas secundarias migradas para `lazy(() => import(...))` no roteamento principal.
+- Rotas secundarias migradas para `lazy(() => import(...))` e consolidadas em um unico arquivo de rotas.
 - Boundary de `Suspense` adicionada no layout para exibir loader durante download/render dos chunks de rota.
+- Chunks manuais mantidos apenas para modulos pesados e claramente isolados, evitando dependencia circular entre vendor chunks.
 
 ## Experiencia do usuario durante carregamento
 - Enquanto o modulo da rota lazy carrega, o usuario visualiza indicador central de progresso com mensagem "Carregando modulo...".
@@ -33,7 +36,8 @@ Comando executado:
 
 Resultado observado:
 - Build concluido com sucesso.
-- Geracao de chunks separados para rotas lazy e vendor chunks, reduzindo custo de carregamento inicial quando comparado ao carregamento total em um unico ponto de entrada.
+- Geracao de chunks separados para rotas lazy e bibliotecas mais pesadas, reduzindo custo de carregamento inicial quando comparado ao carregamento total em um unico ponto de entrada.
+- Aviso de chunk circular entre `vendor` e `react-vendor` removido com simplificacao da estrategia de `manualChunks`.
 
 ## Decisao de arquitetura
 - Lazy loading por rota foi escolhido por simplicidade operacional, baixo risco de regressao e ganho direto no tempo de interatividade das areas nao iniciais.

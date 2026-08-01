@@ -1,0 +1,80 @@
+# TASK-M2-CORE-003 - Validação do modelo de dados financeiro
+
+## Objetivo
+
+Validar se o modelo de dados planejado atende às necessidades do processo financeiro da empresa.
+
+---
+
+## Campos validados
+
+| Campo              | Tipo de dado | Resultado                         |
+| ------------------ | ------------ | --------------------------------- |
+| Serviço            | texto        | Aprovado                          |
+| Valor              | decimal      | Aprovado                          |
+| Data de vencimento | date         | Alterado para **Data de entrega** |
+| Data de pagamento  | date         | Aprovado                          |
+| Status             | enum/texto   | Aprovado                          |
+| Observações        | texto        | Removido                          |
+| Criado em          | datetime     | Alterado para **Enviado em**      |
+| Atualizado em      | datetime     | Não será utilizado                |
+
+---
+
+## Estrutura dos serviços
+
+Cada cortina será cadastrada como um serviço independente.
+
+Exemplo:
+
+- João Carlos - Cortina da sala
+- João Carlos - Cortina do quarto
+
+Essa abordagem permite distribuir diferentes serviços do mesmo cliente entre costureiras distintas.
+
+---
+
+## Costureiras por serviço
+
+Um mesmo serviço poderá ser realizado por mais de uma costureira.
+
+---
+
+## Pagamentos
+
+Um pagamento poderá agrupar diversos serviços entregues por uma mesma costureira.
+
+Esses serviços podem inclusive pertencer a clientes diferentes.
+
+---
+
+## Valor do pagamento
+
+O valor poderá ser alterado manualmente antes da efetivação do pagamento.
+
+---
+
+## Distribuição
+
+O prazo de entrega não será utilizado para distribuir automaticamente os serviços.
+
+Essa decisão continuará sendo manual.
+
+---
+
+## Índices sugeridos
+
+Para otimizar consultas e filtros mais frequentes no processo financeiro, sugere-se índice nos seguintes campos:
+
+- **Status** — usado para filtrar serviços/pagamentos por situação (pendente, pago, etc.)
+- **Data de entrega** — usado para consultas por período e ordenação
+- **Serviço** — usado para agrupar/buscar por cliente ou tipo de serviço
+
+---
+
+## Impactos no sistema
+
+- Renomear alguns campos do modelo.
+- Permitir agrupamento de vários serviços em um pagamento.
+- Permitir edição manual do valor final.
+- Cada produto será cadastrado como um serviço independente.

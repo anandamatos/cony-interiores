@@ -7,7 +7,8 @@ lógica testável sem precisar simular uma request HTTP.
 """
 
 from statistics import mean
-
+from datetime import date
+from users.models import PeriodoIndisponibilidade
 from .complexidade import obter_indice_complexidade
 from .capacidade import calcular_dias_livres
 from .percentual import calcular_percentual_carga
@@ -64,16 +65,15 @@ def calcular_carga_atual_costureira(costureira) -> float:
 
 
 def consultar_capacidade_costureira(costureira) -> dict:
-    """
-    Monta o resumo completo de capacidade de uma costureira:
-    quanto ela já tem de carga (em dias e em %, semanal e mensal),
-    e quanto ela ainda tem de folga.
-    """
     carga_atual = calcular_carga_atual_costureira(costureira)
-    dias_livres = calcular_dias_livres(
-        costureira.capacidade_base_semanal,
-        costureira.disponibilidade_percentual,
-    )
+
+    if PeriodoIndisponibilidade.costureira_indisponivel(costureira, date.today()):
+        dias_livres = 0
+    else:
+        dias_livres = calcular_dias_livres(
+            costureira.capacidade_base_semanal,
+            costureira.disponibilidade_percentual,
+        )
 
     return {
         "costureira_id": costureira.id,
@@ -82,12 +82,8 @@ def consultar_capacidade_costureira(costureira) -> dict:
         "disponibilidade_percentual": costureira.disponibilidade_percentual,
         "dias_livres": dias_livres,
         "carga_atual": carga_atual,
-        "carga_percentual_semanal": calcular_percentual_carga(
-            carga_atual, costureira.capacidade_base_semanal
-        ),
-        "carga_percentual_mensal": calcular_percentual_carga(
-            carga_atual, CAPACIDADE_MENSAL_PADRAO
-        ),
+        "carga_percentual_semanal": calcular_percentual_carga(carga_atual, costureira.capacidade_base_semanal),
+        "carga_percentual_mensal": calcular_percentual_carga(carga_atual, CAPACIDADE_MENSAL_PADRAO),
     }
 
 
