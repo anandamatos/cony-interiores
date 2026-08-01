@@ -16,7 +16,6 @@ from .services.agendamento import executar_relatorios_agendados
 from .services.relatorios import gerar_relatorio_mensal, listar_atrasos
 from users.serializers import RelatorioSerializer
 
-
 # ==================== CAPACIDADE ====================
 @api_view(['GET'])
 @permission_classes([AllowAny])

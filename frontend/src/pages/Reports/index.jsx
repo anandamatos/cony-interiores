@@ -12,7 +12,6 @@ import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
 import { serviceService } from '../../services/serviceService';
 
-
 const filterOptions = [
   { value: 'all', label: 'Todos', variant: 'all' },
   { value: 'active', label: 'Ativos', variant: 'active' },
@@ -116,7 +115,6 @@ const Reports = () => {
       acc[label] = (acc[label] || 0) + 1;
       return acc;
     }, {});
-
     return Object.entries(counts).map(([status, total]) => ({ status, total }));
   }, [filteredServices]);
 
@@ -200,6 +198,7 @@ const Reports = () => {
 
       <Card className="p-5 mb-6">
         <Typography variant="h4" className="mb-4">Filtros</Typography>
+
         <div className="flex flex-col lg:flex-row lg:items-end gap-4">
           <SearchBar
             placeholder="Buscar por cliente ou produto..."
@@ -207,27 +206,28 @@ const Reports = () => {
             onChange={setSearchTerm}
             className="max-w-md"
           />
+
           <div className="flex flex-col sm:flex-row gap-4">
-           <div>
-             <label htmlFor="report-start-date" className="block text-xs font-medium text-taupe mb-1">De</label>
-             <input
-              id="report-start-date"
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="px-3 py-2 rounded-md border border-border text-sm"
-          />
-        </div>
-       <div>
-        <label htmlFor="report-end-date" className="block text-xs font-medium text-taupe mb-1">Até</label>
-        <input
-          id="report-end-date"
-         type="date"
-         value={endDate}
-         onChange={(e) => setEndDate(e.target.value)}
-         className="px-3 py-2 rounded-md border border-border text-sm"
-        />
-    </div>
+            <div>
+              <label htmlFor="report-start-date" className="block text-xs font-medium text-taupe mb-1">De</label>
+              <input
+                id="report-start-date"
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="px-3 py-2 rounded-md border border-border text-sm"
+              />
+            </div>
+            <div>
+              <label htmlFor="report-end-date" className="block text-xs font-medium text-taupe mb-1">Até</label>
+              <input
+                id="report-end-date"
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="px-3 py-2 rounded-md border border-border text-sm"
+              />
+            </div>
           </div>
           <Button variant="ghost" size="sm" onClick={clearFilters}>
             Limpar filtros
@@ -250,7 +250,7 @@ const Reports = () => {
             </Typography>
           </Card>
         )}
-        
+
         {!isLoading && !loadError && filteredServices.length > 0 && (
           <Card className="p-5 mb-6">
             <Typography variant="h4" className="mb-4">Serviços por Status</Typography>
