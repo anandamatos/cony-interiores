@@ -1,71 +1,60 @@
+import React from 'react';
 import classNames from 'classnames';
 
 const Button = ({
+  children,
   variant = 'primary',
   size = 'md',
-  children,
-  className,
-  loading = false,
+  className = '',
   disabled = false,
-  icon: Icon,
-  onClick,
+  loading = false,
   type = 'button',
+  onClick,
+  ariaLabel,
   ...props
 }) => {
-  // Variantes de estilo com nova paleta
+  const baseStyles = 'inline-flex items-center justify-center gap-2 rounded-sm font-display text-xs font-normal tracking-[0.15em] uppercase transition-all duration-300 ease-spring focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95';
+
   const variants = {
-    primary: 'bg-primary text-offWhite hover:bg-primary-hover focus:ring-primary/30 shadow-button hover:shadow-button-hover',
-    secondary: 'bg-transparent text-primary border border-gray/400 hover:bg-offWhite focus:ring-primary/20',
-    gold: 'bg-gradient-gold text-primary hover:brightness-105 focus:ring-gold/30 shadow-button hover:shadow-button-hover',
-    terracota: 'bg-terracota text-white hover:bg-terracota/90 focus:ring-terracota/30 shadow-button hover:shadow-button-hover',
-    danger: 'bg-danger text-white hover:bg-danger/90 focus:ring-danger/30 shadow-button hover:shadow-button-hover',
-    ghost: 'bg-transparent text-primary hover:bg-offWhite focus:ring-primary/20',
-    outline: 'border border-primary text-primary hover:bg-primary/5 focus:ring-primary/20',
+    primary: 'bg-[#703824] text-[#F8F5F0] shadow-sm hover:bg-[#8B4A2E] hover:-translate-y-0.5 hover:shadow-md focus:ring-[#703824]/30',
+    secondary: 'bg-transparent text-[#703824] border border-[#BFB3A6] hover:bg-[#F8F5F0] hover:-translate-y-0.5',
+    gold: 'bg-gradient-gold text-[#703824] shadow-sm hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-md',
+    ghost: 'bg-transparent text-[#703824] hover:bg-[#F8F5F0] hover:translate-x-0.5',
   };
 
-  // Tamanhos
   const sizes = {
-    sm: 'px-4 py-2 text-sm',
-    md: 'px-5 py-3 text-sm',
-    lg: 'px-6 py-3.5 text-base',
+    sm: 'px-4 py-2 text-[10px]',
+    md: 'px-6 py-3 text-xs',
+    lg: 'px-8 py-4 text-sm',
   };
 
-  // Classes base
-  const baseClasses = {
-    button: classNames(
-      'inline-flex items-center justify-center gap-2 rounded-sm font-semibold font-primary',
-      'transition-all duration-fast ease-spring',
-      'focus:outline-none focus:ring-2 focus:ring-offset-2',
-      'disabled:opacity-50 disabled:cursor-not-allowed',
-      'active:scale-95',
-      variants[variant] || variants.primary,
-      sizes[size] || sizes.md,
-      className
-    ),
-  };
-
-  // Atributos de acessibilidade
-  const accessibilityProps = {
-    role: 'button',
-    'aria-disabled': disabled || loading,
-    'aria-busy': loading,
-    ...(loading && { 'aria-label': 'Carregando...' }),
-  };
+  const classes = classNames(
+    baseStyles,
+    variants[variant] || variants.primary,
+    sizes[size] || sizes.md,
+    className
+  );
 
   return (
     <button
       type={type}
-      className={baseClasses.button}
+      className={classes}
       disabled={disabled || loading}
       onClick={onClick}
-      {...accessibilityProps}
+      aria-label={ariaLabel || (typeof children === 'string' ? children : undefined)}
       {...props}
     >
-      {loading && (
-        <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+      {loading ? (
+        <>
+          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+          </svg>
+          Carregando...
+        </>
+      ) : (
+        children
       )}
-      {!loading && Icon && <Icon className="w-4 h-4" aria-hidden="true" />}
-      {children}
     </button>
   );
 };

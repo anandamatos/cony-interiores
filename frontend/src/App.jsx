@@ -5,6 +5,7 @@ import MainLayout from './layouts/MainLayout';
 import Dashboard from './pages/Dashboard';
 import Reports from './pages/Reports';
 
+// Lazy loading - melhor performance
 const Services = lazy(() => import('./pages/Services'));
 const Seamstresses = lazy(() => import('./pages/Seamstresses'));
 const NewService = lazy(() => import('./pages/NewService'));
