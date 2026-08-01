@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Save, RefreshCw, Pencil, PlusCircle, XCircle, Trash2 } from 'lucide-react';
+import { Save, RefreshCw, Pencil, XCircle, Trash2 } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
@@ -10,10 +10,11 @@ import { serviceService } from '../../services/serviceService';
 const STORAGE_KEY = 'catalog-manual-pricing-v1';
 
 const DIFFICULTY_LEVELS = [
-  { value: 'baixa', label: 'Baixa', multiplier: 1.0 },
-  { value: 'media', label: 'Média', multiplier: 1.25 },
-  { value: 'alta', label: 'Alta', multiplier: 1.6 },
-  { value: 'especial', label: 'Especial', multiplier: 2.0 },
+  { value: 'sem_definicao', label: 'Sem complexidade definida', weight: 1 },
+  { value: 'baixa', label: 'Baixa', weight: 1 },
+  { value: 'media', label: 'Média', weight: 2 },
+  { value: 'alta', label: 'Alta', weight: 3 },
+  { value: 'especial', label: 'Especial', weight: 5 },
 ];
 
 const TECHNICAL_PRODUCT_TYPES = [
@@ -32,12 +33,15 @@ const EMPTY_FORM = {
   valor_base: '',
   tipo_produto: '',
   grupo: '',
+  difficulty: 'sem_definicao',
 };
 
 const EMPTY_GROUP_FORM = {
   id: null,
   nome: '',
   descricao: '',
+  tipo: 'TECNICO',
+  desconto_percentual: '',
   ativo: true,
 };
 
@@ -50,6 +54,18 @@ const parsePositiveNumber = (value, fallback = 0) => {
   const parsed = Number(String(value).replace(',', '.'));
   if (Number.isNaN(parsed) || parsed < 0) return fallback;
   return parsed;
+};
+
+const parsePercentage = (value, fallback = 0) => {
+  const parsed = Number(String(value).replace(',', '.'));
+  if (Number.isNaN(parsed) || parsed < 0) return fallback;
+  if (parsed > 100) return 100;
+  return parsed;
+};
+
+const getGroupDiscountRate = (group) => {
+  if (!group || group.tipo !== 'COMERCIAL') return 0;
+  return parsePercentage(group.desconto_percentual, 0) / 100;
 };
 
 const startOfDay = (date) => {
@@ -110,10 +126,12 @@ const Catalog = () => {
         const id = String(product.id);
         const basePrice = parsePositiveNumber(product.valor_base, 0);
         const saved = stored[id];
-        const difficulty = saved?.difficulty || 'media';
+        const difficulty = saved?.difficulty || 'sem_definicao';
+        const linkedGroup = groupsList.find((group) => group.id === product.grupo);
+        const discountRate = getGroupDiscountRate(linkedGroup);
 
-        const level = DIFFICULTY_LEVELS.find((item) => item.value === difficulty) || DIFFICULTY_LEVELS[1];
-        const suggestedPrice = Number((basePrice * level.multiplier).toFixed(2));
+        const level = DIFFICULTY_LEVELS.find((item) => item.value === difficulty) || DIFFICULTY_LEVELS[0];
+        const suggestedPrice = Number((basePrice * level.weight * (1 - discountRate)).toFixed(2));
 
         nextMap[id] = {
           difficulty,
@@ -148,10 +166,12 @@ const Catalog = () => {
 
   const applySuggestedPrice = (product) => {
     const productId = String(product.id);
-    const config = pricingMap[productId] || { difficulty: 'media' };
-    const level = DIFFICULTY_LEVELS.find((item) => item.value === config.difficulty) || DIFFICULTY_LEVELS[1];
+    const config = pricingMap[productId] || { difficulty: 'sem_definicao' };
+    const level = DIFFICULTY_LEVELS.find((item) => item.value === config.difficulty) || DIFFICULTY_LEVELS[0];
     const basePrice = parsePositiveNumber(product.valor_base, 0);
-    const suggested = Number((basePrice * level.multiplier).toFixed(2));
+    const linkedGroup = groups.find((group) => group.id === product.grupo);
+    const discountRate = getGroupDiscountRate(linkedGroup);
+    const suggested = Number((basePrice * level.weight * (1 - discountRate)).toFixed(2));
 
     updateProductConfig(productId, { finalPrice: suggested });
   };
@@ -166,11 +186,8 @@ const Catalog = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const startCreate = () => {
-    setFormData(EMPTY_FORM);
-  };
-
   const startEdit = (product) => {
+    const savedConfig = pricingMap[String(product.id)] || {};
     setFormData({
       id: product.id,
       nome: product.nome || '',
@@ -178,6 +195,7 @@ const Catalog = () => {
       valor_base: String(product.valor_base ?? ''),
       tipo_produto: product.tipo_produto || '',
       grupo: product.grupo ? String(product.grupo) : '',
+      difficulty: savedConfig.difficulty || 'sem_definicao',
     });
   };
 
@@ -203,13 +221,32 @@ const Catalog = () => {
       setIsSaving(true);
       setError('');
 
+      let savedProduct;
       if (formData.id) {
-        await productService.update(formData.id, payload);
+        savedProduct = await productService.update(formData.id, payload);
         setFeedback('Produto atualizado com sucesso.');
       } else {
-        await productService.create(payload);
+        savedProduct = await productService.create(payload);
         setFeedback('Produto criado com sucesso.');
       }
+
+      const savedProductId = String(savedProduct?.id || formData.id);
+      const selectedDifficulty = formData.difficulty || 'sem_definicao';
+      const selectedLevel = DIFFICULTY_LEVELS.find((item) => item.value === selectedDifficulty) || DIFFICULTY_LEVELS[0];
+      const linkedGroup = groups.find((group) => String(group.id) === String(payload.grupo));
+      const discountRate = getGroupDiscountRate(linkedGroup);
+      const suggestedPrice = Number((payload.valor_base * selectedLevel.weight * (1 - discountRate)).toFixed(2));
+
+      const mergedPricing = {
+        ...pricingMap,
+        [savedProductId]: {
+          difficulty: selectedDifficulty,
+          finalPrice: pricingMap[savedProductId]?.finalPrice ?? suggestedPrice,
+        },
+      };
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedPricing));
+      setPricingMap(mergedPricing);
 
       setFormData(EMPTY_FORM);
       await loadPageData();
@@ -246,15 +283,13 @@ const Catalog = () => {
     return `${base}_${suffix}`;
   };
 
-  const startGroupCreate = () => {
-    setGroupFormData(EMPTY_GROUP_FORM);
-  };
-
   const startGroupEdit = (group) => {
     setGroupFormData({
       id: group.id,
       nome: group.nome || '',
       descricao: group.descricao || '',
+      tipo: group.tipo || 'TECNICO',
+      desconto_percentual: String(group.desconto_percentual ?? ''),
       ativo: group.ativo !== false,
     });
   };
@@ -274,6 +309,10 @@ const Catalog = () => {
       codigo: buildUniqueGroupCode(nome, groupFormData.id),
       nome,
       descricao: groupFormData.descricao,
+      tipo: groupFormData.tipo || 'TECNICO',
+      desconto_percentual: groupFormData.tipo === 'COMERCIAL'
+        ? parsePercentage(groupFormData.desconto_percentual, 0)
+        : 0,
       ativo: groupFormData.ativo,
     };
 
@@ -321,10 +360,12 @@ const Catalog = () => {
   const pricingSummary = useMemo(() => {
     return products.map((product) => {
       const productId = String(product.id);
-      const config = pricingMap[productId] || { difficulty: 'media', finalPrice: parsePositiveNumber(product.valor_base, 0) };
-      const level = DIFFICULTY_LEVELS.find((item) => item.value === config.difficulty) || DIFFICULTY_LEVELS[1];
+      const config = pricingMap[productId] || { difficulty: 'sem_definicao', finalPrice: parsePositiveNumber(product.valor_base, 0) };
+      const level = DIFFICULTY_LEVELS.find((item) => item.value === config.difficulty) || DIFFICULTY_LEVELS[0];
       const basePrice = parsePositiveNumber(product.valor_base, 0);
-      const suggestedPrice = Number((basePrice * level.multiplier).toFixed(2));
+      const linkedGroup = groups.find((group) => group.id === product.grupo);
+      const discountRate = getGroupDiscountRate(linkedGroup);
+      const suggestedPrice = Number((basePrice * level.weight * (1 - discountRate)).toFixed(2));
 
       return {
         product,
@@ -334,7 +375,7 @@ const Catalog = () => {
         suggestedPrice,
       };
     });
-  }, [products, pricingMap]);
+  }, [products, pricingMap, groups]);
 
   const insights = useMemo(() => {
     const now = new Date();
@@ -354,7 +395,10 @@ const Catalog = () => {
 
     const weeklyCountByProduct = {};
     const monthlyCountByProduct = {};
+    const globalCountByProduct = {};
     const monthlyGroupStats = {};
+    const globalGroupStats = {};
+    const technicalTypeCounts = {};
 
     services.forEach((service) => {
       const serviceDate = normalizeDate(service?.data_envio || service?.prazo_entrega);
@@ -362,6 +406,18 @@ const Catalog = () => {
 
       const productIds = Array.isArray(service?.produto) ? service.produto : [];
       const serviceValue = parsePositiveNumber(service?.valor, 0);
+
+      productIds.forEach((id) => {
+        globalCountByProduct[id] = (globalCountByProduct[id] || 0) + 1;
+        const group = productsById[id]?.grupo || productsById[id]?.tipo_produto || 'SEM_GRUPO';
+        const technicalType = productsById[id]?.tipo_produto || 'SEM_CATEGORIA';
+        technicalTypeCounts[technicalType] = (technicalTypeCounts[technicalType] || 0) + 1;
+        if (!globalGroupStats[group]) {
+          globalGroupStats[group] = { sum: 0, count: 0 };
+        }
+        globalGroupStats[group].sum += serviceValue;
+        globalGroupStats[group].count += 1;
+      });
 
       if (serviceDate >= weekStart && serviceDate <= weekEnd) {
         productIds.forEach((id) => {
@@ -385,11 +441,14 @@ const Catalog = () => {
 
     const sortedWeek = Object.entries(weeklyCountByProduct).sort((a, b) => b[1] - a[1]);
     const sortedMonth = Object.entries(monthlyCountByProduct).sort((a, b) => b[1] - a[1]);
+    const sortedGlobal = Object.entries(globalCountByProduct).sort((a, b) => b[1] - a[1]);
 
-    const topWeekEntry = sortedWeek[0];
-    const topMonthEntry = sortedMonth[0];
+    const topWeekEntry = sortedWeek[0] || sortedGlobal[0];
+    const topMonthEntry = sortedMonth[0] || sortedGlobal[0];
 
-    const leastMonthEntry = sortedMonth.length > 0 ? sortedMonth[sortedMonth.length - 1] : null;
+    const leastMonthEntry = sortedMonth.length > 0
+      ? sortedMonth[sortedMonth.length - 1]
+      : (sortedGlobal.length > 0 ? sortedGlobal[sortedGlobal.length - 1] : null);
 
     const groupTicket = Object.entries(monthlyGroupStats)
       .map(([group, stats]) => ({
@@ -399,12 +458,32 @@ const Catalog = () => {
       }))
       .sort((a, b) => b.ticket - a.ticket);
 
-    const highestTicketGroup = groupTicket[0] || null;
+    const commercialGroupIds = new Set(
+      groups
+        .filter((group) => (group.tipo || 'TECNICO') === 'COMERCIAL')
+        .map((group) => group.id)
+    );
+
+    const commercialGroupTicket = groupTicket.filter((item) => commercialGroupIds.has(Number(item.group)));
+
+    const globalTicket = Object.entries(globalGroupStats)
+      .map(([group, stats]) => ({
+        group,
+        ticket: stats.count > 0 ? stats.sum / stats.count : 0,
+      }))
+      .sort((a, b) => b.ticket - a.ticket);
+
+    const highestTicketGroup = commercialGroupTicket[0] || groupTicket[0] || globalTicket[0] || null;
+    const topTechnicalTypeEntry = Object.entries(technicalTypeCounts).sort((a, b) => b[1] - a[1])[0] || null;
 
     const productName = (id) => productsById[id]?.nome || 'Sem produto';
     const groupName = (groupValue) => {
       if (groupsById[groupValue]) return groupsById[groupValue].nome;
       return TECHNICAL_PRODUCT_TYPES.find((item) => item.value === groupValue)?.label || 'Sem grupo';
+    };
+
+    const technicalTypeName = (value) => {
+      return TECHNICAL_PRODUCT_TYPES.find((item) => item.value === value)?.label || 'Sem categoria técnica';
     };
 
     return {
@@ -417,6 +496,9 @@ const Catalog = () => {
         : { label: 'Sem dados', value: '-' },
       topMonth: topMonthEntry
         ? { label: productName(Number(topMonthEntry[0])), value: `${topMonthEntry[1]} no mês` }
+        : { label: 'Sem dados', value: '-' },
+      topTechnicalType: topTechnicalTypeEntry
+        ? { label: technicalTypeName(topTechnicalTypeEntry[0]), value: `${topTechnicalTypeEntry[1]} serviços` }
         : { label: 'Sem dados', value: '-' },
     };
   }, [products, services, groups]);
@@ -461,15 +543,15 @@ const Catalog = () => {
         </Card>
 
         <Card className="group relative overflow-hidden p-5 border-l-4 border-terracota bg-white/80 backdrop-blur-sm hover:-translate-y-1 hover:shadow-md transition-all duration-normal">
-          <Typography variant="caption" className="uppercase text-taupe">Grupo maior ticket médio</Typography>
+          <Typography variant="caption" className="uppercase text-taupe">Grupo comercial maior ticket médio</Typography>
           <Typography variant="h3" className="mt-2">{insights.topTicketGroup.label}</Typography>
           <Typography variant="body2" className="text-taupe mt-1">{insights.topTicketGroup.value}</Typography>
         </Card>
 
         <Card className="group relative overflow-hidden p-5 border-l-4 border-sage bg-white/80 backdrop-blur-sm hover:-translate-y-1 hover:shadow-md transition-all duration-normal">
-          <Typography variant="caption" className="uppercase text-taupe">Menor saída no mês</Typography>
-          <Typography variant="h3" className="mt-2">{insights.lowOutput.label}</Typography>
-          <Typography variant="body2" className="text-taupe mt-1">{insights.lowOutput.value}</Typography>
+          <Typography variant="caption" className="uppercase text-taupe">Categoria técnica mais recorrente</Typography>
+          <Typography variant="h3" className="mt-2">{insights.topTechnicalType.label}</Typography>
+          <Typography variant="body2" className="text-taupe mt-1">{insights.topTechnicalType.value}</Typography>
         </Card>
 
         <Card className="group relative overflow-hidden p-5 border-l-4 border-secondary bg-white/80 backdrop-blur-sm hover:-translate-y-1 hover:shadow-md transition-all duration-normal">
@@ -480,13 +562,7 @@ const Catalog = () => {
       </section>
 
       <Card className="p-6 mb-6">
-        <div className="flex items-center justify-between gap-3 mb-4">
-          <Typography variant="h3">Criar ou editar produto</Typography>
-          <Button variant="secondary" size="sm" onClick={startCreate}>
-            <PlusCircle className="w-4 h-4" />
-            Novo produto
-          </Button>
-        </div>
+        <Typography variant="h3" className="mb-4">Criar ou editar produto</Typography>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -520,12 +596,17 @@ const Catalog = () => {
               onChange={(event) => handleFormChange('grupo', event.target.value)}
             >
               <option value="">Sem grupo</option>
-              {groups.map((group) => (
+              {groups
+                .filter((group) => (group.tipo || 'TECNICO') === 'COMERCIAL')
+                .map((group) => (
                 <option key={group.id} value={group.id}>
                   {group.nome}
                 </option>
               ))}
             </select>
+            <Typography variant="caption" className="mt-1 block text-taupe">
+              Grupo comercial organiza para visão de negócio e precificação.
+            </Typography>
           </div>
 
           <div>
@@ -538,6 +619,24 @@ const Catalog = () => {
               {TECHNICAL_PRODUCT_TYPES.map((option) => (
                 <option key={option.value || 'none'} value={option.value}>
                   {option.label}
+                </option>
+              ))}
+            </select>
+            <Typography variant="caption" className="mt-1 block text-taupe">
+              Categoria técnica define o tipo de confecção para operação e cálculo.
+            </Typography>
+          </div>
+
+          <div>
+            <Typography variant="caption" className="text-taupe">Complexidade padrão (peso)</Typography>
+            <select
+              className="w-full rounded-md border border-border bg-white px-3 py-2 mt-1"
+              value={formData.difficulty}
+              onChange={(event) => handleFormChange('difficulty', event.target.value)}
+            >
+              {DIFFICULTY_LEVELS.map((level) => (
+                <option key={level.value} value={level.value}>
+                  {level.label} • peso {level.weight}
                 </option>
               ))}
             </select>
@@ -570,13 +669,7 @@ const Catalog = () => {
       </Card>
 
       <Card className="p-6 mb-6">
-        <div className="flex items-center justify-between gap-3 mb-4">
-          <Typography variant="h3">Guia de grupos</Typography>
-          <Button variant="secondary" size="sm" onClick={startGroupCreate}>
-            <PlusCircle className="w-4 h-4" />
-            Novo grupo
-          </Button>
-        </div>
+        <Typography variant="h3" className="mb-4">Guia de grupos</Typography>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <input
@@ -584,6 +677,27 @@ const Catalog = () => {
             placeholder="Nome do grupo"
             value={groupFormData.nome}
             onChange={(event) => setGroupFormData((prev) => ({ ...prev, nome: event.target.value }))}
+          />
+
+          <select
+            className="rounded-md border border-border bg-white px-3 py-2"
+            value={groupFormData.tipo}
+            onChange={(event) => setGroupFormData((prev) => ({ ...prev, tipo: event.target.value }))}
+          >
+            <option value="TECNICO">Técnico</option>
+            <option value="COMERCIAL">Comercial</option>
+          </select>
+
+          <input
+            type="number"
+            min="0"
+            max="100"
+            step="0.01"
+            disabled={groupFormData.tipo !== 'COMERCIAL'}
+            className="rounded-md border border-border bg-white px-3 py-2 disabled:cursor-not-allowed disabled:bg-gray-100"
+            placeholder="% de desconto"
+            value={groupFormData.desconto_percentual}
+            onChange={(event) => setGroupFormData((prev) => ({ ...prev, desconto_percentual: event.target.value }))}
           />
 
           <input
@@ -623,7 +737,15 @@ const Catalog = () => {
               <div>
                 <Typography variant="h4">{group.nome}</Typography>
                 <Typography variant="caption" className="text-taupe">
-                  Código: {group.codigo} • {group.ativo ? 'Ativo' : 'Inativo'}
+                  Código: {group.codigo}
+                  {' • '}
+                  {group.tipo === 'COMERCIAL' ? 'Comercial' : 'Técnico'}
+                  {' • '}
+                  {group.tipo === 'COMERCIAL'
+                    ? `${parsePercentage(group.desconto_percentual, 0).toFixed(2)}% desc.`
+                    : 'Sem desconto'}
+                  {' • '}
+                  {group.ativo ? 'Ativo' : 'Inativo'}
                 </Typography>
               </div>
               <div className="flex items-center gap-2">
@@ -655,7 +777,7 @@ const Catalog = () => {
                 <th className="text-left px-4 py-3 font-semibold text-primary">Produto</th>
                 <th className="text-left px-4 py-3 font-semibold text-primary">Grupo</th>
                 <th className="text-left px-4 py-3 font-semibold text-primary">Preço Base</th>
-                <th className="text-left px-4 py-3 font-semibold text-primary">Dificuldade</th>
+                <th className="text-left px-4 py-3 font-semibold text-primary">Dificuldade (peso)</th>
                 <th className="text-left px-4 py-3 font-semibold text-primary">Preço Sugerido</th>
                 <th className="text-left px-4 py-3 font-semibold text-primary">Preço Final Manual</th>
                 <th className="text-left px-4 py-3 font-semibold text-primary">Ações</th>
@@ -724,12 +846,12 @@ const Catalog = () => {
 
       <Card className="p-6 mt-6">
         <Typography variant="h3">Regras de Dificuldade</Typography>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mt-4">
           {DIFFICULTY_LEVELS.map((level) => (
             <div key={level.value} className="rounded-md border border-border bg-offWhite px-4 py-3">
               <Typography variant="h4">{level.label}</Typography>
               <Typography variant="body2" className="text-taupe mt-1">
-                Multiplicador: {level.multiplier.toFixed(2)}x
+                Peso Fibonacci: {level.weight}
               </Typography>
             </div>
           ))}

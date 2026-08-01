@@ -33,9 +33,15 @@ class Cliente(models.Model):
 
 
 class GrupoProduto(models.Model):
+    class Tipo(models.TextChoices):
+        TECNICO = "TECNICO", "Técnico"
+        COMERCIAL = "COMERCIAL", "Comercial"
+
     codigo = models.CharField(max_length=40, unique=True)
     nome = models.CharField(max_length=120)
     descricao = models.TextField(blank=True)
+    tipo = models.CharField(max_length=12, choices=Tipo.choices, default=Tipo.TECNICO)
+    desconto_percentual = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     ativo = models.BooleanField(default=True)
 
     class Meta:

@@ -367,12 +367,35 @@ const Dashboard = () => {
       try {
         setIsLoading(true);
 
-        const [services, seamstresses, forecastPayments, products] = await Promise.all([
+        const [servicesResult, seamstressesResult, forecastPaymentsResult, productsResult] = await Promise.allSettled([
           serviceService.getAll(),
           seamstressService.getAll(),
           fetchPaymentsForecast(),
           productService.getAll(),
         ]);
+
+        const results = [
+          { key: 'services', result: servicesResult },
+          { key: 'seamstresses', result: seamstressesResult },
+          { key: 'forecastPayments', result: forecastPaymentsResult },
+          { key: 'products', result: productsResult },
+        ];
+
+        const allFailed = results.every((entry) => entry.result.status === 'rejected');
+        if (allFailed) {
+          throw new Error('Falha ao carregar todas as fontes do dashboard.');
+        }
+
+        results
+          .filter((entry) => entry.result.status === 'rejected')
+          .forEach((entry) => {
+            console.warn(`[Dashboard] Fonte indisponível: ${entry.key}`, entry.result.reason);
+          });
+
+        const services = servicesResult.status === 'fulfilled' ? servicesResult.value : [];
+        const seamstresses = seamstressesResult.status === 'fulfilled' ? seamstressesResult.value : [];
+        const forecastPayments = forecastPaymentsResult.status === 'fulfilled' ? forecastPaymentsResult.value : [];
+        const products = productsResult.status === 'fulfilled' ? productsResult.value : [];
 
         const servicesList = Array.isArray(services) ? services : [];
         const seamstressesList = Array.isArray(seamstresses) ? seamstresses : [];
