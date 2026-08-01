@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
   CreditCard,
   DollarSign,
@@ -13,6 +13,7 @@ import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Badge from '../../components/atoms/Badge';
 import Button from '../../components/atoms/Button';
+import { fetchPlanningData } from '../../services/planejamentoService';
 
 const Financial = () => {
   const [selectedFilter, setSelectedFilter] = useState('all');
@@ -53,13 +54,42 @@ const Financial = () => {
     ],
   };
 
-  const financialData = mockData;
+  // Planejamento
+  const [financialData, setFinancialData] = useState(mockData);
+
   const filterOptions = [
     { value: 'all', label: 'Todos' },
     { value: 'paid', label: 'Pago' },
     { value: 'pending', label: 'Pendente' },
     { value: 'overdue', label: 'Atrasado' },
   ];
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPlanning = async () => {
+      try {
+        const planningResponse = await fetchPlanningData();
+
+        if (!isMounted || !planningResponse?.planning) {
+          return;
+        }
+
+        setFinancialData((prev) => ({
+          ...prev,
+          planning: planningResponse.planning,
+        }));
+      } catch (error) {
+        console.error('Erro ao carregar planejamento financeiro:', error);
+      }
+    };
+
+    loadPlanning();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -134,6 +164,10 @@ const Financial = () => {
       },
     },
   ];
+
+  const maxPlanning = Math.max(
+    ...(financialData?.planning?.map((item) => item.total) || [0])
+  );
 
   return (
     <main className="flex-1 p-6 sm:p-8 lg:p-10">
@@ -286,41 +320,86 @@ const Financial = () => {
           </Typography>
         </div>
 
+        {/* Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {financialData.planning.map((item) => (
             <Card
               key={item.id}
               variant={item.variant}
-              className={item.variant === 'gold' ? 'border-primary/10' : ''}
+              className={item.variant === "gold" ? "border-primary/10" : ""}
             >
               <Typography variant="h3">{item.title}</Typography>
               <Typography variant="body2" className="mt-1 text-taupe">
                 {item.subtitle}
               </Typography>
-
               <div className="mt-5 space-y-3">
                 <div className="flex items-center justify-between gap-4">
                   <Typography variant="body2" className="text-taupe">
                     Total a pagar
                   </Typography>
-                  <Typography variant="h3">{formatCurrency(item.total)}</Typography>
+                  <Typography variant="h3">
+                    {formatCurrency(item.total)}
+                  </Typography>
                 </div>
                 <div className="flex items-center justify-between gap-4">
                   <Typography variant="body2" className="text-taupe">
                     Costureiras
                   </Typography>
-                  <Typography variant="body2">{item.seamstresses}</Typography>
+                  <Typography variant="body2">
+                    {item.seamstresses}
+                  </Typography>
                 </div>
                 <div className="flex items-center justify-between gap-4">
                   <Typography variant="body2" className="text-taupe">
                     Servicos
                   </Typography>
-                  <Typography variant="body2">{item.services}</Typography>
+                  <Typography variant="body2">
+                    {item.services}
+                  </Typography>
                 </div>
               </div>
             </Card>
           ))}
         </div>
+
+        {/* Gráfico */}
+        <Card className="mt-8 p-6">
+          <Typography variant="h3">
+            Projeção de Pagamentos
+          </Typography>
+          <Typography variant="body2" className="text-taupe mb-6">
+            Comparativo dos pagamentos previstos.
+          </Typography>
+          <div className="flex items-end justify-center h-40 gap-20 border-b border-gray-200 pb-4">
+            {financialData.planning.map((item) => (
+              <div
+                key={item.id}
+                className="flex flex-col items-center gap-3"
+              >
+                <Typography variant="caption" className="font-medium">
+                  {formatCurrency(item.total)}
+                </Typography>
+                <div
+                  className={`w-24 rounded-t transition-all duration-500 ${
+                    item.variant === "gold"
+                      ? "bg-gold"
+                      : "bg-primary"
+                  }`}
+                  style={{
+                    height: `${(item.total / maxPlanning) * 100}%`,
+                    minHeight: "20px",
+                  }}
+                />
+                <Typography
+                  variant="caption"
+                  className="text-taupe"
+                >
+                  {item.title}
+                </Typography>
+              </div>
+            ))}
+          </div>
+        </Card>
       </section>
     </main>
   );
