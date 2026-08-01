@@ -24,24 +24,24 @@ const Input = ({
   const baseClasses = {
     container: classNames('flex flex-col gap-1.5 w-full', className),
     label: classNames(
-      'text-sm font-medium text-primary transition-colors duration-200',
+      'font-display text-[10px] uppercase tracking-[0.15em] text-taupe transition-colors duration-200',
       error ? 'text-danger' : 'text-primary',
       disabled && 'opacity-50'
     ),
     input: classNames(
-      'w-full px-4 py-2.5 rounded-xl',
-      'border-2',
-      'bg-offWhite text-primary placeholder-taupe',
+      'w-full px-4 py-3 rounded-md',
+      'border',
+      'bg-white/80 text-primary placeholder-taupe',
       'transition-all duration-300 ease-spring',
       'focus:outline-none focus:ring-2 focus:ring-offset-1',
       'disabled:opacity-50 disabled:cursor-not-allowed',
       error
-        ? 'border-danger focus:border-danger focus:ring-danger/20'
-        : 'border-gray focus:border-primary focus:ring-primary/20',
+        ? 'border-danger/40 focus:border-danger focus:ring-danger/20'
+        : 'border-[rgba(75,58,46,0.08)] focus:border-gold focus:ring-gold/20 focus:bg-white',
       focused && 'shadow-sm'
     ),
     error: classNames(
-      'text-sm text-danger flex items-center gap-1 mt-1',
+      'text-xs text-danger flex items-center gap-1 mt-1',
       'animate-slideDown'
     ),
     required: classNames(
@@ -101,7 +101,7 @@ const Input = ({
 
       {error && (
         <p id={`${inputId}-error`} className={baseClasses.error}>
-          <span aria-hidden="true">⚠️</span>
+          <span aria-hidden="true">•</span>
           {error}
         </p>
       )}

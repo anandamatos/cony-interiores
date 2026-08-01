@@ -1,4 +1,3 @@
-import React from 'react';
 import Typography from './index';
 
 export default {
@@ -36,18 +35,18 @@ Default.args = {
 
 export const AllVariants = () => (
   <div className="space-y-4 max-w-2xl">
-    <Typography variant="h1">Heading 1 - 30px</Typography>
-    <Typography variant="h2">Heading 2 - 24px</Typography>
-    <Typography variant="h3">Heading 3 - 18px</Typography>
-    <Typography variant="h4">Heading 4 - 16px</Typography>
+    <Typography variant="h1">Manual direto para manter o dashboard Cony consistente.</Typography>
+    <Typography variant="h2">Direção visual para interfaces que respiram elegância e conforto.</Typography>
+    <Typography variant="h3">Visão geral da operação</Typography>
+    <Typography variant="h4">Alertas e avisos</Typography>
     <Typography variant="body1">
-      Body 1 - Texto corrido principal com 16px e line-height 1.7.
+      Interfaces limpas, consistentes e acolhedoras, com foco em clareza operacional e hierarquia editorial.
     </Typography>
     <Typography variant="body2">
-      Body 2 - Texto secundário com 14px e line-height 1.6.
+      Texto auxiliar para apoiar métricas, blocos analíticos e instruções de uso do sistema.
     </Typography>
     <Typography variant="caption">
-      Caption - Metadados e informações complementares com 12px.
+      Referência oficial do dashboard
     </Typography>
   </div>
 );

@@ -9,23 +9,24 @@ export const typography = {
   // ==========================================
   fonts: {
     primary: '"Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    secondary: '"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    brand: '"ITC Avant Garde", "Montserrat", sans-serif',
+    secondary: '"Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    brand: '"Syncopate", "Montserrat", sans-serif',
+    display: '"Syncopate", "Montserrat", sans-serif',
   },
 
   // ==========================================
   // ESCALA TIPOGRÁFICA
   // ==========================================
   sizes: {
-    xs: "0.75rem", // 12px - Legenda
-    sm: "0.875rem", // 14px - Corpo 2
-    base: "1rem", // 16px - Corpo 1
-    lg: "1.125rem", // 18px - H4
-    xl: "1.25rem", // 20px - H3
-    "2xl": "1.5rem", // 24px - H2
-    "3xl": "1.875rem", // 30px - H1 (mobile)
-    "4xl": "2.25rem", // 36px - H1 (desktop)
-    "5xl": "3rem", // 48px - Títulos hero
+    xs: "0.625rem",
+    sm: "0.75rem",
+    base: "0.875rem",
+    lg: "1rem",
+    xl: "1.125rem",
+    "2xl": "1.5rem",
+    "3xl": "2rem",
+    "4xl": "2.25rem",
+    "5xl": "4.8rem",
   },
 
   // ==========================================
@@ -51,21 +52,21 @@ export const typography = {
       fontFamily: "primary",
       size: "4xl",
       weight: "bold",
-      letterSpacing: "-0.02em",
-      lineHeight: "1.2",
+      letterSpacing: "-0.03em",
+      lineHeight: "1.1",
     },
     h2: {
       fontFamily: "primary",
       size: "2xl",
       weight: "semibold",
-      letterSpacing: "-0.01em",
-      lineHeight: "1.3",
+      letterSpacing: "-0.03em",
+      lineHeight: "1.25",
     },
     h3: {
       fontFamily: "primary",
       size: "xl",
       weight: "semibold",
-      letterSpacing: "-0.01em",
+      letterSpacing: "0",
       lineHeight: "1.4",
     },
     h4: {
@@ -77,23 +78,23 @@ export const typography = {
     },
     body1: {
       fontFamily: "secondary",
-      size: "base",
+      size: "lg",
       weight: "normal",
       letterSpacing: "0",
       lineHeight: "1.7",
     },
     body2: {
       fontFamily: "secondary",
-      size: "sm",
+      size: "base",
       weight: "normal",
       letterSpacing: "0",
       lineHeight: "1.6",
     },
     caption: {
-      fontFamily: "secondary",
-      size: "xs",
+      fontFamily: "display",
+      size: "sm",
       weight: "normal",
-      letterSpacing: "0.3px",
+      letterSpacing: "0.15em",
       lineHeight: "1.5",
     },
   },
@@ -103,9 +104,9 @@ export const typography = {
   // ==========================================
   responsive: {
     h1: {
-      mobile: "3xl", // 30px
-      tablet: "4xl", // 36px
-      desktop: "4xl", // 36px
+      mobile: "3xl",
+      tablet: "4xl",
+      desktop: "5xl",
     },
   },
 };

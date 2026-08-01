@@ -1,4 +1,3 @@
-import React from 'react';
 import Alert from './index';
 
 export default {
@@ -31,36 +30,36 @@ export default {
 export const Default = (args) => <Alert {...args} />;
 Default.args = {
   type: 'info',
-  title: 'Informação',
-  message: 'Esta é uma mensagem informativa.',
+  title: 'Atualização operacional',
+  message: 'Os dados do dashboard foram sincronizados com a API mais recente.',
 };
 
 export const Success = (args) => <Alert {...args} />;
 Success.args = {
   type: 'success',
-  title: 'Sucesso',
-  message: 'Operação realizada com sucesso!',
+  title: 'Serviço concluído',
+  message: 'Tapete - Ana Costa foi entregue dentro do prazo.',
 };
 
 export const Error = (args) => <Alert {...args} />;
 Error.args = {
   type: 'error',
-  title: 'Erro',
-  message: 'Ocorreu um erro ao processar sua solicitação.',
+  title: 'Serviço em atraso',
+  message: 'Cortina Ilhós - João Silva ultrapassou o prazo previsto.',
 };
 
 export const Warning = (args) => <Alert {...args} />;
 Warning.args = {
   type: 'warning',
-  title: 'Aviso',
-  message: 'Atenção: esta ação não pode ser desfeita.',
+  title: 'Próximo do prazo',
+  message: 'Almofadas - Maria Oliveira vence nos próximos 2 dias.',
 };
 
 export const AllVariants = () => (
   <div className="space-y-4 w-96">
-    <Alert type="success" title="Sucesso" message="Operação realizada com sucesso!" />
-    <Alert type="error" title="Erro" message="Ocorreu um erro ao processar sua solicitação." />
-    <Alert type="warning" title="Aviso" message="Atenção: esta ação não pode ser desfeita." />
-    <Alert type="info" title="Informação" message="Esta é uma mensagem informativa." />
+    <Alert type="success" title="Serviço concluído" message="Tapete - Ana Costa foi entregue em 20/06." />
+    <Alert type="error" title="Serviço em atraso" message="Cortina Ilhós - João Silva está com +2 dias." />
+    <Alert type="warning" title="Próximo do prazo" message="Almofadas - Maria Oliveira vence em 3 dias." />
+    <Alert type="info" title="Aguardando aprovação" message="Cortina Romana - Pedro Santos entrou em revisão." />
   </div>
 );

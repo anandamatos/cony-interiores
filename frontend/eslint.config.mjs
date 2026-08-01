@@ -7,7 +7,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 
 export default [
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/.storybook/**'],
+    ignores: ['**/dist/**', '**/node_modules/**', '**/.storybook/**', '**/storybook-static/**'],
   },
   js.configs.recommended,
   {

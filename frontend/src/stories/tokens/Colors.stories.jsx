@@ -3,32 +3,45 @@ import { colors } from "../../styles/tokens/colors";
 const gradientTokens = [
   {
     name: "gradient-primary",
-    css: "linear-gradient(135deg, #C9A86A 0%, #A8968B 50%, #4B3A2E 100%)",
-    use: "Hero sections, highlights e cards de assinatura visual.",
+    css: "linear-gradient(135deg, #DEBBA4 0%, #903839 55%, #703824 100%)",
+    use: "Assinatura visual principal, CTAs e blocos de destaque editorial.",
   },
   {
     name: "gradient-gold",
-    css: "linear-gradient(135deg, #D9C7B1 0%, #C9A86A 100%)",
-    use: "Barras de progresso, graficos e estados ativos suaves.",
+    css: "linear-gradient(135deg, #E8E3D9 0%, #DEBBA4 100%)",
+    use: "Cards ativos, badges neutros e superficies com aquecimento sutil.",
   },
   {
     name: "gradient-warm",
-    css: "linear-gradient(135deg, #4B3A2E 0%, #B56A4A 100%)",
-    use: "CTAs fortes, estados de destaque e superficies premium.",
+    css: "linear-gradient(135deg, #703824 0%, #903839 100%)",
+    use: "Estados premium, ações principais e destaque institucional.",
   },
   {
     name: "gradient-sage",
-    css: "linear-gradient(135deg, #8D9ABA 0%, #465057 100%)",
-    use: "Dados analiticos, secoes tecnicas e comparativos.",
+    css: "linear-gradient(135deg, #7C8A6E 0%, #5C6B63 100%)",
+    use: "Blocos analiticos e informacoes complementares com tom sereno.",
   },
   {
     name: "gradient-offWhite",
-    css: "linear-gradient(135deg, #F6F3EF 0%, #E6E2DD 100%)",
-    use: "Planos de fundo e elevacao discreta de containers.",
+    css: "linear-gradient(135deg, #F8F5F0 0%, #E8E3D9 100%)",
+    use: "Planos de fundo, mini stats e elevacao discreta de containers.",
   },
 ];
 
-const renderScale = (title, scale) => (
+const meta = {
+  title: "Tokens/Cores",
+  parameters: {
+    docs: {
+      description: {
+        component: "Sistema de cores da Cony Interiores",
+      },
+    },
+  },
+};
+
+export default meta;
+
+const ScaleSection = ({ title, scale }) => (
   <div className="space-y-3">
     <h3 className="text-base font-semibold text-primary">{title}</h3>
     <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
@@ -45,30 +58,18 @@ const renderScale = (title, scale) => (
   </div>
 );
 
-export default {
-  title: "Tokens/Cores",
-  parameters: {
-    docs: {
-      description: {
-        component: "Sistema de cores da Cony Interiores",
-      },
-    },
-  },
-};
-
 export const Primary = {
   render: () => (
     <div className="p-6 space-y-6">
-      <h2 className="text-xl font-bold text-primary">Cores Primarias e Secundarias</h2>
+      <h2 className="text-xl font-bold text-primary">Paleta oficial da interface</h2>
       <p className="text-sm text-taupe max-w-3xl">
-        Paleta base para identidade da Cony. Utilize os tons 500 como referencia principal e os tons
-        50-300/600-900 para estados de interface, backgrounds e contraste.
+        Tokens sincronizados com o protótipo oficial do dashboard e com o manual visual em anexo.
       </p>
       <div className="space-y-6">
-        {renderScale("Primary", colors.primary)}
-        {renderScale("Secondary", colors.secondary)}
-        {renderScale("Taupe", colors.taupe)}
-        {renderScale("OffWhite", colors.offWhite)}
+        <ScaleSection title="Primary" scale={colors.primary} />
+        <ScaleSection title="Secondary" scale={colors.secondary} />
+        <ScaleSection title="Taupe" scale={colors.taupe} />
+        <ScaleSection title="OffWhite" scale={colors.offWhite} />
       </div>
     </div>
   ),
@@ -82,14 +83,14 @@ export const Secondary = {
         Escalas auxiliares para leitura de dados, semaforos e feedback visual do sistema.
       </p>
       <div className="space-y-6">
-        {renderScale("Sage", colors.sage)}
-        {renderScale("Gold", colors.gold)}
-        {renderScale("Terracota", colors.terracota)}
-        {renderScale("Slate", colors.slate)}
-        {renderScale("Status Success", colors.success)}
-        {renderScale("Status Warning", colors.warning)}
-        {renderScale("Status Danger", colors.danger)}
-        {renderScale("Status Info", colors.info)}
+        <ScaleSection title="Sage" scale={colors.sage} />
+        <ScaleSection title="Gold" scale={colors.gold} />
+        <ScaleSection title="Terracota" scale={colors.terracota} />
+        <ScaleSection title="Slate" scale={colors.slate} />
+        <ScaleSection title="Status Success" scale={colors.success} />
+        <ScaleSection title="Status Warning" scale={colors.warning} />
+        <ScaleSection title="Status Danger" scale={colors.danger} />
+        <ScaleSection title="Status Info" scale={colors.info} />
       </div>
     </div>
   ),

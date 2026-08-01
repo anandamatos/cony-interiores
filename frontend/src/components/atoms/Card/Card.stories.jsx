@@ -1,7 +1,6 @@
-import React from 'react';
 import Card from './index';
 
-export default {
+const meta = {
   title: 'Atoms/Card',
   component: Card,
   parameters: {
@@ -26,59 +25,69 @@ export default {
   },
 };
 
-export const Default = (args) => (
-  <Card {...args} className="max-w-sm">
-    <h3 className="font-primary font-semibold text-lg text-[#703824]">Título do Card</h3>
-    <p className="text-[#8C7568] mt-2">
-      Conteúdo do card com os tokens de design da Cony.
-    </p>
-  </Card>
-);
-Default.args = {
-  variant: 'default',
-  shadow: 'card',
-  hover: false,
-  padding: true,
+export default meta;
+
+export const Default = {
+  args: {
+    variant: 'default',
+    shadow: 'card',
+    hover: false,
+    padding: true,
+  },
+  render: (args) => (
+    <Card {...args} className="max-w-sm">
+      <h3 className="font-primary font-semibold text-lg text-primary">Visão geral da operação</h3>
+      <p className="text-taupe mt-2">
+        Superfície base para agrupar métricas, gráficos e recados operacionais com respiro elegante.
+      </p>
+    </Card>
+  ),
 };
 
-export const Gold = (args) => (
-  <Card {...args} className="max-w-sm">
-    <h3 className="font-primary font-semibold text-lg text-[#703824]">Card Gold</h3>
-    <p className="text-[#8C7568] mt-2">
-      Versão com gradiente gold para destaques.
-    </p>
-  </Card>
-);
-Gold.args = {
-  variant: 'gold',
-  shadow: 'gold',
-  hover: true,
+export const Gold = {
+  args: {
+    variant: 'gold',
+    shadow: 'gold',
+    hover: true,
+  },
+  render: (args) => (
+    <Card {...args} className="max-w-sm">
+      <h3 className="font-primary font-semibold text-lg text-primary">Card de destaque</h3>
+      <p className="text-taupe mt-2">
+        Aplicação recomendada para chamadas de destaque, filtros ativos e painéis de navegação visual.
+      </p>
+    </Card>
+  ),
 };
 
-export const Glass = (args) => (
-  <Card {...args} className="max-w-sm">
-    <h3 className="font-primary font-semibold text-lg text-[#703824]">Efeito Glass</h3>
-    <p className="text-[#8C7568] mt-2">
-      Card com efeito de vidro fosco.
-    </p>
-  </Card>
-);
-Glass.args = {
-  variant: 'ghost',
-  shadow: 'sm',
-  hover: true,
+export const Glass = {
+  args: {
+    variant: 'ghost',
+    shadow: 'sm',
+    hover: true,
+  },
+  render: (args) => (
+    <Card {...args} className="max-w-sm">
+      <h3 className="font-primary font-semibold text-lg text-primary">Superfície translúcida</h3>
+      <p className="text-taupe mt-2">
+        Ideal para contextos com fundos texturizados ou camadas suaves sem perder legibilidade.
+      </p>
+    </Card>
+  ),
 };
 
-export const Elevated = (args) => (
-  <Card {...args} className="max-w-sm">
-    <h3 className="font-primary font-semibold text-lg text-[#703824]">Card Elevado</h3>
-    <p className="text-[#8C7568] mt-2">
-      Card com sombra elevada para maior destaque.
-    </p>
-  </Card>
-);
-Elevated.args = {
-  variant: 'elevated',
-  shadow: 'elevated',
-  hover: true,
+export const Elevated = {
+  args: {
+    variant: 'elevated',
+    shadow: 'elevated',
+    hover: true,
+  },
+  render: (args) => (
+    <Card {...args} className="max-w-sm">
+      <h3 className="font-primary font-semibold text-lg text-primary">Card elevado</h3>
+      <p className="text-taupe mt-2">
+        Útil para módulos prioritários, atalhos ou ações com maior peso visual dentro da página.
+      </p>
+    </Card>
+  ),
 };

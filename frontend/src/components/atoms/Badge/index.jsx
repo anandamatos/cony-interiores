@@ -8,15 +8,15 @@ const Badge = ({
   ...props
 }) => {
   const variants = {
-    primary: 'bg-primary text-white',
-    secondary: 'bg-secondary text-primary',
-    gold: 'bg-gold text-black',
-    terracota: 'bg-terracota text-white',
-    success: 'bg-success text-white',
-    warning: 'bg-warning text-black',
-    danger: 'bg-danger text-white',
-    info: 'bg-info text-white',
-    neutral: 'bg-gray text-primary',
+    primary: 'bg-primary/10 text-primary',
+    secondary: 'bg-secondary/25 text-primary',
+    gold: 'bg-gold/15 text-gold',
+    terracota: 'bg-terracota/12 text-terracota',
+    success: 'bg-success/12 text-success',
+    warning: 'bg-warning/12 text-warning',
+    danger: 'bg-danger/12 text-danger',
+    info: 'bg-info/12 text-info',
+    neutral: 'bg-gray/20 text-taupe',
     ghost: 'bg-transparent border border-primary text-primary',
   };
 
@@ -27,7 +27,7 @@ const Badge = ({
   };
 
   const baseClasses = classNames(
-    'inline-flex items-center justify-center rounded-full font-semibold tracking-[0.01em]',
+    'inline-flex items-center justify-center rounded-full font-display font-normal uppercase tracking-[0.15em]',
     'transition-all duration-200 ease-spring',
     variants[variant] || variants.primary,
     sizes[size] || sizes.md,

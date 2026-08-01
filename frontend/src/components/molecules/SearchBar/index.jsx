@@ -46,11 +46,11 @@ const SearchBar = ({
       className
     ),
     input: classNames(
-      'w-full pl-10 pr-10 py-2.5 rounded-lg',
-      'bg-offWhite border-2 border-gray',
+      'w-full pl-10 pr-10 py-2.5 rounded-md',
+      'bg-offWhite border border-transparent',
       'text-primary placeholder-taupe',
       'transition-all duration-200 ease-spring',
-      'focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20',
+      'focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 focus:bg-white',
       'disabled:opacity-50 disabled:cursor-not-allowed',
       'focus:shadow-sm'
     ),

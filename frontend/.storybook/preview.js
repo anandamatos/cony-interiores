@@ -3,6 +3,11 @@ import '../src/index.css';
 
 export const parameters = {
   layout: 'fullscreen',
+  options: {
+    storySort: {
+      order: ['Introdução', 'Guia', 'Tokens', 'Atoms', 'Molecules', 'Organisms', 'Layouts'],
+    },
+  },
   actions: { argTypesRegex: '^on[A-Z].*' },
   controls: {
     matchers: {

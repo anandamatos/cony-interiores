@@ -1,4 +1,3 @@
-import React from 'react';
 import Input from './index';
 
 export default {
@@ -33,30 +32,30 @@ export default {
 
 export const Default = (args) => <Input {...args} />;
 Default.args = {
-  label: 'Nome',
-  placeholder: 'Digite seu nome...',
+  label: 'Cliente',
+  placeholder: 'Ex: João Silva',
   required: true,
 };
 
 export const WithError = (args) => <Input {...args} />;
 WithError.args = {
-  label: 'Email',
-  placeholder: 'email@exemplo.com',
-  error: 'Email inválido',
+  label: 'Prazo de entrega',
+  placeholder: 'dd/mm/aaaa',
+  error: 'Informe uma data válida para o prazo.',
   required: true,
 };
 
 export const Disabled = (args) => <Input {...args} />;
 Disabled.args = {
-  label: 'Campo desabilitado',
-  placeholder: 'Não editável',
+  label: 'Campo bloqueado',
+  placeholder: 'Não editável no momento',
   disabled: true,
 };
 
 export const Multiline = (args) => <Input {...args} />;
 Multiline.args = {
   label: 'Observações',
-  placeholder: 'Digite suas observações...',
+  placeholder: 'Detalhes relevantes para a produção ou entrega...',
   multiline: true,
   rows: 4,
 };

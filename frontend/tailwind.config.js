@@ -52,6 +52,7 @@ export default {
         primary: typography.fonts.primary,
         secondary: typography.fonts.secondary,
         brand: typography.fonts.brand,
+        display: typography.fonts.display,
       },
 
       fontSize: typography.sizes,
@@ -136,11 +137,11 @@ export default {
       },
 
       backgroundImage: {
-        'gradient-primary': 'linear-gradient(135deg, #C9A86A 0%, #A8968B 50%, #4B3A2E 100%)',
-        'gradient-gold': 'linear-gradient(135deg, #D9C7B1 0%, #C9A86A 100%)',
-        'gradient-warm': 'linear-gradient(135deg, #4B3A2E 0%, #B56A4A 100%)',
-        'gradient-sage': 'linear-gradient(135deg, #8D9ABA 0%, #465057 100%)',
-        'gradient-offWhite': 'linear-gradient(135deg, #F6F3EF 0%, #E6E2DD 100%)',
+        'gradient-primary': 'linear-gradient(135deg, #DEBBA4 0%, #903839 55%, #703824 100%)',
+        'gradient-gold': 'linear-gradient(135deg, #E8E3D9 0%, #DEBBA4 100%)',
+        'gradient-warm': 'linear-gradient(135deg, #703824 0%, #903839 100%)',
+        'gradient-sage': 'linear-gradient(135deg, #7C8A6E 0%, #5C6B63 100%)',
+        'gradient-offWhite': 'linear-gradient(135deg, #F8F5F0 0%, #E8E3D9 100%)',
       },
     },
   },

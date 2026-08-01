@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import SearchBar from './index';
 
-export default {
+const meta = {
   title: 'Molecules/SearchBar',
   component: SearchBar,
   parameters: {
@@ -18,35 +18,46 @@ export default {
   },
 };
 
-export const Default = (args) => (
-  <div className="w-96">
-    <SearchBar {...args} />
-  </div>
-);
-Default.args = {
-  placeholder: 'Buscar serviços, costureiras...',
+export default meta;
+
+export const Default = {
+  args: {
+    placeholder: 'Buscar serviços, costureiras...',
+  },
+  render: (args) => (
+    <div className="w-96">
+      <SearchBar {...args} />
+    </div>
+  ),
 };
 
-export const WithValue = () => {
+const WithValueStory = () => {
   const [value, setValue] = useState('cortina');
+
   return (
     <div className="w-96">
       <SearchBar
-        placeholder="Buscar..."
+        placeholder="Buscar pedidos, clientes ou materiais"
         value={value}
         onChange={setValue}
-        onSearch={(val) => console.log('🔍 Buscando:', val)}
+        onSearch={(val) => console.log('Buscando:', val)}
       />
     </div>
   );
 };
 
-export const Disabled = (args) => (
-  <div className="w-96">
-    <SearchBar {...args} disabled />
-  </div>
-);
-Disabled.args = {
-  placeholder: 'Busca desabilitada',
-  disabled: true,
+export const WithValue = {
+  render: () => <WithValueStory />,
+};
+
+export const Disabled = {
+  args: {
+    placeholder: 'Busca temporariamente indisponível',
+    disabled: true,
+  },
+  render: (args) => (
+    <div className="w-96">
+      <SearchBar {...args} />
+    </div>
+  ),
 };

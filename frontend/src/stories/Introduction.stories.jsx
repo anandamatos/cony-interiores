@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Sparkles,
   Palette,
@@ -9,7 +8,6 @@ import {
   DollarSign,
   SunMedium,
   Zap,
-  Layers,
   MonitorSmartphone,
   Search,
   Bell,
@@ -27,6 +25,11 @@ import {
   Gauge,
   Settings,
   LogOut,
+  CircleCheckBig,
+  Clock3,
+  AlertCircle,
+  CheckCircle2,
+  Pin,
 } from 'lucide-react';
 
 export default {
@@ -89,13 +92,12 @@ export const Welcome = () => {
             {/* Coluna esquerda - conteúdo principal */}
             <div className="lg:col-span-3">
               {/* Eyebrow - CORRIGIDO: mais branco, tamanho correto */}
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/92 border border-[rgba(222,187,164,0.25)] font-['Syncopate'] text-[11px] tracking-[0.15em] uppercase text-[#8C7568] shadow-sm">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(255,255,255,0.98)] border border-[rgba(194,153,106,0.35)] font-['Syncopate'] text-[11px] tracking-[0.15em] uppercase text-[#703824] shadow-sm">
                 <Sparkles className="w-3.5 h-3.5" />
                 Referência oficial do dashboard
               </span>
 
-              {/* Título - Syncopate com peso e espaçamento corretos */}
-              <h1 className="font-['Syncopate'] text-[clamp(2.75rem,5vw,4.8rem)] font-bold leading-[1.1] tracking-[-0.03em] text-[#703824] mt-6 max-w-[12ch]">
+              <h1 className="font-['Montserrat'] text-[clamp(2.75rem,5vw,4.8rem)] font-bold leading-[1.1] tracking-[-0.03em] text-[#703824] mt-6 max-w-[12ch]">
                 Manual direto para manter o dashboard Cony consistente.
               </h1>
 
@@ -144,19 +146,19 @@ export const Welcome = () => {
               {/* Princípios - com ícones Lucide */}
               <ul className="space-y-2 mt-4">
                 <li className="flex items-start gap-2 text-sm text-[rgba(75,58,46,0.84)]">
-                  <span className="text-[#C2996A] mt-0.5">✓</span>
+                  <CircleCheckBig className="w-4 h-4 text-[#C2996A] mt-0.5 flex-shrink-0" />
                   <span>Brand first: toda interface deve refletir a identidade da Cony.</span>
                 </li>
                 <li className="flex items-start gap-2 text-sm text-[rgba(75,58,46,0.84)]">
-                  <span className="text-[#C2996A] mt-0.5">✓</span>
+                  <CircleCheckBig className="w-4 h-4 text-[#C2996A] mt-0.5 flex-shrink-0" />
                   <span>Uso exclusivo dos tokens oficiais para cor, tipografia, borda, sombra e motion.</span>
                 </li>
                 <li className="flex items-start gap-2 text-sm text-[rgba(75,58,46,0.84)]">
-                  <span className="text-[#C2996A] mt-0.5">✓</span>
+                  <CircleCheckBig className="w-4 h-4 text-[#C2996A] mt-0.5 flex-shrink-0" />
                   <span>Componentes consistentes, discretos e fáceis de reaplicar entre páginas.</span>
                 </li>
                 <li className="flex items-start gap-2 text-sm text-[rgba(75,58,46,0.84)]">
-                  <span className="text-[#C2996A] mt-0.5">✓</span>
+                  <CircleCheckBig className="w-4 h-4 text-[#C2996A] mt-0.5 flex-shrink-0" />
                   <span>Textos de interface curtos, objetivos e coerentes com os fluxos do dashboard.</span>
                 </li>
               </ul>
@@ -190,7 +192,7 @@ export const Welcome = () => {
         <section className="py-16 max-w-7xl mx-auto px-8" id="marca">
           <div className="flex justify-between items-end gap-5 flex-wrap mb-8">
             <div>
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/92 border border-[rgba(222,187,164,0.25)] font-['Syncopate'] text-[11px] tracking-[0.15em] uppercase text-[#8C7568] shadow-sm">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(255,255,255,0.98)] border border-[rgba(194,153,106,0.35)] font-['Syncopate'] text-[11px] tracking-[0.15em] uppercase text-[#703824] shadow-sm">
                 <Gem className="w-3.5 h-3.5" />
                 Marca
               </span>
@@ -221,15 +223,15 @@ export const Welcome = () => {
               <h3 className="font-['Montserrat'] text-lg font-semibold text-[#703824]">Diretrizes de UI</h3>
               <ul className="space-y-2 mt-2">
                 <li className="flex items-start gap-2 font-['Montserrat'] text-sm text-[rgba(75,58,46,0.84)] leading-[1.7]">
-                  <span className="text-[#C2996A] mt-0.5">✓</span>
+                  <CircleCheckBig className="w-4 h-4 text-[#C2996A] mt-0.5 flex-shrink-0" />
                   <span>Superfícies claras com profundidade sutil e bordas suaves.</span>
                 </li>
                 <li className="flex items-start gap-2 font-['Montserrat'] text-sm text-[rgba(75,58,46,0.84)] leading-[1.7]">
-                  <span className="text-[#C2996A] mt-0.5">✓</span>
+                  <CircleCheckBig className="w-4 h-4 text-[#C2996A] mt-0.5 flex-shrink-0" />
                   <span>Uso generoso de espaço em branco para valorizar conteúdo e hierarquia.</span>
                 </li>
                 <li className="flex items-start gap-2 font-['Montserrat'] text-sm text-[rgba(75,58,46,0.84)] leading-[1.7]">
-                  <span className="text-[#C2996A] mt-0.5">✓</span>
+                  <CircleCheckBig className="w-4 h-4 text-[#C2996A] mt-0.5 flex-shrink-0" />
                   <span>Chamadas de ação presentes, mas sem agressividade cromática.</span>
                 </li>
               </ul>
@@ -253,7 +255,7 @@ export const Welcome = () => {
         <section className="py-16 max-w-7xl mx-auto px-8" id="tokens">
           <div className="flex justify-between items-end gap-5 flex-wrap mb-8">
             <div>
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/92 border border-[rgba(222,187,164,0.25)] font-['Syncopate'] text-[11px] tracking-[0.15em] uppercase text-[#8C7568] shadow-sm">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(255,255,255,0.98)] border border-[rgba(194,153,106,0.35)] font-['Syncopate'] text-[11px] tracking-[0.15em] uppercase text-[#703824] shadow-sm">
                 <SwatchBook className="w-3.5 h-3.5" />
                 Tokens
               </span>
@@ -477,7 +479,7 @@ export const Welcome = () => {
         <section className="py-16 max-w-7xl mx-auto px-8" id="componentes">
           <div className="flex justify-between items-end gap-5 flex-wrap mb-8">
             <div>
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/92 border border-[rgba(222,187,164,0.25)] font-['Syncopate'] text-[11px] tracking-[0.15em] uppercase text-[#8C7568] shadow-sm">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(255,255,255,0.98)] border border-[rgba(194,153,106,0.35)] font-['Syncopate'] text-[11px] tracking-[0.15em] uppercase text-[#703824] shadow-sm">
                 <Component className="w-3.5 h-3.5" />
                 Componentes
               </span>
@@ -570,14 +572,14 @@ export const Welcome = () => {
             </div>
             <div className="space-y-0">
               {[
-                { icon: '⏰', title: 'Serviço em atraso', desc: 'Cortina Ilhós - João Silva (Prazo: 25/06) • +2 dias', time: 'Hoje', bg: 'bg-[#F7EAEA]', color: 'text-[#903839]' },
-                { icon: '⚠️', title: 'Próximo do prazo', desc: 'Almofadas - Maria Oliveira (Prazo: 28/06) • 3 dias', time: 'Hoje', bg: 'bg-[#FBF3E7]', color: 'text-[#C2996A]' },
-                { icon: '✓', title: 'Serviço concluído', desc: 'Tapete - Ana Costa (Entregue em 20/06)', time: 'Ontem', bg: 'bg-[#EAF1E7]', color: 'text-[#4B7A5B]' },
-                { icon: '📌', title: 'Novo serviço aguardando aprovação', desc: 'Cortina Romana - Pedro Santos', time: 'Ontem', bg: 'bg-[#F0ECE7]', color: 'text-[#7C7267]' },
+                { icon: Clock3, title: 'Serviço em atraso', desc: 'Cortina Ilhós - João Silva (Prazo: 25/06) • +2 dias', time: 'Hoje', bg: 'bg-[#F7EAEA]', color: 'text-[#903839]' },
+                { icon: AlertCircle, title: 'Próximo do prazo', desc: 'Almofadas - Maria Oliveira (Prazo: 28/06) • 3 dias', time: 'Hoje', bg: 'bg-[#FBF3E7]', color: 'text-[#C2996A]' },
+                { icon: CheckCircle2, title: 'Serviço concluído', desc: 'Tapete - Ana Costa (Entregue em 20/06)', time: 'Ontem', bg: 'bg-[#EAF1E7]', color: 'text-[#4B7A5B]' },
+                { icon: Pin, title: 'Novo serviço aguardando aprovação', desc: 'Cortina Romana - Pedro Santos', time: 'Ontem', bg: 'bg-[#F0ECE7]', color: 'text-[#7C7267]' },
               ].map((alert, index) => (
                 <div key={index} className="flex items-start gap-4 p-4 -mx-1 rounded-[3px] hover:bg-[#F8F5F0] transition-all border-b border-[#E8E3D9] last:border-b-0">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${alert.bg} ${alert.color}`}>
-                    <span className="text-xl">{alert.icon}</span>
+                    <alert.icon className="w-5 h-5" />
                   </div>
                   <div className="flex-1">
                     <div className="font-['Montserrat'] text-sm font-semibold text-[#703824]">{alert.title}</div>
@@ -596,7 +598,7 @@ export const Welcome = () => {
         <section className="py-16 max-w-7xl mx-auto px-8" id="shell">
           <div className="flex justify-between items-end gap-5 flex-wrap mb-8">
             <div>
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/92 border border-[rgba(222,187,164,0.25)] font-['Syncopate'] text-[11px] tracking-[0.15em] uppercase text-[#8C7568] shadow-sm">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(255,255,255,0.98)] border border-[rgba(194,153,106,0.35)] font-['Syncopate'] text-[11px] tracking-[0.15em] uppercase text-[#703824] shadow-sm">
                 <MonitorSmartphone className="w-3.5 h-3.5" />
                 Shell
               </span>
@@ -751,10 +753,10 @@ export const Welcome = () => {
           FOOTER
           ============================================ */}
       <footer className="py-10 max-w-7xl mx-auto px-8">
-        <div className="bg-gradient-to-b from-white/84 to-[rgba(248,243,239,0.96)] border border-[#E8E3D9] rounded-md p-6 shadow-sm">
+        <div className="bg-gradient-to-b from-[rgba(255,255,255,0.98)] to-[rgba(248,245,240,1)] border border-[#E8E3D9] rounded-md p-6 shadow-sm">
           <div className="flex flex-wrap items-start justify-between gap-6">
             <div className="max-w-[34ch]">
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/92 border border-[rgba(222,187,164,0.25)] font-['Syncopate'] text-[11px] tracking-[0.15em] uppercase text-[#8C7568] shadow-sm">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(255,255,255,0.98)] border border-[rgba(194,153,106,0.35)] font-['Syncopate'] text-[11px] tracking-[0.15em] uppercase text-[#703824] shadow-sm">
                 <BookOpen className="w-3.5 h-3.5" />
                 Encerramento
               </span>

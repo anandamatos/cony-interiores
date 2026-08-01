@@ -26,60 +26,60 @@ const Typography = ({
   // Classes base por variante (refinadas)
   const variantClasses = {
     h1: classNames(
-      'font-primary text-[30px] font-bold',
-      'tracking-[-0.5px]',
-      'leading-[1.2]',
-      'text-[#4B3A2E]'
+      'font-primary text-[32px] lg:text-[36px] font-bold',
+      'tracking-[-0.03em]',
+      'leading-[1.1]',
+      'text-primary'
     ),
     h2: classNames(
       'font-primary text-[24px] font-semibold',
-      'tracking-[-0.3px]',
-      'leading-[1.3]',
-      'text-[#4B3A2E]'
+      'tracking-[-0.03em]',
+      'leading-[1.25]',
+      'text-primary'
     ),
     h3: classNames(
       'font-primary text-[18px] font-semibold',
-      'tracking-[-0.2px]',
+      'tracking-[0]',
       'leading-[1.4]',
-      'text-[#4B3A2E]'
+      'text-primary'
     ),
     h4: classNames(
       'font-primary text-[16px] font-semibold',
-      'tracking-[-0.1px]',
+      'tracking-[0]',
       'leading-[1.4]',
-      'text-[#4B3A2E]'
+      'text-primary'
     ),
     body1: classNames(
       'font-secondary text-[16px] font-normal',
       'leading-[1.7]',
-      'text-[#4B3A2E]/85'
+      'text-primary/85'
     ),
     body2: classNames(
       'font-secondary text-[14px] font-normal',
       'leading-[1.6]',
-      'text-[#4B3A2E]/70'
+      'text-taupe'
     ),
     caption: classNames(
-      'font-secondary text-[12px] font-normal',
-      'tracking-[0.03em]',
+      'font-display text-[10px] font-normal uppercase',
+      'tracking-[0.15em]',
       'leading-[1.5]',
-      'text-[#A8968B]'
+      'text-taupe'
     ),
   };
 
   // Classes de cor
   const colorClasses = {
-    primary: 'text-[#4B3A2E]',
-    secondary: 'text-[#D9C7B1]',
-    taupe: 'text-[#A8968B]',
+    primary: 'text-primary',
+    secondary: 'text-secondary',
+    taupe: 'text-taupe',
     white: 'text-white',
-    black: 'text-[#1A1A1A]',
-    gold: 'text-[#C9A86A]',
-    terracota: 'text-[#B56A4A]',
-    danger: 'text-[#B56A4A]',
-    success: 'text-[#4A7C59]',
-    warning: 'text-[#C9A86A]',
-    info: 'text-[#8D9ABA]',
+    black: 'text-black',
+    gold: 'text-gold',
+    terracota: 'text-terracota',
+    danger: 'text-danger',
+    success: 'text-success',
+    warning: 'text-warning',
+    info: 'text-info',
   };
 
   // Classes de peso (sobrescreve o padrão da variante)

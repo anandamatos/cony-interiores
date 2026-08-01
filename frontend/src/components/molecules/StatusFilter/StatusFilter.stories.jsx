@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import StatusFilter from './index';
 
 const options = [
   { value: 'all', label: 'Todos', variant: 'all' },
-  { value: 'active', label: 'Ativos', variant: 'active' },
-  { value: 'inactive', label: 'Inativos', variant: 'inactive' },
-  { value: 'pending', label: 'Pendentes', variant: 'pending' },
+  { value: 'active', label: 'Semanal', variant: 'active' },
+  { value: 'inactive', label: 'Mensal', variant: 'inactive' },
+  { value: 'pending', label: 'Urgentes', variant: 'pending' },
   { value: 'completed', label: 'Concluídos', variant: 'completed' },
 ];
 
-export default {
+const meta = {
   title: 'Molecules/StatusFilter',
   component: StatusFilter,
   parameters: {
@@ -28,25 +28,34 @@ export default {
   },
 };
 
-export const Default = (args) => (
-  <div className="w-full max-w-md">
-    <StatusFilter {...args} options={options} />
-  </div>
-);
-Default.args = {
-  defaultValue: 'all',
+export default meta;
+
+export const Default = {
+  args: {
+    defaultValue: 'all',
+  },
+  render: (args) => (
+    <div className="w-full max-w-md">
+      <StatusFilter {...args} options={options} />
+    </div>
+  ),
 };
 
-export const WithState = () => {
+const WithStateStory = () => {
   const [value, setValue] = useState('all');
+
   return (
-    <div>   
+    <div>
       <StatusFilter
         options={options}
         value={value}
         onChange={setValue}
       />
-      <p className="mt-4 text-sm text-[#8C7568]">Filtro selecionado: <strong>{value}</strong></p>
+      <p className="mt-4 text-sm text-taupe">Filtro selecionado: <strong>{value}</strong></p>
     </div>
   );
+};
+
+export const WithState = {
+  render: () => <WithStateStory />,
 };
