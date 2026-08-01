@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CostureiraProvider } from "./context/CostureiraContext";
 import MainLayout from './layouts/MainLayout';
 import Dashboard from './pages/Dashboard';
@@ -14,6 +14,7 @@ const NewSeamstress = lazy(() => import('./pages/Seamstresses/NewSeamstress'));
 const EditSeamstress = lazy(() => import('./pages/Seamstresses/EditSeamstress'));
 const Capacity = lazy(() => import('./pages/Capacity'));
 const Financial = lazy(() => import('./pages/Financial'));
+const Productivity = lazy(() => import('./pages/Productivity'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Team = lazy(() => import('./pages/Team'));
 
@@ -36,8 +37,8 @@ function App() {
             <Route path="seamstresses/new" element={<NewSeamstress />} />
             <Route path="seamstresses/edit/:id" element={<EditSeamstress />} />
             <Route path="capacity" element={<Capacity />} />
-            <Route path="productivity" element={<Navigate to="/capacity" replace />} />
             <Route path="financial" element={<Financial />} />
+            <Route path="productivity" element={<Productivity />} />
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<Settings />} />
             <Route path="team" element={<Team />} />
