@@ -22,6 +22,7 @@ import Button from '../../components/atoms/Button';
 import Badge from '../../components/atoms/Badge';
 import { serviceService } from '../../services/serviceService';
 import { seamstressService } from '../../services/seamstressService';
+import { productService } from '../../services/productService';
 import { fetchPaymentsForecast } from '../../services/financialUxService';
 
 // ============================================
@@ -158,6 +159,16 @@ const statAccentMap = {
   terracota: 'before:bg-terracota',
 };
 
+const WEEKDAY_ORDER = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+const WEEKDAY_LABEL = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+const DISTRIBUTION_STYLES = [
+  { color: '#D9C7B1', swatch: 'bg-secondary' },
+  { color: '#8D9ABA', swatch: 'bg-sage' },
+  { color: '#C9A86A', swatch: 'bg-gold' },
+  { color: '#B56A4A', swatch: 'bg-terracota' },
+];
+const DEFAULT_WEEKLY_CAPACITY = 5;
+
 const Dashboard = () => {
   const navigate = useNavigate();
   // ============================================
@@ -192,15 +203,141 @@ const Dashboard = () => {
       try {
         setIsLoading(true);
 
-        const [services, seamstresses, forecastPayments] = await Promise.all([
+        const [services, seamstresses, forecastPayments, products] = await Promise.all([
           serviceService.getAll(),
           seamstressService.getAll(),
           fetchPaymentsForecast(),
+          productService.getAll(),
         ]);
 
         const servicesList = Array.isArray(services) ? services : [];
         const seamstressesList = Array.isArray(seamstresses) ? seamstresses : [];
         const paymentsList = Array.isArray(forecastPayments) ? forecastPayments : [];
+        const productsList = Array.isArray(products) ? products : [];
+
+        const weeklyCounts = { Seg: 0, Ter: 0, Qua: 0, Qui: 0, Sex: 0, Sáb: 0, Dom: 0 };
+        const today = new Date();
+        const end = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+        const start = new Date(end);
+        start.setDate(start.getDate() - 6);
+        start.setHours(0, 0, 0, 0);
+
+        servicesList.forEach((service) => {
+          const rawDate = service?.data_envio || service?.prazo_entrega;
+          if (!rawDate) return;
+
+          const serviceDate = new Date(rawDate);
+          if (Number.isNaN(serviceDate.getTime())) return;
+
+          if (serviceDate < start || serviceDate > end) return;
+
+          const label = WEEKDAY_LABEL[serviceDate.getDay()];
+          if (weeklyCounts[label] !== undefined) {
+            weeklyCounts[label] += 1;
+          }
+        });
+
+        const weeklyActivity = WEEKDAY_ORDER.map((day) => ({
+          day,
+          value: weeklyCounts[day],
+        }));
+
+        const productNamesById = {};
+        productsList.forEach((product) => {
+          productNamesById[product.id] = product.nome || `Produto #${product.id}`;
+        });
+
+        const serviceCountsByType = {};
+        servicesList.forEach((service) => {
+          const ids = Array.isArray(service?.produto) ? service.produto : [];
+
+          if (ids.length === 0) {
+            serviceCountsByType['Sem produto'] = (serviceCountsByType['Sem produto'] || 0) + 1;
+            return;
+          }
+
+          ids.forEach((id) => {
+            const name = productNamesById[id] || `Produto #${id}`;
+            serviceCountsByType[name] = (serviceCountsByType[name] || 0) + 1;
+          });
+        });
+
+        const totalDistributionCount = Object.values(serviceCountsByType).reduce(
+          (acc, count) => acc + count,
+          0
+        );
+
+        let distribution = mockStats.distribution;
+
+        if (totalDistributionCount > 0) {
+          const sortedTypes = Object.entries(serviceCountsByType).sort((a, b) => b[1] - a[1]);
+          const top3 = sortedTypes.slice(0, 3);
+          const top3Total = top3.reduce((acc, [, count]) => acc + count, 0);
+          const otherCount = Math.max(0, totalDistributionCount - top3Total);
+
+          const entries = [
+            ...top3,
+            ['Outros', otherCount],
+          ];
+
+          while (entries.length < 4) {
+            entries.splice(entries.length - 1, 0, [`Categoria ${entries.length + 1}`, 0]);
+          }
+
+          const firstThreePercentages = entries
+            .slice(0, 3)
+            .map(([, count]) => Math.round((count / totalDistributionCount) * 100));
+
+          const used = firstThreePercentages.reduce((acc, value) => acc + value, 0);
+          const lastPercentage = Math.max(0, 100 - used);
+
+          distribution = entries.map(([label], index) => {
+            const style = DISTRIBUTION_STYLES[index] || DISTRIBUTION_STYLES[0];
+            const value = index === 3 ? lastPercentage : firstThreePercentages[index];
+
+            return {
+              label,
+              value,
+              color: style.color,
+              swatch: style.swatch,
+            };
+          });
+        }
+
+        const upcomingServices = servicesList.filter((service) => {
+          if (!service?.prazo_entrega) return false;
+
+          const dueDate = new Date(service.prazo_entrega);
+          if (Number.isNaN(dueDate.getTime())) return false;
+
+          dueDate.setHours(0, 0, 0, 0);
+          return dueDate >= start && dueDate <= end;
+        });
+
+        const servicesBySeamstress = {};
+        upcomingServices.forEach((service) => {
+          const seamstressId = service?.costureira;
+          if (!seamstressId) return;
+          servicesBySeamstress[seamstressId] = (servicesBySeamstress[seamstressId] || 0) + 1;
+        });
+
+        const topSeamstressLoad = Math.max(0, ...Object.values(servicesBySeamstress));
+        const weeklyCapacity = Math.max(DEFAULT_WEEKLY_CAPACITY, topSeamstressLoad);
+
+        const workload = seamstressesList
+          .filter((item) => item?.ativa !== false)
+          .map((item) => {
+            const count = servicesBySeamstress[item.id] || 0;
+            const percentage = Math.round((count / weeklyCapacity) * 100);
+
+            return {
+              name: item.nome,
+              services: count,
+              percentage,
+            };
+          })
+          .sort((a, b) => b.services - a.services)
+          .slice(0, 4);
 
         const activeServices = servicesList.length;
         const activeSeamstresses = seamstressesList.filter((item) => item?.ativa !== false).length;
@@ -215,6 +352,9 @@ const Dashboard = () => {
           seamstresses: activeSeamstresses,
           pendingPayments,
           upcomingDeliveries,
+          weeklyActivity,
+          distribution,
+          workload,
         });
         setError(null);
       } catch (err) {
