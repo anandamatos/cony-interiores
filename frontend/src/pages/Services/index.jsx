@@ -9,16 +9,17 @@ import Alert from '../../components/atoms/Alert';
 import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
 import { serviceService } from '../../services/serviceService';
+import { useSearch } from '../../context/SearchContext';
 
 const Services = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [filter, setFilter] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
   const [feedback, setFeedback] = useState(null);
+  const { query, setQuery } = useSearch();
 
   const showError = (message) => {
     setFeedback({ type: 'error', message, title: 'Erro' });
@@ -76,7 +77,7 @@ const Services = () => {
     try {
       await serviceService.delete(service.id);
       await loadServices();
-    } catch (error) {
+    } catch {
       showError('Não foi possível excluir o serviço.');
     }
   };
@@ -105,8 +106,12 @@ const Services = () => {
 
   const filteredServices = mappedServices.filter((service) => {
     const matchesFilter = filter === 'all' || service.status === filter;
-    const matchesSearch = service.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          service.type.toLowerCase().includes(searchTerm.toLowerCase());
+    const searchTerm = query.trim().toLowerCase();
+    const matchesSearch = searchTerm.length === 0 || [
+      service.client,
+      service.type,
+      service.status,
+    ].some((field) => field.toLowerCase().includes(searchTerm));
     return matchesFilter && matchesSearch;
   });
 
@@ -148,8 +153,8 @@ const Services = () => {
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <SearchBar
           placeholder="Buscar serviços..."
-          value={searchTerm}
-          onChange={setSearchTerm}
+          value={query}
+          onChange={setQuery}
           className="max-w-md"
         />
         <StatusFilter

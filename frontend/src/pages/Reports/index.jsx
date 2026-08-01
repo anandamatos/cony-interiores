@@ -8,6 +8,7 @@ import Alert from '../../components/atoms/Alert';
 import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
 import { serviceService } from '../../services/serviceService';
+import { useSearch } from '../../context/SearchContext';
 
 
 const filterOptions = [
@@ -46,10 +47,10 @@ const Reports = () => {
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const { query, setQuery } = useSearch();
 
   useEffect(() => {
     const loadServices = async () => {
@@ -87,11 +88,15 @@ const Reports = () => {
   }, [services]);
 
   const filteredServices = useMemo(() => {
+    const searchTerm = query.trim().toLowerCase();
+
     return mappedServices.filter((service) => {
       const matchesStatus = statusFilter === 'all' || service.status === statusFilter;
       const matchesSearch =
-        service.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        service.type.toLowerCase().includes(searchTerm.toLowerCase());
+        searchTerm.length === 0 ||
+        service.client.toLowerCase().includes(searchTerm) ||
+        service.type.toLowerCase().includes(searchTerm) ||
+        service.status.toLowerCase().includes(searchTerm);
 
       let matchesPeriod = true;
       if (service.rawDate && (startDate || endDate)) {
@@ -106,7 +111,7 @@ const Reports = () => {
 
       return matchesStatus && matchesSearch && matchesPeriod;
     });
-  }, [mappedServices, searchTerm, statusFilter, startDate, endDate]);
+  }, [mappedServices, query, statusFilter, startDate, endDate]);
 
   const handleExport = () => {
     const headers = ['Cliente', 'Tipo', 'Status', 'Data'];
@@ -127,7 +132,7 @@ const Reports = () => {
   };
 
   const clearFilters = () => {
-    setSearchTerm('');
+    setQuery('');
     setStatusFilter('all');
     setStartDate('');
     setEndDate('');
@@ -153,8 +158,8 @@ const Reports = () => {
         <div className="flex flex-col lg:flex-row lg:items-end gap-4">
           <SearchBar
             placeholder="Buscar por cliente ou produto..."
-            value={searchTerm}
-            onChange={setSearchTerm}
+            value={query}
+            onChange={setQuery}
             className="max-w-md"
           />
           <div className="flex flex-col sm:flex-row gap-4">

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   ClipboardList,
@@ -14,21 +14,22 @@ import {
   Package,
 } from 'lucide-react';
 import classNames from 'classnames';
-
-const logoIcon = "/icony.png";
+import { useAuth } from '../../../context/AuthContext';
 
 const menuItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/services', label: 'Serviços', icon: ClipboardList, badge: '12' },
-  { path: '/seamstresses', label: 'Costureiras', icon: Users, badge: '4' },
+  { path: '/services', label: 'Serviços', icon: ClipboardList },
+  { path: '/catalog', label: 'Catálogo', icon: Package, requiresAuth: true },
+  { path: '/seamstresses', label: 'Costureiras', icon: Users, badge: '4', requiresAuth: true },
   { path: '/capacity', label: 'Capacidade', icon: Gauge },
   { path: '/financial', label: 'Financeiro', icon: DollarSign },
-  { path: '/productivity', label: 'Produtividade', icon: TrendingUp},
-  { path: '/catalog', label: 'Catálogo', icon: Package },
+  { path: '/productivity', label: 'Produtividade', icon: TrendingUp },
 ];
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const { authenticated, user, logout } = useAuth();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
@@ -36,8 +37,7 @@ const Sidebar = () => {
   const baseClasses = {
     container: classNames(
       'fixed inset-y-0 left-0 z-40',
-      'w-64 bg-white border-r border-[rgba(75,58,46,0.08)]',
-      'shadow-sidebar',
+      'w-[270px] bg-white/85 backdrop-blur-xl border-r border-border',
       'flex flex-col h-screen',
       'transition-transform duration-normal ease-spring',
       isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
@@ -47,44 +47,44 @@ const Sidebar = () => {
       'transition-opacity duration-300',
       isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
     ),
-    header: 'flex items-center gap-3 px-6 h-16 border-b border-[rgba(75,58,46,0.08)] flex-shrink-0',
+    header: 'flex items-center gap-3 px-6 h-[88px] border-b border-border flex-shrink-0 mb-6',
     logo: classNames(
-      'w-11 h-11 rounded-sm',
-      'bg-[#4B3A2E]',
-      'flex items-center justify-center flex-shrink-0',
+      'w-11 h-11 rounded-[3px]',
+      'bg-[#E8E3D9] border border-[rgba(112,56,36,0.15)]',
+      'flex items-center justify-center flex-shrink-0 p-1.5',
       'transition-all duration-normal ease-spring',
-      'hover:scale-105 hover:shadow-md'
+      'hover:scale-105 hover:-rotate-2 hover:shadow-md'
     ),
-    logoImg: 'w-full h-full object-contain p-2.5',
+    logoSvg: 'w-full h-full',
     title: classNames(
-      'font-primary font-bold text-xl',
-      'tracking-wide',
-      'text-[#4B3A2E]'
+      'font-display font-normal text-[19px]',
+      'tracking-[0.3em] uppercase',
+      'text-primary'
     ),
-    subtitle: 'text-xs text-taupe font-secondary tracking-[0.2em] uppercase block -mt-0.5',
+    subtitle: 'text-[10px] text-terracota font-display tracking-[0.15em] uppercase block mt-0.5',
     nav: 'flex-1 px-3 py-4 space-y-1 overflow-y-auto',
     navLabel: classNames(
-      'text-xs font-bold text-taupe uppercase tracking-widest',
+      'font-display text-[11px] font-bold text-taupe uppercase tracking-[0.15em]',
       'px-3 py-2',
       'mt-4'
     ),
     link: ({ isActive }) => classNames(
-      'flex items-center gap-3 px-3 py-2.5 text-sm font-medium',
+      'flex items-center gap-3 px-4 py-3 text-sm',
       'transition-all duration-300 ease-spring',
       'duration-normal',
       'focus:outline-none focus:ring-2 focus:ring-primary/20',
       isActive
-        ? 'rounded-sm bg-gradient-gold text-primary shadow-sm font-semibold ring-1 ring-gold/20'
-        : 'rounded-md text-primary/70 opacity-70 hover:bg-offWhite hover:text-primary hover:opacity-100 hover:translate-x-1'
+        ? 'rounded-[3px] bg-gradient-gold text-primary shadow-sm font-semibold opacity-100'
+        : 'rounded-[3px] text-primary opacity-70 hover:bg-[rgba(222,187,164,0.25)] hover:opacity-100 hover:translate-x-1'
     ),
     icon: 'w-5 h-5 flex-shrink-0',
     badge: classNames(
-      'ml-auto bg-gold text-white',
-      'px-2 py-0.5 rounded-md',
-      'text-xs font-semibold'
+      'ml-auto bg-terracota text-offWhite',
+      'px-2.5 py-0.5 rounded-full',
+      'text-[11px] font-semibold animate-pulse'
     ),
     footer: classNames(
-      'border-t border-[rgba(75,58,46,0.08)]',
+      'border-t border-border',
       'p-4 flex items-center gap-3',
       'mt-auto'
     ),
@@ -92,10 +92,15 @@ const Sidebar = () => {
     footerInfo: 'flex-1 min-w-0',
     footerName: 'text-sm font-semibold text-primary truncate',
     footerRole: 'text-xs text-taupe truncate',
+    loginBtn: classNames(
+      'ml-auto rounded-full px-3 py-2 text-xs font-semibold',
+      'bg-gradient-gold text-primary transition-all duration-normal ease-spring',
+      'hover:shadow-md hover:scale-[1.02]'
+    ),
     logoutBtn: classNames(
-      'p-2 rounded-lg text-taupe',
+      'p-2 rounded-full text-taupe',
       'transition-all duration-normal ease-spring',
-      'hover:text-danger hover:bg-danger/10'
+      'hover:text-primary hover:bg-offWhite hover:rotate-45'
     ),
     mobileToggle: classNames(
       'lg:hidden fixed top-4 left-4 z-50',
@@ -134,11 +139,12 @@ const Sidebar = () => {
         {/* Header / Logo */}
         <div className={baseClasses.header}>
           <div className={baseClasses.logo}>
-            <img
-              src={logoIcon}
-              alt="Cony Interiores"
-              className={baseClasses.logoImg}
-            />
+            <svg viewBox="0 0 60 90" className={baseClasses.logoSvg} aria-hidden="true">
+              <polyline points="6,20 54,10" fill="none" stroke="#703824" strokeWidth="3" strokeLinecap="round" />
+              <polyline points="6,32 54,58" fill="none" stroke="#703824" strokeWidth="3" strokeLinecap="round" />
+              <polyline points="54,32 6,58" fill="none" stroke="#703824" strokeWidth="3" strokeLinecap="round" />
+              <polyline points="6,70 54,80" fill="none" stroke="#703824" strokeWidth="3" strokeLinecap="round" />
+            </svg>
           </div>
           <div>
             <span className={baseClasses.title}>Cony</span>
@@ -149,22 +155,36 @@ const Sidebar = () => {
         {/* Navigation */}
         <nav className={baseClasses.nav}>
           <div className={baseClasses.navLabel}>Menu</div>
-          {menuItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              end={item.path === '/'}
-              className={baseClasses.link}
-              onClick={closeSidebar}
-              aria-label={item.label}
-            >
-              <item.icon className={baseClasses.icon} aria-hidden="true" />
-              <span>{item.label}</span>
-              {item.badge && (
-                <span className={baseClasses.badge}>{item.badge}</span>
-              )}
-            </NavLink>
-          ))}
+          {menuItems.map((item) => {
+            const isDisabled = !authenticated && item.requiresAuth;
+
+            if (isDisabled) {
+              return (
+                <div
+                  key={item.path}
+                  className={classNames(baseClasses.link({ isActive: false }), 'cursor-not-allowed opacity-40')}
+                  aria-disabled="true"
+                >
+                  <item.icon className={baseClasses.icon} aria-hidden="true" />
+                  <span>{item.label}</span>
+                </div>
+              );
+            }
+
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                end={item.path === '/'}
+                className={baseClasses.link}
+                onClick={closeSidebar}
+                aria-label={item.label}
+              >
+                <item.icon className={baseClasses.icon} aria-hidden="true" />
+                <span>{item.label}</span>
+              </NavLink>
+            );
+          })}
 
           <div className={classNames(baseClasses.navLabel, 'mt-10')}>Configurações</div>
           <NavLink
@@ -189,20 +209,33 @@ const Sidebar = () => {
 
         {/* Footer - Ancorado no final com mt-auto */}
         <div className={baseClasses.footer}>
-          <div className={baseClasses.avatar}>AM</div>
-          <div className={baseClasses.footerInfo}>
-            <div className={baseClasses.footerName}>Ana Matos</div>
-            <div className={baseClasses.footerRole}>UX Lead</div>
+          <div className={baseClasses.avatar} aria-hidden="true">
+            {(user?.first_name || 'C').slice(0, 1)}{(user?.last_name || 'O').slice(0, 1)}
           </div>
-          <button
-            className={baseClasses.logoutBtn}
-            aria-label="Sair"
-            onClick={() => {
-              console.log('🔒 Logout clicado');
-            }}
-          >
-            <LogOut className="w-5 h-5" />
-          </button>
+          <div className={baseClasses.footerInfo}>
+            <div className={baseClasses.footerName}>{user?.full_name || user?.first_name || 'Visitante'}</div>
+            <div className={baseClasses.footerRole}>{authenticated ? 'Área logada' : 'Acesso público'}</div>
+          </div>
+          {authenticated ? (
+            <button
+              className={baseClasses.logoutBtn}
+              aria-label="Sair"
+              onClick={async () => {
+                await logout();
+                navigate('/');
+              }}
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              className={baseClasses.loginBtn}
+              onClick={() => navigate('/login')}
+            >
+              Entrar
+            </button>
+          )}
         </div>
       </aside>
     </>

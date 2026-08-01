@@ -44,6 +44,11 @@ const parseMetricPercentage = (rawValue) => {
   return Math.max(0, Math.min(100, numeric));
 };
 
+const getCurrentMonthKey = () => {
+  const today = new Date();
+  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+};
+
 const getServiceDate = (service) => normalizeDate(service?.data_envio || service?.prazo_entrega);
 
 const endOfDay = (date) => {
@@ -171,9 +176,24 @@ const buildMonthlyActivities = (services, start, end) => {
   }));
 };
 
-const buildFromApi = (services, seamstresses, products, efficiencyMetrics, period) => {
+const buildMonthlyFallbackActivities = (monthlyReport, services) => {
+  const reportPieces = Number(monthlyReport?.pecas_produzidas || 0);
+  const reportTotal = Number(monthlyReport?.producao_total || 0);
+  const baseTotal = reportPieces > 0 ? reportPieces : Math.round(reportTotal);
+  const fallbackTotal = Math.max(baseTotal, services.length || 0, 4);
+  const baseValue = Math.max(1, Math.floor(fallbackTotal / 4));
+  const remainder = fallbackTotal - baseValue * 4;
+
+  return [0, 1, 2, 3].map((index) => ({
+    day: `${index + 1}ª Sem`,
+    value: baseValue + (index < remainder ? 1 : 0),
+  }));
+};
+
+const buildFromApi = (services, seamstresses, products, efficiencyMetrics, monthlyReports, period) => {
   const { start, end } = getPeriodRange(period);
   const today = startOfDay(new Date());
+  const currentMonthKey = getCurrentMonthKey();
 
   const servicesInPeriod = services.filter((service) => isInRange(getServiceDate(service), start, end));
   const completed = servicesInPeriod.length;
@@ -207,9 +227,28 @@ const buildFromApi = (services, seamstresses, products, efficiencyMetrics, perio
   const efficiencyFromApi = parseMetricPercentage(efficiencyMetrics?.taxa_eficiencia_porcentagem);
   const efficiency = efficiencyFromApi ?? (completed > 0 ? 100 : 0);
 
+  const currentMonthReport = (Array.isArray(monthlyReports) ? monthlyReports : []).find(
+    (report) => report?.periodo === currentMonthKey
+  ) || (Array.isArray(monthlyReports) ? monthlyReports[0] : null) || null;
+
   const activities = period === "month"
-    ? buildMonthlyActivities(services, start, end)
+    ? (() => {
+        const monthlyActivities = buildMonthlyActivities(services, start, end);
+        const hasMonthlyBars = monthlyActivities.some((item) => item.value > 0);
+        return hasMonthlyBars ? monthlyActivities : buildMonthlyFallbackActivities(currentMonthReport, services);
+      })()
     : buildWeeklyActivities(services, start, end);
+
+  const monthlySummary = currentMonthReport ? {
+    period: currentMonthReport.periodo,
+    totalProduction: Number(currentMonthReport.producao_total || 0),
+    piecesProduced: Number(currentMonthReport.pecas_produzidas || 0),
+    overdueServices: Number(currentMonthReport.servicos_atraso || 0),
+    openServices: Number(currentMonthReport.servicos_aberto || 0),
+    seamstresses: Array.isArray(currentMonthReport.detalhamento_por_costureira)
+      ? currentMonthReport.detalhamento_por_costureira.length
+      : 0,
+  } : null;
 
   return {
     completed,
@@ -222,24 +261,27 @@ const buildFromApi = (services, seamstresses, products, efficiencyMetrics, perio
     workload: operationalContext.workload,
     operationalWeeklyCapacity: operationalContext.weeklyCapacity,
     operationalUtilization: operationalContext.utilization,
+    monthlySummary,
   };
 };
 
 export const fetchProductivityData = async (period = "week") => {
   try {
-    const [servicesResponse, seamstressesResponse, productsResponse, efficiencyResponse] = await Promise.all([
+    const [servicesResponse, seamstressesResponse, productsResponse, efficiencyResponse, monthlyReportsResponse] = await Promise.all([
       api.get("/servicos/"),
       api.get("/costureiras/"),
       api.get("/produtos/"),
       api.get("/metricas/eficiencia/"),
+      api.get("/core/relatorios/mensal/"),
     ]);
 
     const services = Array.isArray(servicesResponse.data) ? servicesResponse.data : [];
     const seamstresses = Array.isArray(seamstressesResponse.data) ? seamstressesResponse.data : [];
     const products = Array.isArray(productsResponse.data) ? productsResponse.data : [];
     const efficiencyMetrics = efficiencyResponse?.data ?? null;
+    const monthlyReports = Array.isArray(monthlyReportsResponse.data) ? monthlyReportsResponse.data : [];
 
-    return buildFromApi(services, seamstresses, products, efficiencyMetrics, period);
+    return buildFromApi(services, seamstresses, products, efficiencyMetrics, monthlyReports, period);
   } catch (error) {
     if (!USE_MOCKS) {
       console.error("Erro ao buscar produtividade:", error);

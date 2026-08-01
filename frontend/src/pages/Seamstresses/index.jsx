@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, CheckCircle2, Circle } from 'lucide-react';
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
@@ -9,16 +9,17 @@ import Alert from '../../components/atoms/Alert';
 import SearchBar from '../../components/molecules/SearchBar';
 import StatusFilter from '../../components/molecules/StatusFilter';
 import { deleteSeamstress, getSeamstresses, updateSeamstress } from '../../services/seamstressService';
+import { useSearch } from '../../context/SearchContext';
 
 const Seamstresses = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [filter, setFilter] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
   const [seamstresses, setSeamstresses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
   const [feedback, setFeedback] = useState(null);
+  const { query, setQuery } = useSearch();
 
   const showError = (message) => {
     setFeedback({ type: 'error', message, title: 'Erro' });
@@ -67,9 +68,12 @@ const Seamstresses = () => {
 
   const filteredSeamstresses = normalizedSeamstresses.filter((s) => {
     const matchesFilter = filter === 'all' || s.status === filter;
+    const searchTerm = query.trim().toLowerCase();
     const matchesSearch =
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.specialty.toLowerCase().includes(searchTerm.toLowerCase());
+      searchTerm.length === 0 ||
+      s.name.toLowerCase().includes(searchTerm) ||
+      s.specialty.toLowerCase().includes(searchTerm) ||
+      s.status.toLowerCase().includes(searchTerm);
     return matchesFilter && matchesSearch;
   });
 
@@ -89,7 +93,7 @@ const Seamstresses = () => {
     try {
       await deleteSeamstress(seamstress.id);
       await loadSeamstresses();
-    } catch (error) {
+    } catch {
       showError('Não foi possível excluir a costureira.');
     }
   };
@@ -132,8 +136,8 @@ const Seamstresses = () => {
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <SearchBar
           placeholder="Buscar costureiras..."
-          value={searchTerm}
-          onChange={setSearchTerm}
+          value={query}
+          onChange={setQuery}
           className="max-w-md"
         />
         <StatusFilter
@@ -224,7 +228,7 @@ const Seamstresses = () => {
                       aria-label={`Alternar status de ${seamstress.name}`}
                       title={seamstress.status === 'active' ? 'Desativar' : 'Ativar'}
                     >
-                      {seamstress.status === 'active' ? '✓' : '◯'}
+                      {seamstress.status === 'active' ? <CheckCircle2 className="w-4 h-4" /> : <Circle className="w-4 h-4" />}
                     </Button>
                     <Button
                       variant="ghost"

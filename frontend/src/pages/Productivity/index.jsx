@@ -24,6 +24,7 @@ import Typography from "../../components/atoms/Typography";
 import StatusFilter from "../../components/molecules/StatusFilter";
 import Alert from "../../components/atoms/Alert";
 import productivityService from "../../services/productivityService";
+import { useSearch } from '../../context/SearchContext';
 
 ChartJS.register(
   CategoryScale,
@@ -51,7 +52,7 @@ const Productivity = () => {
   const [loadError, setLoadError] = useState("");
   const [statusFilter, setStatusFilter] = useState("todos");
   const [seamstressFilter, setSeamstressFilter] = useState("todas");
-  const [search, setSearch] = useState("");
+  const { query, setQuery } = useSearch();
 
   const periodOptions = [
     { value: "week", label: "Semanal", variant: "all" },
@@ -140,18 +141,22 @@ const Productivity = () => {
   );
 
   const filteredServices = useMemo(() => {
+    const search = query.trim().toLowerCase();
+
     return servicesInProduction.filter((item) => {
       const matchStatus = statusFilter === "todos" || item.status === statusFilter;
       const matchSeamstress = seamstressFilter === "todas" || item.costureiraNome === seamstressFilter;
-      const query = search.trim().toLowerCase();
-      const matchQuery = query.length === 0
-        || item.clienteNome.toLowerCase().includes(query)
-        || item.produtos.toLowerCase().includes(query)
-        || item.costureiraNome.toLowerCase().includes(query);
+      const matchQuery = search.length === 0
+        || item.clienteNome.toLowerCase().includes(search)
+        || item.produtos.toLowerCase().includes(search)
+        || item.costureiraNome.toLowerCase().includes(search)
+        || item.status.toLowerCase().includes(search)
+        || item.prazoEntrega?.toLowerCase().includes(search)
+        || item.valor.toString().includes(search);
 
       return matchStatus && matchSeamstress && matchQuery;
     });
-  }, [servicesInProduction, statusFilter, seamstressFilter, search]);
+  }, [servicesInProduction, statusFilter, seamstressFilter, query]);
 
   const filteredRhythm = useMemo(() => {
     const bucket = {
@@ -266,6 +271,8 @@ const Productivity = () => {
     cutout: '62%',
   };
 
+  const isMonthlyView = period === "month";
+
   return (
     <main className="flex-1 p-6 sm:p-8 lg:p-10">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -334,15 +341,38 @@ const Productivity = () => {
       <section className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <Card className="p-6 xl:col-span-2">
           <Typography variant="h3">
-            Atividades Semanais
+            {isMonthlyView ? 'Produção Mensal' : 'Atividades Semanais'}
           </Typography>
 
           <Typography
             variant="body2"
             className="mt-1 text-taupe"
           >
-            Quantidade de serviços concluídos por dia/semana.
+            {isMonthlyView
+              ? 'Resumo consolidado por semana do mês para manter a leitura da produção sempre visível.'
+              : 'Quantidade de serviços concluídos por dia/semana.'}
           </Typography>
+
+          {isMonthlyView && productivityData.monthlySummary && (
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <Card className="p-4 bg-offWhite/70">
+                <Typography variant="caption" className="uppercase text-taupe">Produção total</Typography>
+                <Typography variant="h3" className="mt-1">R$ {productivityData.monthlySummary.totalProduction.toFixed(2)}</Typography>
+              </Card>
+              <Card className="p-4 bg-offWhite/70">
+                <Typography variant="caption" className="uppercase text-taupe">Peças</Typography>
+                <Typography variant="h3" className="mt-1">{productivityData.monthlySummary.piecesProduced}</Typography>
+              </Card>
+              <Card className="p-4 bg-offWhite/70">
+                <Typography variant="caption" className="uppercase text-taupe">Atrasos</Typography>
+                <Typography variant="h3" className="mt-1">{productivityData.monthlySummary.overdueServices}</Typography>
+              </Card>
+              <Card className="p-4 bg-offWhite/70">
+                <Typography variant="caption" className="uppercase text-taupe">Em aberto</Typography>
+                <Typography variant="h3" className="mt-1">{productivityData.monthlySummary.openServices}</Typography>
+              </Card>
+            </div>
+          )}
 
           <div
             style={{
@@ -402,9 +432,9 @@ const Productivity = () => {
 
             <input
               className="rounded-md border border-border bg-white px-3 py-2 md:col-span-2"
-              placeholder="Buscar por cliente, produto ou costureira"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Buscar por cliente, produto, costureira ou status"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
             />
           </div>
         </div>

@@ -247,6 +247,29 @@ const Financial = () => {
         </div>
       </section>
 
+      <section>
+        <div className="mb-4">
+          <Typography variant="h2">Valores por Costureira</Typography>
+          <Typography variant="body2" className="mt-1 text-taupe">
+            Resumo semanal simplificado para tomada de decisao manual.
+          </Typography>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {seamstressWeeklySummary.map((item) => (
+            <Card key={item.seamstressName} className="p-5">
+              <Typography variant="h4">{item.seamstressName}</Typography>
+              <Typography variant="body2" className="text-taupe mt-1">
+                {item.quantity} pagamento{item.quantity === 1 ? '' : 's'}
+              </Typography>
+              <Typography variant="h3" className="mt-3">
+                {formatCurrency(item.amount)}
+              </Typography>
+            </Card>
+          ))}
+        </div>
+      </section>
+
       <section className="mb-8">
         <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
@@ -309,29 +332,6 @@ const Financial = () => {
             )}
           </div>
         </Card>
-      </section>
-
-      <section>
-        <div className="mb-4">
-          <Typography variant="h2">Valores por Costureira</Typography>
-          <Typography variant="body2" className="mt-1 text-taupe">
-            Resumo semanal simplificado para tomada de decisao manual.
-          </Typography>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {seamstressWeeklySummary.map((item) => (
-            <Card key={item.seamstressName} className="p-5">
-              <Typography variant="h4">{item.seamstressName}</Typography>
-              <Typography variant="body2" className="text-taupe mt-1">
-                {item.quantity} pagamento{item.quantity === 1 ? '' : 's'}
-              </Typography>
-              <Typography variant="h3" className="mt-3">
-                {formatCurrency(item.amount)}
-              </Typography>
-            </Card>
-          ))}
-        </div>
       </section>
     </main>
   );

@@ -19,12 +19,13 @@ import {
 import Card from '../../components/atoms/Card';
 import Typography from '../../components/atoms/Typography';
 import Button from '../../components/atoms/Button';
-import Badge from '../../components/atoms/Badge';
 import { serviceService } from '../../services/serviceService';
 import { seamstressService } from '../../services/seamstressService';
 import { productService } from '../../services/productService';
 import { fetchPaymentsForecast } from '../../services/financialUxService';
 import { buildOperationalCapacityContext } from '../../utils/operationalCapacity';
+import { useAuth } from '../../context/AuthContext';
+import { useSearch } from '../../context/SearchContext';
 
 // ============================================
 // DADOS MOCKADOS
@@ -332,6 +333,8 @@ const buildAlerts = (servicesList, paymentsList, productsById) => {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { query } = useSearch();
   // ============================================
   // ESTADOS
   // ============================================
@@ -571,13 +574,33 @@ const Dashboard = () => {
     operationalCapacity,
   } = stats;
   const maxBarValue = Math.max(...weeklyActivity.map((item) => item.value));
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredRecentActivities = normalizedQuery.length === 0
+    ? recentActivities
+    : recentActivities.filter((activity) => {
+        const haystack = [activity.title, activity.description, activity.time, activity.type]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+        return haystack.includes(normalizedQuery);
+      });
+  const filteredAlerts = normalizedQuery.length === 0
+    ? alerts
+    : alerts.filter((alert) => {
+        const haystack = [alert.title, alert.description, alert.time, alert.type]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+        return haystack.includes(normalizedQuery);
+      });
+  const displayName = user?.first_name || user?.full_name || 'Ananda';
 
   return (
     <main className="flex-1 p-6 sm:p-8 lg:p-10" role="main">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <Typography variant="h1">Bem-vinda, Ana</Typography>
+          <Typography variant="h1">Bem-vinda, {displayName}</Typography>
           <Typography variant="body1" className="mt-1 text-taupe">
             Aqui está o resumo da sua operação hoje.
           </Typography>
@@ -610,7 +633,7 @@ const Dashboard = () => {
               <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-sm bg-offWhite text-taupe transition-all duration-normal ease-spring group-hover:scale-105 group-hover:-rotate-[4deg] group-hover:bg-secondary group-hover:text-primary">
                 <Icon className="w-5 h-5" />
               </div>
-              <div className="text-[13px] font-secondary font-normal uppercase tracking-[0.5px] text-taupe">
+              <div className="font-display text-[11px] font-normal uppercase tracking-[0.15em] text-taupe">
                 {card.label}
               </div>
               <div className="mt-1 text-[32px] leading-none font-primary font-bold tracking-[-0.5px] text-primary">
@@ -654,8 +677,9 @@ const Dashboard = () => {
                 >
                   {item.value}
                 </Typography>
-                <div
-                  className="w-9 rounded-t-md transition-all duration-500 ease-spring cursor-pointer"
+                <button
+                  type="button"
+                  className="w-9 rounded-t-md transition-all duration-500 ease-spring cursor-pointer border-0 bg-transparent p-0"
                   style={{
                     height: `${(item.value / maxBarValue) * 100}%`,
                     minHeight: '16px',
@@ -668,7 +692,6 @@ const Dashboard = () => {
                   }}
                   onMouseEnter={() => setHoveredBar(item.day)}
                   onMouseLeave={() => setHoveredBar(null)}
-                  role="img"
                   aria-label={`${item.day}: ${item.value} serviços`}
                 />
                 <Typography variant="caption" className="text-xs">
@@ -728,14 +751,14 @@ const Dashboard = () => {
         <Card className="p-6">
           <div className="flex items-center justify-between mb-6">
             <Typography variant="h3">Carga de Trabalho</Typography>
-            <Typography variant="caption">{operationalUtilization}% da capacidade</Typography>
+            <Typography variant="caption">Costureiras</Typography>
           </div>
 
           <Typography variant="body2" className="text-taupe mb-4">
-            Base operacional: {operationalWeeklyCapacity} serviços por costureira ({operationalCapacity} no total / próximos 7 dias)
+            Base operacional: {operationalWeeklyCapacity} serviços por costureira ({operationalCapacity} no total / próximos 7 dias). Utilização atual: {operationalUtilization}%.
           </Typography>
 
-          {workload.map((item, index) => {
+          {workload.map((item) => {
             const progressGradient = getWorkloadGradient(item.percentage);
 
             return (
@@ -769,7 +792,7 @@ const Dashboard = () => {
           </div>
 
           <div className="space-y-4">
-            {recentActivities.map((activity) => {
+            {filteredRecentActivities.map((activity) => {
               const ActivityIcon = activityTypeIcon[activity.type] || CirclePlus;
               return (
                 <div key={activity.id}>
@@ -787,9 +810,9 @@ const Dashboard = () => {
               );
             })}
 
-            {recentActivities.length === 0 && (
+            {filteredRecentActivities.length === 0 && (
               <Typography variant="body2" className="text-taupe">
-                Sem atividades recentes no período.
+                Sem atividades correspondentes à busca.
               </Typography>
             )}
           </div>
@@ -801,22 +824,19 @@ const Dashboard = () => {
         <Card className="p-6">
           <div className="flex items-center justify-between mb-6">
             <Typography variant="h3">Alertas e Avisos</Typography>
-            <Badge variant="neutral" size="sm">
-              {alerts.length} itens
-            </Badge>
+            <Typography variant="caption">{filteredAlerts.length} itens</Typography>
           </div>
 
-          {alerts.map((alert) => {
+            {filteredAlerts.map((alert) => {
             const AlertIcon = alertTypeIcon[alert.type] || AlertTriangle;
             return (
-            <div
+            <button
               key={alert.id}
-              className="flex items-start gap-4 p-4 -mx-1 rounded-md hover:bg-offWhite transition-colors cursor-pointer border-b border-[rgba(75,58,46,0.06)] last:border-b-0"
-              role="button"
-              tabIndex={0}
+              type="button"
+              className="flex w-full items-start gap-4 p-4 -mx-1 rounded-md hover:bg-offWhite transition-colors cursor-pointer border-b border-[rgba(75,58,46,0.06)] last:border-b-0 text-left"
             >
               <div
-                className={`w-10 h-10 rounded-md flex items-center justify-center text-lg flex-shrink-0
+                className={`w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0
                   ${alert.type === 'danger' ? 'bg-danger/10 text-danger' : ''}
                   ${alert.type === 'warning' ? 'bg-warning/10 text-warning' : ''}
                   ${alert.type === 'success' ? 'bg-success/10 text-success' : ''}
@@ -833,12 +853,18 @@ const Dashboard = () => {
                   {alert.description}
                 </Typography>
               </div>
-              <Typography variant="caption" className="text-gray-400 whitespace-nowrap">
+              <Typography variant="caption" className="text-gray-400 whitespace-nowrap pl-3">
                 {alert.time}
               </Typography>
-            </div>
+            </button>
             );
           })}
+
+          {filteredAlerts.length === 0 && (
+            <Typography variant="body2" className="text-taupe">
+              Nenhum alerta encontrado com o termo pesquisado.
+            </Typography>
+          )}
         </Card>
       </section>
     </main>
