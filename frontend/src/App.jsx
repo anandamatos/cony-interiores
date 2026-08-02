@@ -28,9 +28,9 @@ function ProtectedRoute({ children }) {
 
   if (isHydrating) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-6">
+      <div className="flex min-h-screen items-center justify-center bg-background px-6" aria-live="polite" aria-busy="true">
         <div className="text-center">
-          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" aria-hidden="true" />
           <p className="mt-3 text-sm text-taupe">Validando acesso...</p>
         </div>
       </div>
@@ -49,9 +49,9 @@ function GuestRoute({ children }) {
 
   if (isHydrating) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-6">
+      <div className="flex min-h-screen items-center justify-center bg-background px-6" aria-live="polite" aria-busy="true">
         <div className="text-center">
-          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" aria-hidden="true" />
           <p className="mt-3 text-sm text-taupe">Preparando área de acesso...</p>
         </div>
       </div>
@@ -78,9 +78,9 @@ function App() {
           >
             <Suspense
               fallback={
-                <div className="flex min-h-screen items-center justify-center bg-background px-6">
+                <div className="flex min-h-screen items-center justify-center bg-background px-6" aria-live="polite" aria-busy="true">
                   <div className="text-center">
-                    <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+                    <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" aria-hidden="true" />
                     <p className="mt-3 text-sm text-taupe">Carregando módulo...</p>
                   </div>
                 </div>
@@ -201,7 +201,16 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
-                  <Route path="*" element={<div>Página não encontrada</div>} />
+                  <Route path="*" element={
+                    <main className="flex min-h-[60vh] flex-col items-center justify-center px-6 text-center">
+                      <p className="text-6xl font-bold text-primary opacity-20" aria-hidden="true">404</p>
+                      <h1 className="mt-4 text-2xl font-semibold text-primary">Página não encontrada</h1>
+                      <p className="mt-2 text-taupe">A página que você está procurando não existe ou foi movida.</p>
+                      <a href="/" className="mt-6 inline-flex items-center gap-2 rounded-sm border border-transparent bg-primary px-6 py-3 text-xs font-normal uppercase tracking-[0.15em] text-offWhite transition-all duration-300 hover:bg-bronze focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2">
+                        Voltar ao início
+                      </a>
+                    </main>
+                  } />
                 </Route>
               </Routes>
             </Suspense>

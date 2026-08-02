@@ -72,7 +72,7 @@ const CostureiraTable = ({ data = [], onRowClick, className, ...props }) => {
         <thead className={baseClasses.thead}>
           <tr>
             {columns.map((col) => (
-              <th key={col.key} className={baseClasses.th}>
+              <th key={col.key} scope="col" className={baseClasses.th}>
                 {col.label}
               </th>
             ))}
@@ -84,6 +84,15 @@ const CostureiraTable = ({ data = [], onRowClick, className, ...props }) => {
               key={item.id}
               className={baseClasses.tr}
               onClick={() => onRowClick && onRowClick(item)}
+              tabIndex={onRowClick ? 0 : undefined}
+              role={onRowClick ? 'button' : undefined}
+              aria-label={onRowClick ? `Ver detalhes de ${item.name}` : undefined}
+              onKeyDown={onRowClick ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onRowClick(item);
+                }
+              } : undefined}
             >
               <td className={baseClasses.td}>
                 <span className="font-medium">{item.name}</span>

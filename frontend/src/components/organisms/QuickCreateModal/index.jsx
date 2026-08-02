@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import Card from '../../atoms/Card';
 import Typography from '../../atoms/Typography';
@@ -12,11 +12,17 @@ const QuickCreateModal = ({
   children,
   actions,
 }) => {
+  const closeButtonRef = useRef(null);
+  const titleId = 'quick-create-modal-title';
+
   useEffect(() => {
     if (!open) return undefined;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+
+    // Move focus to close button when modal opens
+    closeButtonRef.current?.focus();
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
@@ -35,17 +41,23 @@ const QuickCreateModal = ({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-[rgba(28,20,16,0.56)] px-4 py-8 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-label={title}>
+    <div
+      className="fixed inset-0 z-[80] flex items-center justify-center bg-[rgba(28,20,16,0.56)] px-4 py-8 backdrop-blur-[2px]"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+    >
       <Card className="max-h-[90vh] w-full max-w-2xl overflow-hidden border border-[rgba(75,58,46,0.18)] bg-offWhite p-0 shadow-[0_30px_60px_rgba(26,20,16,0.28)]">
         <header className="flex items-start justify-between gap-4 border-b border-[rgba(75,58,46,0.08)] px-6 py-5">
           <div>
-            <Typography variant="h3" className="text-primary">{title}</Typography>
+            <Typography id={titleId} variant="h3" className="text-primary">{title}</Typography>
             {description ? (
               <Typography variant="body2" className="mt-1 text-taupe">{description}</Typography>
             ) : null}
           </div>
 
           <Button
+            ref={closeButtonRef}
             type="button"
             variant="ghost"
             size="sm"
@@ -53,7 +65,7 @@ const QuickCreateModal = ({
             onClick={onClose}
             ariaLabel="Fechar modal"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" aria-hidden="true" />
           </Button>
         </header>
 
