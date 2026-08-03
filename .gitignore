@@ -25,5 +25,7 @@ docs/6.scripts/
 .DS_Store
 Thumbs.db
 .vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
 
 docs/6.scripts/

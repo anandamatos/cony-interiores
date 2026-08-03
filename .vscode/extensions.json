@@ -1,0 +1,40 @@
+{
+  "recommendations": [
+    // ── Formatação e Qualidade de Código ─────────────────────────────────────
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+
+    // ── React / JavaScript ───────────────────────────────────────────────────
+    "dsznajder.es7-react-js-snippets",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    "christian-kohler.npm-intellisense",
+
+    // ── Tailwind CSS ─────────────────────────────────────────────────────────
+    "bradlc.vscode-tailwindcss",
+
+    // ── Python / Django ──────────────────────────────────────────────────────
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.debugpy",
+    "batisteo.vscode-django",
+
+    // ── Docker ───────────────────────────────────────────────────────────────
+    "ms-azuretools.vscode-docker",
+    "ms-vscode-remote.remote-containers",
+
+    // ── Git ──────────────────────────────────────────────────────────────────
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+
+    // ── Produtividade ────────────────────────────────────────────────────────
+    "naumovs.color-highlight",
+    "PKief.material-icon-theme",
+    "usernamehw.errorlens",
+    "wayou.vscode-todo-highlight",
+
+    // ── Revisão ortográfica (pt-BR + en) ─────────────────────────────────────
+    "streetsidesoftware.code-spell-checker",
+    "streetsidesoftware.code-spell-checker-portuguese-brazilian"
+  ]
+}
